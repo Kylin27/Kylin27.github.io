@@ -5,19 +5,22 @@
   
   <title>搜索引擎知识点整理 | Kylin&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。由于在开发 github 上的 StackExchangeRecommenderSystem 时候会用到 lucene，
-所以在这里先来复习一下搜索引擎中的基础知识和算法。索引的基础知识索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及对网页所创建索引，来提高程序的查询效率。索引在">
+  <meta name="description" content="Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。由于在开发 github 上的 StackExchangeRecommenderSystem 时候会用到 lucene，所以在这里先来复习一下搜索引擎中的基础知识和算法。
+
+索引的基础知识索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及对网页所创建索引，来提高程序的查询效率。索引">
 <meta property="og:type" content="article">
 <meta property="og:title" content="搜索引擎知识点整理">
 <meta property="og:url" content="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/index.html">
 <meta property="og:site_name" content="Kylin's Blog">
-<meta property="og:description" content="Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。由于在开发 github 上的 StackExchangeRecommenderSystem 时候会用到 lucene，
-所以在这里先来复习一下搜索引擎中的基础知识和算法。索引的基础知识索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及对网页所创建索引，来提高程序的查询效率。索引在">
-<meta property="og:updated_time" content="2016-02-11T14:11:58.453Z">
+<meta property="og:description" content="Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。由于在开发 github 上的 StackExchangeRecommenderSystem 时候会用到 lucene，所以在这里先来复习一下搜索引擎中的基础知识和算法。
+
+索引的基础知识索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及对网页所创建索引，来提高程序的查询效率。索引">
+<meta property="og:updated_time" content="2016-02-11T14:21:34.773Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搜索引擎知识点整理">
-<meta name="twitter:description" content="Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。由于在开发 github 上的 StackExchangeRecommenderSystem 时候会用到 lucene，
-所以在这里先来复习一下搜索引擎中的基础知识和算法。索引的基础知识索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及对网页所创建索引，来提高程序的查询效率。索引在">
+<meta name="twitter:description" content="Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。由于在开发 github 上的 StackExchangeRecommenderSystem 时候会用到 lucene，所以在这里先来复习一下搜索引擎中的基础知识和算法。
+
+索引的基础知识索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及对网页所创建索引，来提高程序的查询效率。索引">
   
     <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
   
@@ -89,8 +92,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。<br><br>由于在开发 github 上的 <a href="https://github.com/Kylin27/StackExchangeRecommener/" target="_blank" rel="external">StackExchangeRecommenderSystem</a> 时候会用到 <a href="/">lucene</a>，</p>
-<h2 id="u6240_u4EE5_u5728_u8FD9_u91CC_u5148_u6765_u590D_u4E60_u4E00_u4E0B_u641C_u7D22_u5F15_u64CE_u4E2D_u7684_u57FA_u7840_u77E5_u8BC6_u548C_u7B97_u6CD5_u3002"><a href="#u6240_u4EE5_u5728_u8FD9_u91CC_u5148_u6765_u590D_u4E60_u4E00_u4E0B_u641C_u7D22_u5F15_u64CE_u4E2D_u7684_u57FA_u7840_u77E5_u8BC6_u548C_u7B97_u6CD5_u3002" class="headerlink" title="所以在这里先来复习一下搜索引擎中的基础知识和算法。"></a>所以在这里先来复习一下搜索引擎中的基础知识和算法。</h2><h1 id="u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6"><a href="#u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6" class="headerlink" title="索引的基础知识"></a>索引的基础知识</h1><p>索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及<br>对网页所创建索引，来提高程序的查询效率。<br>索引在日常生活中也很常见:字典目录中某个词语后面标识了出现该词的页码。<br>下面我们来一起学习一下，关于索引常见的词汇:</p>
+        <p>Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。<br><br>由于在开发 github 上的 <a href="https://github.com/Kylin27/StackExchangeRecommener/" target="_blank" rel="external">StackExchangeRecommenderSystem</a> 时候会用到 lucene，<br>所以在这里先来复习一下搜索引擎中的基础知识和算法。</p>
+<hr>
+<h1 id="u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6"><a href="#u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6" class="headerlink" title="索引的基础知识"></a>索引的基础知识</h1><p>索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及<br>对网页所创建索引，来提高程序的查询效率。<br>索引在日常生活中也很常见:字典目录中某个词语后面标识了出现该词的页码。<br>下面我们来一起学习一下，关于索引常见的词汇:</p>
 <ul>
 <li>文档(Document): 索引所标定的’目标对象’: 是数据库索引，那么文档便是数据表中的某条记录;<br>如果是对网页创建的’倒排索引’(索引的一种类型)，那么文档便是网页的页面； 这个’目标对象’<br>还可以是某种具体的文件，例如 word，PDF文档</li>
 <li>文档集合 (Document Collection): 就是上述’文档’构成的集合</li>
@@ -99,7 +103,10 @@
 <li>倒排索引(Inverted Index): 普通的索引是为某个文档创建索引出在该文档中某个单词，<br>而倒排索引则是以单词为主题，通过单词来索引出出现该单词出现的文件； 倒排索引由两部分组成<br>{单词词典,和出现该单词的文档集合}</li>
 <li>单词词典(Lexicon): 搜索引擎通中的索引单位是单词，单词词典是在所有文档集合中出现过的单词所构成的集合；<br>而在单词词典中的每条索引项中记录的信息有{单词信息，单词所指向出现该单词的文章集合-倒排列表} </li>
 <li>倒排列表(PostingList): 倒排列表指的是，出现过某个单词的所有文档所构成的列表和该单词在该文档中出现的<br> 位置信息； 倒排列表中的每条记录我们可以将其称作是倒排项(Posting).</li>
-<li>倒排文件(Inverted File): 倒排文件是存储倒排索引的物理文件。我们都已经知道了倒排索引由两部分组成，<h2 id="u5206_u522B_u662F_uFF0C_u5355_u8BCD_u8BCD_u5178_u548C_u5012_u6392_u5217_u8868-__u5728_u6B64_u57FA_u7840_u4E0A_uFF0C_u5B58_u653E_u5012_u6392_u5217_u8868_u7684_u6587_u4EF6_u5C31_u53EB_u505A_u5012_u6392_u6587_u4EF6_u3002"><a href="#u5206_u522B_u662F_uFF0C_u5355_u8BCD_u8BCD_u5178_u548C_u5012_u6392_u5217_u8868-__u5728_u6B64_u57FA_u7840_u4E0A_uFF0C_u5B58_u653E_u5012_u6392_u5217_u8868_u7684_u6587_u4EF6_u5C31_u53EB_u505A_u5012_u6392_u6587_u4EF6_u3002" class="headerlink" title="分别是，单词词典和倒排列表. 在此基础上，存放倒排列表的文件就叫做倒排文件。"></a>分别是，单词词典和倒排列表. 在此基础上，存放倒排列表的文件就叫做倒排文件。   </h2><h2 id="u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50"><a href="#u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50" class="headerlink" title="倒排索引小例子"></a>倒排索引小例子</h2>比如那今天的知乎日报新闻来举例<pre>
+<li><p>倒排文件(Inverted File): 倒排文件是存储倒排索引的物理文件。我们都已经知道了倒排索引由两部分组成，<br>分别是，单词词典和倒排列表. 在此基础上，存放倒排列表的文件就叫做倒排文件。   </p>
+<hr>
+<h2 id="u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50"><a href="#u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50" class="headerlink" title="倒排索引小例子"></a>倒排索引小例子</h2><p>比如那今天的知乎日报新闻来举例</p>
+<pre>
 文章编号            文章标题
 1                    如何自己制定健身训练计划？
 2                    女生怎么健身锻炼好身材？
@@ -108,16 +115,16 @@
 5                   女生如何锻炼减肥既简单有健康？
 </pre>
 <pre>
-单词 ID       单词        倒排列表
+单词 ID         单词        倒排列表
   1.            自己          {1}
   2.            女生          {2,5}
-  3.            减肥      {3,5}
-  4.            健身      {1,2}
-  5.            教练      {4}
+  3.            减肥            {3,5}
+  4.            健身          {1,2}
+  5.            教练          {4}
   6.            简单          {5}
   7.            训练          {1}
   8.            外貌          {3}
-  9.            改变      {3}
+  9.            改变          {3}
   10.            哪些          {4}    
   11.         内幕          {5}
   12.            锻造          {2,5}
@@ -128,14 +135,16 @@
 
 </li>
 </ul>
-<p>当然，我们也为了让索引列表更细致的记录索引文件的信息来添加上某个词语出现的频率信息，TF 便是用来描述词语在某个文章中出现的次数的. 例如 ‘女生’ 这个词语在文章 2，5 均出现过，并且出现 1 次<br>便可以记成 女生 {2;1,5;1} 这样子。更加细致的记录方式是，将这个单词出现的位置也记录下来：<br><br>例如 ‘女生’这个单词在文章2,5中出现的位置分别是第 1 个位置，就写成如下的格式</p>
-<h2 id="u5973_u751F__7B__282_3B1_3B_3C1_3E_29_2C_285_3B1_3B_3C1_3E_29__7D"><a href="#u5973_u751F__7B__282_3B1_3B_3C1_3E_29_2C_285_3B1_3B_3C1_3E_29__7D" class="headerlink" title="女生 { (2;1;<1>),(5;1;<1>) }"></a>女生 { (2;1;<1>),(5;1;<1>) }</1></1></h2><h1 id="u5355_u8BCD_u8BCD_u5178__28Lexicon_29"><a href="#u5355_u8BCD_u8BCD_u5178__28Lexicon_29" class="headerlink" title="单词词典 (Lexicon)"></a>单词词典 (Lexicon)</h1><p>单词词典存放了在文档集合中出现过的所有单词的相关信息的同时也记录了该单词集合中的每个单词<br>所映射到的倒排列表在倒排文件中的位置信息。</p>
+<p>当然，我们也为了让索引列表更细致的记录索引文件的信息来添加上某个词语出现的频率信息，TF 便是用来描述词语在某个文章中出现的次数的. 例如 ‘女生’ 这个词语在文章 2，5 均出现过，并且出现 1 次<br>便可以记成 女生 {2;1,5;1} 这样子。更加细致的记录方式是，将这个单词出现的位置也记录下来：<br><br>例如 ‘女生’这个单词在文章2,5中出现的位置分别是第 1 个位置，就写成如下的格式<br>女生 { (2;1;<1>),(5;1;<1>) }</1></1></p>
+<hr>
+<h1 id="u5355_u8BCD_u8BCD_u5178__28Lexicon_29"><a href="#u5355_u8BCD_u8BCD_u5178__28Lexicon_29" class="headerlink" title="单词词典 (Lexicon)"></a>单词词典 (Lexicon)</h1><p>单词词典存放了在文档集合中出现过的所有单词的相关信息的同时也记录了该单词集合中的每个单词<br>所映射到的倒排列表在倒排文件中的位置信息。</p>
 <p>可以试想一下，如果需要创建索引的文档集合十分的巨大，那么随之提出出来的单词词典中所存放的单词数量<br>也是十分庞大的。在数据结构课程中我们已经学习过，如果要快速的定位某个单词(键值)的话可以借助于<br>哈希链表或是树形词典这类的数据结构。 </p>
 <h2 id="u54C8_u5E0C_u52A0_u94FE_u8868_-__u5355_u8BCD_u8BCD_u5178"><a href="#u54C8_u5E0C_u52A0_u94FE_u8868_-__u5355_u8BCD_u8BCD_u5178" class="headerlink" title="哈希加链表 - 单词词典"></a>哈希加链表 - 单词词典</h2><p>   哈希加链表是处理哈希表冲突的一种解决方法，哈希表有随之配套的 hash 散列函数，会为每个输入的<br>   key 键生成’唯一’标定该key 对应 value 的标识，但是如果 hash 散列函数选取的不当的话，便会造成<br>   不同的 key 生成了重复的标识； 这就是所谓的’冲突’的发生，处理’冲突’有着不同的方法，<br>   加链表就是在发生冲突的 key 的后面开辟一块空间存放后来的 key ; 待到查找的时候，通过 hash 散列函数<br>   找到该 hash 生成数值指定的链表头，沿着链表继续寻找就可以了。</p>
 <h2 id="u6811_u5F62_u7ED3_u6784_-__u5355_u8BCD_u8BCD_u5178"><a href="#u6811_u5F62_u7ED3_u6784_-__u5355_u8BCD_u8BCD_u5178" class="headerlink" title="树形结构 - 单词词典"></a>树形结构 - 单词词典</h2><p>   前缀树和后缀树都是可以做单词词典很好的数据结构</p>
 <hr>
-<h1 id="u5012_u6392_u5217_u8868"><a href="#u5012_u6392_u5217_u8868" class="headerlink" title="倒排列表"></a>倒排列表</h1><p>  在前面我们提到过了，倒排列表中的基本构成单元倒排索引项中包含字段有:<br>  {单词出现的文档的唯一编号,单词出现频率,&lt;单词在文档中的位置1,位置2,位置3…&gt;}</p>
-<h2 id="u4F46_u662F_u5728_u5B9E_u9645_u7684_u5E94_u7528_u4E2D_u4E3A_u4E86_u5C3D_u91CF_u8282_u7701_u5185_u5B58_uFF0C_u901A_u5E38_u4F1A_u4F7F_u7528_u6587_u6863_u7F16_u53F7_u7684_u5DEE_u503C_u6765_u53D6_u4EE3_u6587_u7AE0_u7684_u552F_u4E00_u7F16_u53F7_u3002"><a href="#u4F46_u662F_u5728_u5B9E_u9645_u7684_u5E94_u7528_u4E2D_u4E3A_u4E86_u5C3D_u91CF_u8282_u7701_u5185_u5B58_uFF0C_u901A_u5E38_u4F1A_u4F7F_u7528_u6587_u6863_u7F16_u53F7_u7684_u5DEE_u503C_u6765_u53D6_u4EE3_u6587_u7AE0_u7684_u552F_u4E00_u7F16_u53F7_u3002" class="headerlink" title="但是在实际的应用中为了尽量节省内存，通常会使用文档编号的差值来取代文章的唯一编号。"></a>  但是在实际的应用中为了尽量节省内存，通常会使用文档编号的差值来取代文章的唯一编号。</h2><h1 id="u5EFA_u7ACB_u7D22_u5F15"><a href="#u5EFA_u7ACB_u7D22_u5F15" class="headerlink" title="建立索引"></a>建立索引</h1><p>建立索引有着不同的方法,同时索引也分为动态索引和静态索引，其中静态索引是生成索引之后在修改文档集合中的<br>文档之后，不能自动的更新之前索引文件 ； 而动态索引则是生成索引之后，修改文档集合中的文件内容之后<br>会随之自动的更新文档文件。</p>
+<h1 id="u5012_u6392_u5217_u8868"><a href="#u5012_u6392_u5217_u8868" class="headerlink" title="倒排列表"></a>倒排列表</h1><p>  在前面我们提到过了，倒排列表中的基本构成单元倒排索引项中包含字段有:<br>  {单词出现的文档的唯一编号,单词出现频率,&lt;单词在文档中的位置1,位置2,位置3…&gt;}<br>  但是在实际的应用中为了尽量节省内存，通常会使用文档编号的差值来取代文章的唯一编号。</p>
+<hr>
+<h1 id="u5EFA_u7ACB_u7D22_u5F15"><a href="#u5EFA_u7ACB_u7D22_u5F15" class="headerlink" title="建立索引"></a>建立索引</h1><p>建立索引有着不同的方法,同时索引也分为动态索引和静态索引，其中静态索引是生成索引之后在修改文档集合中的<br>文档之后，不能自动的更新之前索引文件 ； 而动态索引则是生成索引之后，修改文档集合中的文件内容之后<br>会随之自动的更新文档文件。</p>
 <h2 id="u9759_u6001_u7D22_u5F15"><a href="#u9759_u6001_u7D22_u5F15" class="headerlink" title="静态索引"></a>静态索引</h2><h3 id="u4E24_u904D_u6587_u6863_u904D_u5386_u6CD5"><a href="#u4E24_u904D_u6587_u6863_u904D_u5386_u6CD5" class="headerlink" title="两遍文档遍历法"></a>两遍文档遍历法</h3><p>两遍文档遍历法在创建索引的时候需要对文档集合执行两遍扫描，在创建索引的时候仅需要内存即可，整个过程无需磁盘参与。</p>
 <ul>
 <li>首次扫描:<br>算出为该文档集合创建的索引所需的内存容量大小:搜集文档集合包含文档个数 N ，文档集合中不重复单词总数 M, 每个单词在多少个文档中出现 DF. 将所有单词的 DF 数值进行加和便是建立最终索引所需要的内存大小。</li>
@@ -147,19 +156,22 @@
 <h3 id="u6392_u5E8F_u6CD5"><a href="#u6392_u5E8F_u6CD5" class="headerlink" title="排序法"></a>排序法</h3><p>排序法为文档集合创建索引是为了弥补两遍遍历法建立索引过程中，对内存消耗大这一缺点提出的。两边遍历索引生成方法使用内存的大小是不固定的，如果文档集合大内存开辟就会大一些，相反便会小一些。而排序法无论文档集合如何，其所需要的内存大小均是固定分配的。开辟的内存空间主要用来存放词典信息和索引的中间结果。<br>每当中间结果将内存吃空的时候，便会统一将内存中的中间数据写入到磁盘中。遵循上述倒排索引中所介绍的两部分的结构-单词词典,倒排列表(倒排列表的组成单元是倒排索引项)，在整个的排序法创建文件集合索引的过程中，单词词典始终是作为常驻内存的数据结构的。</p>
 </li>
 <li>读取文档，对文档进行编号，每个文档为其创建唯一的标识 ID 号码</li>
-<li>解析文档，每当在文档中遇到新单词，<pre>
+<li><p>解析文档，每当在文档中遇到新单词，</p>
+<pre>
 { 
 查看该单词在单词词典中是否有记录 
 1. 有记录，获取该单词在词典中的 ID 号码
 2. 单词词典中没有记录该单词，为该单词创建全词典唯一的 ID 号码，然后将其收录到单词词典中
 }
-</pre></li>
-<li>在对当前文档完成了读取和解析之后，便能够为当前文档中出现的每个单词均创建包含着如下信息<pre>
-(单词ID,文档ID,单词频率)
 </pre>
-
+</li>
+<li><p>在对当前文档完成了读取和解析之后，便能够为当前文档中出现的每个单词均创建包含着如下信息</p>
 </li>
 </ul>
+<pre>
+ (单词ID,文档ID,单词频率)
+</pre>
+
 <p>上述三元组便可以作为倒排索引列表中的索引项了，将该三元组索引项集合追加到用来存放中间处理结果的大小固定的内存缓冲区中。然后便可以开始处理下一个文档了。<br></p>
 <ul>
 <li>在内存缓冲区被占满之前需要将缓冲区中的数据写入到磁盘临时文件中去，不过在写入之前需要对内存中的三元组序列执行排序操作； 首先按照单词 ID 进行非递减，然后按照文档 ID 进行非递减排序。由于内存中存放的中间结果并不一定全都是同一个文件生成的中间信息，所以会有单词ID 相同但是文档ID不同的情况，这种情况按照文档ID非递减的规则进行排序。<b>PS: 在上述的全部过程中，单词词典是常驻内存的</b> </li>
@@ -180,7 +192,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cikicmyv20000n0imdscbzlk2" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cikict4f20000foimq3nqnoz9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/search-engine/">search-engine</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -212,7 +224,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cv-blog-doc/">cv,blog,doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cv-blog-doc/">cv,blog,doc</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -221,7 +233,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/cv-blog-doc/" style="font-size: 10px;">cv,blog,doc</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/theory/" style="font-size: 10px;">theory</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a>
+      <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/cv-blog-doc/" style="font-size: 20px;">cv,blog,doc</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/theory/" style="font-size: 10px;">theory</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a>
     </div>
   </div>
 
@@ -230,7 +242,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -255,6 +267,10 @@
         
           <li>
             <a href="/2015/10/25/my_cv/">My CV</a>
+          </li>
+        
+          <li>
+            <a href="/2015/10/25/hello-world/">My CV</a>
           </li>
         
       </ul>
