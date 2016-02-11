@@ -3,33 +3,42 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Kylin&#39;s Blog</title>
+  <title>scala编程相关知识1 | Kylin&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="title: scala 编程相关知识1 date: 2016-2-11-22:36 tags: [scala, programming-theory]
-
- Description: 这篇博客中记录一下 scala 编程语言中的一些常见(但是我却不知道)的知识点
+  <meta name="description" content="Description:这篇博客中记录一下 scala 编程语言中的一些常见(但是我却不知道)的知识点
 
 case class 在 scala 中的使用方法 case class 和 java 中所定义的 class 二者类似
-*&amp;gt;">
+
+在创建 case class 对象实例的时候，可以不用在实例前面加上 new 关键字
+
+
+case class apple(name:String)
+class bana">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kylin's Blog">
+<meta property="og:title" content="scala编程相关知识1">
 <meta property="og:url" content="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/index.html">
 <meta property="og:site_name" content="Kylin's Blog">
-<meta property="og:description" content="title: scala 编程相关知识1 date: 2016-2-11-22:36 tags: [scala, programming-theory]
-
- Description: 这篇博客中记录一下 scala 编程语言中的一些常见(但是我却不知道)的知识点
+<meta property="og:description" content="Description:这篇博客中记录一下 scala 编程语言中的一些常见(但是我却不知道)的知识点
 
 case class 在 scala 中的使用方法 case class 和 java 中所定义的 class 二者类似
-*&amp;gt;">
-<meta property="og:updated_time" content="2016-02-11T15:48:07.953Z">
+
+在创建 case class 对象实例的时候，可以不用在实例前面加上 new 关键字
+
+
+case class apple(name:String)
+class bana">
+<meta property="og:updated_time" content="2016-02-11T15:54:09.253Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kylin's Blog">
-<meta name="twitter:description" content="title: scala 编程相关知识1 date: 2016-2-11-22:36 tags: [scala, programming-theory]
-
- Description: 这篇博客中记录一下 scala 编程语言中的一些常见(但是我却不知道)的知识点
+<meta name="twitter:title" content="scala编程相关知识1">
+<meta name="twitter:description" content="Description:这篇博客中记录一下 scala 编程语言中的一些常见(但是我却不知道)的知识点
 
 case class 在 scala 中的使用方法 case class 和 java 中所定义的 class 二者类似
-*&amp;gt;">
+
+在创建 case class 对象实例的时候，可以不用在实例前面加上 new 关键字
+
+
+case class apple(name:String)
+class bana">
   
     <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
   
@@ -82,21 +91,31 @@ case class 在 scala 中的使用方法 case class 和 java 中所定义的 clas
         <section id="main"><article id="post-2016.2.5.scala_theory" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/02/11/2016.2.5.scala_theory/" class="article-date">
-  <time datetime="2016-02-11T15:48:07.953Z" itemprop="datePublished">2016-02-11</time>
+  <time datetime="2016-02-10T16:00:00.000Z" itemprop="datePublished">2016-02-11</time>
 </a>
     
   </div>
   <div class="article-inner">
     
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      scala编程相关知识1
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <p> title: scala 编程相关知识1<br> date: 2016-2-11-22:36<br> tags: [scala, programming-theory]</p>
-<hr>
-<p> Description:<br><br> 这篇博客中记录一下 scala 编程语言中的一些常见(但是我却不知道)的知识点</p>
+        <p>Description:<br>这篇博客中记录一下 scala 编程语言中的一些常见(但是我却不知道)的知识点</p>
 <hr>
 <h1 id="case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5"><a href="#case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5" class="headerlink" title="case class 在 scala 中的使用方法"></a>case class 在 scala 中的使用方法</h1><p> case class 和 java 中所定义的 class 二者类似</p>
-<p>*&gt; 在创建 case class 对象实例的时候，可以不用在实例前面加上 new 关键字</p>
+<ul>
+<li>在创建 case class 对象实例的时候，可以不用在实例前面加上 new 关键字</li>
+</ul>
 <pre>
 case class apple(name:String)
 class banana(color:String)
@@ -105,10 +124,15 @@ val app = apple("i am a apple — —b")
 val ban = new banana("i am yellow — —||")
 </pre>
 
-<p>*&gt; case class 创建的类对象实例调用 .toString 方法时显示出来的字体更漂亮<br>case class 实例会将 ‘case class 名称(里面是成员变量名称)’ 显示出来<br>class 的 .toString 方法会显示类似 java 语言直接打 Object 象信息的数据<br>如果你想通过打印的方式来快速获取类对象中的成员数据信息的话，推荐使用 case class</p>
-<p>*&gt; case class 默认实现了 equals 和 hashCode 两个方法，所以 case class 实例化的对象可直接调用这两个方法</p>
-<p><em>&gt; case class 实现了(extends) Serializable ，可以对 case class 对象执行序列化操作
-</em>&gt; 在声明 case class 的时候，传入的构造参数均是 public 的可以直接通过 实例名称.构造函数参数名称<br>来访问</p>
+<ul>
+<li><p>case class 创建的类对象实例调用 .toString 方法时显示出来的字体更漂亮<br>case class 实例会将 ‘case class 名称(里面是成员变量名称)’ 显示出来<br>class 的 .toString 方法会显示类似 java 语言直接打 Object 象信息的数据<br>如果你想通过打印的方式来快速获取类对象中的成员数据信息的话，推荐使用 case class</p>
+</li>
+<li><p>case class 默认实现了 equals 和 hashCode 两个方法，所以 case class 实例化的对象可直接调用这两个方法</p>
+</li>
+<li><p>case class 实现了(extends) Serializable ，可以对 case class 对象执行序列化操作</p>
+</li>
+<li>在声明 case class 的时候，传入的构造参数均是 public 的可以直接通过 实例名称.构造函数参数名称<br>来访问</li>
+</ul>
 <pre>
 case class Document(docId: String, body: String="", label: Set[String] = Set.empty, integerLabel: Int)
 其中 body: String="" 这种赋值方式是默认赋值，如果调用者没有为该参数指定参数数值的话，就会使用默认的赋值。
@@ -121,7 +145,9 @@ case class Document(docId: String, body: String="", label: Set[String] = Set.emp
    println(doc1.label)  // output Set(abc,eft)   
 </pre>
 
-<p>*&gt; case class 对象实例支持模式匹配，这是 scala 为何要提出 case class 这一类型的原因</p>
+<ul>
+<li>case class 对象实例支持模式匹配，这是 scala 为何要提出 case class 这一类型的原因</li>
+</ul>
 <pre>
 abstract  class methodX
 case class test1(n: Int) extends methodX
@@ -152,9 +178,11 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cikifwbn5000018imooh4ey85" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cikifysmu0000moimg5fnwy5o" class="article-share-link">Share</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming-theory/">programming-theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
+
     </footer>
   </div>
   
@@ -182,7 +210,7 @@ object MatchPatternTester extends App{
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cv-blog-doc/">cv,blog,doc</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cv-blog-doc/">cv,blog,doc</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -191,7 +219,7 @@ object MatchPatternTester extends App{
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/cv-blog-doc/" style="font-size: 20px;">cv,blog,doc</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/theory/" style="font-size: 10px;">theory</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a>
+      <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/cv-blog-doc/" style="font-size: 20px;">cv,blog,doc</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 10px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/theory/" style="font-size: 10px;">theory</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a>
     </div>
   </div>
 
@@ -212,7 +240,7 @@ object MatchPatternTester extends App{
       <ul>
         
           <li>
-            <a href="/2016/02/11/2016.2.5.scala_theory/">(no title)</a>
+            <a href="/2016/02/11/2016.2.5.scala_theory/">scala编程相关知识1</a>
           </li>
         
           <li>
