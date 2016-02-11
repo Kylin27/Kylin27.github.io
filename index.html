@@ -68,7 +68,7 @@
     <article id="post-2016.2.5.scala_theory" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/02/11/2016.2.5.scala_theory/" class="article-date">
-  <time datetime="2016-02-11T15:44:59.072Z" itemprop="datePublished">2016-02-11</time>
+  <time datetime="2016-02-11T15:46:29.825Z" itemprop="datePublished">2016-02-11</time>
 </a>
     
   </div>
@@ -79,14 +79,10 @@
       
         <p> title: scala 编程相关知识1<br> data: 2016-2-11-22:36<br> tags: [scala,programming-theory]</p>
 <hr>
-<p> Description:<br></p>
-<h2 id="u8FD9_u7BC7_u535A_u5BA2_u4E2D_u8BB0_u5F55_u4E00_u4E0B_scala__u7F16_u7A0B_u8BED_u8A00_u4E2D_u7684_u4E00_u4E9B_u5E38_u89C1_28_u4F46_u662F_u6211_u5374_u4E0D_u77E5_u9053_29_u7684_u77E5_u8BC6_u70B9"><a href="#u8FD9_u7BC7_u535A_u5BA2_u4E2D_u8BB0_u5F55_u4E00_u4E0B_scala__u7F16_u7A0B_u8BED_u8A00_u4E2D_u7684_u4E00_u4E9B_u5E38_u89C1_28_u4F46_u662F_u6211_u5374_u4E0D_u77E5_u9053_29_u7684_u77E5_u8BC6_u70B9" class="headerlink" title="这篇博客中记录一下 scala 编程语言中的一些常见(但是我却不知道)的知识点"></a> 这篇博客中记录一下 scala 编程语言中的一些常见(但是我却不知道)的知识点</h2><h1 id="case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5"><a href="#case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5" class="headerlink" title="case class 在 scala 中的使用方法"></a>case class 在 scala 中的使用方法</h1><p> case class 和 java 中所定义的 class 二者类似</p>
-<ul>
-<li><blockquote>
-<p>在创建 case class 对象实例的时候，可以不用在实例前面加上 new 关键字</p>
-</blockquote>
-</li>
-</ul>
+<p> Description:<br><br> 这篇博客中记录一下 scala 编程语言中的一些常见(但是我却不知道)的知识点</p>
+<hr>
+<h1 id="case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5"><a href="#case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5" class="headerlink" title="case class 在 scala 中的使用方法"></a>case class 在 scala 中的使用方法</h1><p> case class 和 java 中所定义的 class 二者类似</p>
+<p>*&gt; 在创建 case class 对象实例的时候，可以不用在实例前面加上 new 关键字</p>
 <pre>
 case class apple(name:String)
 class banana(color:String)
@@ -95,24 +91,10 @@ val app = apple("i am a apple — —b")
 val ban = new banana("i am yellow — —||")
 </pre>
 
-<ul>
-<li><blockquote>
-<p>case class 创建的类对象实例调用 .toString 方法时显示出来的字体更漂亮<br>case class 实例会将 ‘case class 名称(里面是成员变量名称)’ 显示出来<br>class 的 .toString 方法会显示类似 java 语言直接打 Object 象信息的数据<br>如果你想通过打印的方式来快速获取类对象中的成员数据信息的话，推荐使用 case class</p>
-</blockquote>
-</li>
-<li><blockquote>
-<p>case class 默认实现了 equals 和 hashCode 两个方法，所以 case class 实例化的对象可直接调用这两个方法</p>
-</blockquote>
-</li>
-<li><blockquote>
-<p>case class 实现了(extends) Serializable ，可以对 case class 对象执行序列化操作</p>
-</blockquote>
-</li>
-<li><blockquote>
-<p>在声明 case class 的时候，传入的构造参数均是 public 的可以直接通过 实例名称.构造函数参数名称<br>来访问</p>
-</blockquote>
-</li>
-</ul>
+<p>*&gt; case class 创建的类对象实例调用 .toString 方法时显示出来的字体更漂亮<br>case class 实例会将 ‘case class 名称(里面是成员变量名称)’ 显示出来<br>class 的 .toString 方法会显示类似 java 语言直接打 Object 象信息的数据<br>如果你想通过打印的方式来快速获取类对象中的成员数据信息的话，推荐使用 case class</p>
+<p>*&gt; case class 默认实现了 equals 和 hashCode 两个方法，所以 case class 实例化的对象可直接调用这两个方法</p>
+<p><em>&gt; case class 实现了(extends) Serializable ，可以对 case class 对象执行序列化操作
+</em>&gt; 在声明 case class 的时候，传入的构造参数均是 public 的可以直接通过 实例名称.构造函数参数名称<br>来访问</p>
 <pre>
 case class Document(docId: String, body: String="", label: Set[String] = Set.empty, integerLabel: Int)
 其中 body: String="" 这种赋值方式是默认赋值，如果调用者没有为该参数指定参数数值的话，就会使用默认的赋值。
@@ -125,12 +107,7 @@ case class Document(docId: String, body: String="", label: Set[String] = Set.emp
    println(doc1.label)  // output Set(abc,eft)   
 </pre>
 
-<ul>
-<li><blockquote>
-<p>case class 对象实例支持模式匹配，这是 scala 为何要提出 case class 这一类型的原因</p>
-</blockquote>
-</li>
-</ul>
+<p>*&gt; case class 对象实例支持模式匹配，这是 scala 为何要提出 case class 这一类型的原因</p>
 <pre>
 abstract  class methodX
 case class test1(n: Int) extends methodX
@@ -158,27 +135,10 @@ object MatchPatternTester extends App{
 </pre>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cikifs9gv0000e8imugto98ut" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cikiftqqd0000ecimnxyfnf03" class="article-share-link">Share</a>
       
       
     </footer>
@@ -310,7 +270,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cikifs9ho000ie8imw7x6qri4" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cikiftqr4000iecim9l2npu3e" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/search-engine/">search-engine</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -429,7 +389,7 @@ public class TestLog4j{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cikifs9hh0006e8imlaeu7mtj" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cikiftqqy0006ecim8nlx84o2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a></li></ul>
@@ -522,7 +482,7 @@ deploy:
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cikifs9hk0009e8imuajgmnbq" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cikiftqr00009ecimdocltmjj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows/">windows</a></li></ul>
@@ -621,7 +581,7 @@ deploy:
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cikifs9h90001e8impjqqft50" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cikiftqqr0001ecimtr116n8m" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cv-blog-doc/">cv,blog,doc</a></li></ul>
@@ -720,7 +680,7 @@ deploy:
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2015/10/25/hello-world/" data-id="cikifs9hf0004e8imw227bg1a" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2015/10/25/hello-world/" data-id="cikiftqqw0004ecimcp9fdomi" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cv-blog-doc/">cv,blog,doc</a></li></ul>
