@@ -3,17 +3,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives: 2016 | Kylin&#39;s Blog</title>
+  <title>google guava&#39;s BiMap | Kylin&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Kylin's Blog">
-<meta property="og:url" content="http://kylin27.github.io/archives/2016/index.html">
+  <meta name="description" content="Description:google guava 中提供的一种非常有用的数据结构，双向 Map。是的，你没有听错，就是相比于普通仅能够提供 key 到 value 映射的 Map ，双向Map既能够提供 key 到 value 的映射，有能够提供 value 到 key 的映射。这在某些特定场合是非常有用的，那么接下来简单介绍一下 BiMap 的使用方法。
+
+BiMap 所支持的方法V force">
+<meta property="og:type" content="article">
+<meta property="og:title" content="google guava's BiMap">
+<meta property="og:url" content="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/index.html">
 <meta property="og:site_name" content="Kylin's Blog">
-<meta property="og:description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
+<meta property="og:description" content="Description:google guava 中提供的一种非常有用的数据结构，双向 Map。是的，你没有听错，就是相比于普通仅能够提供 key 到 value 映射的 Map ，双向Map既能够提供 key 到 value 的映射，有能够提供 value 到 key 的映射。这在某些特定场合是非常有用的，那么接下来简单介绍一下 BiMap 的使用方法。
+
+BiMap 所支持的方法V force">
+<meta property="og:updated_time" content="2016-02-12T01:22:01.495Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kylin's Blog">
-<meta name="twitter:description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
+<meta name="twitter:title" content="google guava's BiMap">
+<meta name="twitter:description" content="Description:google guava 中提供的一种非常有用的数据结构，双向 Map。是的，你没有听错，就是相比于普通仅能够提供 key 到 value 映射的 Map ，双向Map既能够提供 key 到 value 的映射，有能够提供 value 到 key 的映射。这在某些特定场合是非常有用的，那么接下来简单介绍一下 BiMap 的使用方法。
+
+BiMap 所支持的方法V force">
   
     <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
   
@@ -63,115 +70,108 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2016/02/12/2016.2.12.scala_BiMap/" class="archive-article-date">
-  <time datetime="2016-02-11T16:00:00.000Z" itemprop="datePublished">Feb 12</time>
+        <section id="main"><article id="post-2016.2.12.scala_BiMap" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/12/2016.2.12.scala_BiMap/" class="article-date">
+  <time datetime="2016-02-11T16:00:00.000Z" itemprop="datePublished">2016-02-12</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/02/12/2016.2.12.scala_BiMap/">google guava&#39;s BiMap</a>
+    <h1 class="article-title" itemprop="name">
+      google guava&#39;s BiMap
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2016/02/11/2016.2.5.scala_theory/" class="archive-article-date">
-  <time datetime="2016-02-10T16:00:00.000Z" itemprop="datePublished">Feb 11</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/02/11/2016.2.5.scala_theory/">scala编程相关知识1</a>
-    </h1>
-  
+        <p>Description:<br><br>google guava 中提供的一种非常有用的数据结构，双向 Map。<br>是的，你没有听错，就是相比于普通仅能够提供 key 到 value 映射的 Map ，双向Map既能够提供 key 到 value 的映射，有能够提供 value 到 key 的映射。<br>这在某些特定场合是非常有用的，那么接下来简单介绍一下 BiMap 的使用方法。</p>
+<hr>
+<h1 id="BiMap__u6240_u652F_u6301_u7684_u65B9_u6CD5"><a href="#BiMap__u6240_u652F_u6301_u7684_u65B9_u6CD5" class="headerlink" title="BiMap 所支持的方法"></a>BiMap<k,v> 所支持的方法</k,v></h1><h2 id="V_forcePut_28K_key_2C_V_value_29"><a href="#V_forcePut_28K_key_2C_V_value_29" class="headerlink" title="V forcePut(K key, V value)"></a>V forcePut(K key, V value)</h2><ul>
+<li>方法介绍: 该方法用来强制执行 BiMap<k,v> 所继承的 Map<k,v> put() 方法. 也就是说如果 map 中有<br>“a-key”-&gt;”a-value” 的话，在执行 biMap.forcePut(“a-key”,”a-value2”) “a-value2” 会强制取代 “a-value” 的位置</k,v></k,v></li>
+</ul>
+<h2 id="BiMap_inverse"><a href="#BiMap_inverse" class="headerlink" title="BiMap inverse"></a>BiMap<v,k> inverse</v,k></h2><ul>
+<li>方法介绍: 该方法会将当前的<k,v> 转换成 <v,k> </v,k></k,v></li>
+</ul>
+<h2 id="V_put_28K_key__2C_V_value_29"><a href="#V_put_28K_key__2C_V_value_29" class="headerlink" title="V put(K key , V value)"></a>V put(K key , V value)</h2><ul>
+<li>方法介绍: 该方法用来向数据结构中放入 key-value 键值对<h2 id="void_putAll_28Map_26lt_3B_uFF1F_extends_K_2C__3F_extends_V_26gt_3B_map__29"><a href="#void_putAll_28Map_26lt_3B_uFF1F_extends_K_2C__3F_extends_V_26gt_3B_map__29" class="headerlink" title="void putAll(Map&lt;？ extends K, ? extends V&gt; map )"></a>void putAll(Map&lt;？ extends K, ? extends V&gt; map )</h2></li>
+<li>该方法用来将 Map<k1,v1> 类型的一次性全部放入到当前 BiMap<k,v> 中，不过值得注意的是 K1, V1 必须要是 K,V 类型或使其子类<h2 id="Set_values_28_29"><a href="#Set_values_28_29" class="headerlink" title="Set values()"></a>Set<v> values()</v></h2></k,v></k1,v1></li>
+<li>该方法用以集合的方式来获得 BiMap 的值集合</li>
+</ul>
+<hr>
+<ul>
+<li>下面通过一个例子来介绍一下如何使用 BiMap，通过一个 Seq 类型的字符串 List 生成 key-value 对字典，</li>
+<li>然后将字典进行反转操作，将原来的 k-v 编程 v-k 映射map </li>
+</ul>
+<pre>
+object MatchPatternTester extends App{
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2016/02/06/2016.2.5.search_engine_theory/" class="archive-article-date">
-  <time datetime="2016-02-05T16:00:00.000Z" itemprop="datePublished">Feb 6</time>
-</a>
+    // 将传入的 Seqp[String] 通过 zipWithIndex.toMap 的方式
+    // 转换成 Map<string,int> 类型，然后通过调用 ImmutableBiMap 中的 putAll 方法
+    // 将其传入到 ImmutableBiMap 中，然后调用它的 build 方法生成 BiMap<string,int> 
+
+    def getMapFromSeq(dict: Seq[String]): Unit ={
+        val kTv = ImmutableBiMap.builder[String,Int]()
+              .putAll(dict.zipWithIndex.toMap[String,Int])
+              .build()
+
+    // 获取 BiMap 的 key 集合
+    val values = kTv.keySet()
+
+    // 通过获取的 key 集合遍历 BiMap<string,int> 中的每个 key-value 元素对
+    values.foreach( (x: String ) => println("key " + x +" value "+ kTv(x)))
+
+    // 调用 BiMap 的 inverse 方法来将 BiMap<string,int> 转换成 BiMap<int,string>    
+    val inverseMap = kTv.inverse()
+
+    // 获取反转之后的 key 集合
+    val values2 = inverseMap.keySet()
+    // 在获取 key 集合之后遍历反转之后的 BiMap<int,string> 
+    values2.foreach((k: Int ) => println("key " +k + " value "+ inverseMap(k)))
+
+  }
+
+  // 创建传入参数(Seq[String])
+  val listInput = List[String]("aimer","aimer","kylin","kokia","rurutia","kylin")
+
+  getMapFromSeq(listInput)
+
+}
+</int,string></int,string></string,int></string,int></string,int></string,int></pre>
+
+
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/02/06/2016.2.5.search_engine_theory/">搜索引擎知识点整理</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2016/02/05/blog_2_5_2016_log4j_usage_note/" class="archive-article-date">
-  <time datetime="2016-02-04T16:00:00.000Z" itemprop="datePublished">Feb 5</time>
-</a>
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cikj0ekl40000b4imupsbqfh0" class="article-share-link">Share</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/02/05/blog_2_5_2016_log4j_usage_note/">How to use log4j in your project ?</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2016/02/05/blog_2_3_2016/" class="archive-article-date">
-  <time datetime="2016-02-04T16:00:00.000Z" itemprop="datePublished">Feb 5</time>
-</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/02/05/blog_2_3_2016/">2 Build Blog on Windows by Node.js and Hexo</a>
-    </h1>
-  
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/datastructure/">datastructure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
 
-    </header>
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/02/11/2016.2.5.scala_theory/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">scala编程相关知识1</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
+
 </section>
         
           <aside id="sidebar">
