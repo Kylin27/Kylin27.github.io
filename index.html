@@ -239,10 +239,26 @@ $docker export -o kylin27_container_wget.tar.gz b4bfcdde7b31
 docker tag ubuntu_14:wget kylin27/ubuntu14:wget
 </pre>
 
-<p>再次输入命令 <figure class="highlight docker"><figcaption><span>images ``` 会看到如下信息</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;pre&gt;</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE</span><br><span class="line">ubuntu_14           wget                44552cea1d79        5 minutes ago       187.9 MB</span><br><span class="line">kylin27/ubuntu14    wget                44552cea1d79        5 minutes ago       187.9 MB</span><br><span class="line">ubuntu              14.04               8693db7e8a00        3 weeks ago         187.9 MB</span><br><span class="line">&lt;/pre&gt;</span><br><span class="line"></span><br><span class="line"> 看到ubuntu_14 和 kylin27/ubuntu14 这两个镜像文件虽然镜像库名称不同，但是 IMAGE ID 却是相同的，这就是方便区分标识，但却最大程度上减少冗余文件的存储的思想所在。</span><br><span class="line"></span><br><span class="line">* 为该&lt;b&gt;镜像&lt;/b&gt;创建文档文件</span><br><span class="line">&lt;pre&gt;</span><br><span class="line">$docker save -o kylin27.tar ubuntu_14:wget</span><br><span class="line">&lt;/pre&gt;</span><br><span class="line"> 随后便可以在当前目录下面看到名为 kylin27.tar 的归档文件</span><br><span class="line"> </span><br><span class="line">* 将该镜像文件推送到 docker-hub 上面 &lt;b&gt;在推送镜像文件之前，需要先把系统中生成该镜像文件的容器给停止(血与泪的教训) &lt;/b&gt;</span><br><span class="line">&lt;pre&gt;</span><br><span class="line">$docker stop b4bfcdde7b31</span><br><span class="line">$docker push kylin27/ubuntu14:wget</span><br><span class="line">output message:</span><br><span class="line">The push refers to a repository [kylin27/ubuntu] (len: 1)</span><br><span class="line">44552cea1d79: Image already exists </span><br><span class="line">8693db7e8a00: Image successfully pushed </span><br><span class="line">a4c5be5b6e59: Image successfully pushed </span><br><span class="line">c4fae638e7ce: Image successfully pushed </span><br><span class="line">f15ce52fc004: Image successfully pushed </span><br><span class="line">Digest: sha256:09dd6e67f2c8ec9a0a9e21f4e34f415083dcd29a96e156b5d36fbdd4295f5c2f</span><br><span class="line"></span><br><span class="line">&lt;/pre&gt;</span><br><span class="line">  成功推送信息之后，到自己的 [docker-hub](https://hub.docker.com/r/kylin27/ubuntu/) 上便可以看到咯~</span><br><span class="line">  在页面右边的显示信息便是该镜像文件 pull 的路径，如果你对这个镜像文件感兴趣的话便可以通过该信息将镜像 pull 到本地</span><br><span class="line">  ``` pull kylin27/ubuntu</span><br></pre></td></tr></table></figure></p>
+<p>再次输入命令 <code>docker images</code> 会看到如下信息</p>
 </li>
-<li><p>再来介绍一个 docker 中实用的批量删除 none 镜像文件的命令<br>在频繁创建删除 docker 镜像文件之后便会生成很多名为 none 的镜像文件，在这里可以通过下面的命令将所有无用的 none 镜像文件删除。</p>
+</ul>
 <pre>
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+ubuntu_14           wget                44552cea1d79        5 minutes ago       187.9 MB
+kylin27/ubuntu14    wget                44552cea1d79        5 minutes ago       187.9 MB
+ubuntu              14.04               8693db7e8a00        3 weeks ago         187.9 MB
+</pre>
+
+<p> 看到ubuntu_14 和 kylin27/ubuntu14 这两个镜像文件虽然镜像库名称不同，但是 IMAGE ID 却是相同的，这就是方便区分标识，但却最大程度上减少冗余文件的存储的思想所在。</p>
+<ul>
+<li><p>为该<b>镜像</b>创建文档文件<br><pre><br>$docker save -o kylin27.tar ubuntu_14:wget<br></pre><br>随后便可以在当前目录下面看到名为 kylin27.tar 的归档文件</p>
+</li>
+<li><p>将该镜像文件推送到 docker-hub 上面 <b>在推送镜像文件之前，需要先把系统中生成该镜像文件的容器给停止(血与泪的教训) </b><br><pre><br>$docker stop b4bfcdde7b31<br>$docker push kylin27/ubuntu14:wget<br>output message:<br>The push refers to a repository [kylin27/ubuntu] (len: 1)<br>44552cea1d79: Image already exists<br>8693db7e8a00: Image successfully pushed<br>a4c5be5b6e59: Image successfully pushed<br>c4fae638e7ce: Image successfully pushed<br>f15ce52fc004: Image successfully pushed<br>Digest: sha256:09dd6e67f2c8ec9a0a9e21f4e34f415083dcd29a96e156b5d36fbdd4295f5c2f</pre></p>
+</li>
+</ul>
+<p><br>  成功推送信息之后，到自己的 <a href="https://hub.docker.com/r/kylin27/ubuntu/" target="_blank" rel="external">docker-hub</a> 上便可以看到咯~<br>  在页面右边的显示信息便是该镜像文件 pull 的路径，如果你对这个镜像文件感兴趣的话便可以通过该信息将镜像 pull 到本地</p>
+<ul>
+<li>再来介绍一个 docker 中实用的批量删除 none 镜像文件的命令<br>在频繁创建删除 docker 镜像文件之后便会生成很多名为 none 的镜像文件，在这里可以通过下面的命令将所有无用的 none 镜像文件删除。<pre>
 docker ps -a | grep "Exited" | awk '{print $1 }'|xargs docker stop
 docker ps -a | grep "Exited" | awk '{print $1 }'|xargs docker rm
 docker images|grep none|awk '{print $3 }'|xargs docker rmi
@@ -255,7 +271,7 @@ docker images|grep none|awk '{print $3 }'|xargs docker rmi
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cikku5hds00150gimfhu1h57a" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cikku85h40015ywimta4u8zdr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
@@ -347,7 +363,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cikku5hch00000gimn78gvbdf" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cikku85g10000ywim7mu6ttc4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/datastructure/">datastructure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
@@ -449,7 +465,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cikku5hdg00110gimryuqf1si" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cikku85h00011ywimlza388i2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming-theory/">programming-theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
@@ -583,7 +599,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cikku5hd8000q0gimzx09a3rt" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cikku85gt000qywimqfvhjata" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/search-engine/">search-engine</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -702,7 +718,7 @@ public class TestLog4j{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cikku5hd1000f0gim5vr80m28" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cikku85gn000fywimpy6zjam0" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a></li></ul>
@@ -795,7 +811,7 @@ deploy:
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cikku5hd4000i0gimvsofpxc9" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cikku85gp000iywim0043es0g" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows/">windows</a></li></ul>
@@ -894,7 +910,7 @@ deploy:
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cikku5hcw00050gimmyektrwd" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cikku85gg0005ywimtzurw9qr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cv/">cv</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li></ul>
@@ -993,7 +1009,7 @@ deploy:
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2015/10/25/hello-world/" data-id="cikku5hcz000c0gimo2m9j71a" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2015/10/25/hello-world/" data-id="cikku85gk000cywimv3dkr7ry" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cv-blog-doc/">cv,blog,doc</a></li></ul>
