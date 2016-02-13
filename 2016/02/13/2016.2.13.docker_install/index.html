@@ -15,7 +15,7 @@
 <meta property="og:description" content="Description: 本篇博客简单记录一下在 ubuntu 上安装部署 docker 的流程，以及 docker 常用的命令Docker-Hub 管理镜像的方式和 github 管理代码的方式类似，你可在 Docker-Hub 网站上面申请一个账号便可以 push 自己创建的系统镜像，或是 search,pull 他人的系统镜像到本地了，十分方便。
 
 官网上下载 docker打开终端，可以通过">
-<meta property="og:updated_time" content="2016-02-13T07:57:52.576Z">
+<meta property="og:updated_time" content="2016-02-13T08:00:15.903Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在 Ubuntu 上面安装部署 docker">
 <meta name="twitter:description" content="Description: 本篇博客简单记录一下在 ubuntu 上安装部署 docker 的流程，以及 docker 常用的命令Docker-Hub 管理镜像的方式和 github 管理代码的方式类似，你可在 Docker-Hub 网站上面申请一个账号便可以 push 自己创建的系统镜像，或是 search,pull 他人的系统镜像到本地了，十分方便。
@@ -256,10 +256,10 @@ ubuntu              14.04               8693db7e8a00        3 weeks ago         
 </li>
 <li><p>为该<b>镜像</b>创建文档文件<br><pre><br>$docker save -o kylin27.tar ubuntu_14:wget<br></pre><br>随后便可以在当前目录下面看到名为 kylin27.tar 的归档文件</p>
 </li>
-<li><p>将该镜像文件推送到 docker-hub 上面 <b>在推送镜像文件之前，需要先把系统中生成该镜像文件的容器给停止(血与泪的教训) </b><br><pre><br>$docker stop b4bfcdde7b31<br>$docker push kylin27/ubuntu14:wget<br>output message:<br>The push refers to a repository [kylin27/ubuntu14] (len: 1)<br>44552cea1d79: Image already exists<br>8693db7e8a00: Image successfully pushed<br>a4c5be5b6e59: Image successfully pushed<br>c4fae638e7ce: Image successfully pushed<br>f15ce52fc004: Pushing 46.76 MB/65.68 MB</pre></p>
+<li><p>将该镜像文件推送到 docker-hub 上面 <b>在推送镜像文件之前，需要先把系统中生成该镜像文件的容器给停止(血与泪的教训) </b><br><pre><br>$docker stop b4bfcdde7b31<br>$docker push kylin27/ubuntu14:wget<br>output message:<br>The push refers to a repository [kylin27/ubuntu] (len: 1)<br>44552cea1d79: Image already exists<br>8693db7e8a00: Image successfully pushed<br>a4c5be5b6e59: Image successfully pushed<br>c4fae638e7ce: Image successfully pushed<br>f15ce52fc004: Image successfully pushed<br>Digest: sha256:09dd6e67f2c8ec9a0a9e21f4e34f415083dcd29a96e156b5d36fbdd4295f5c2f</pre></p>
 </li>
 </ul>
-<p></p>
+<p><br> 成功推送信息之后，到自己的 <a href="https://hub.docker.com/r/kylin27/ubuntu/" target="_blank" rel="external">docker-hub</a> 上便可以看到咯~</p>
 <ul>
 <li>再来介绍一个 docker 中实用的批量删除 none 镜像文件的命令<br>在频繁创建删除 docker 镜像文件之后便会生成很多名为 none 的镜像文件，在这里可以通过下面的命令将所有无用的 none 镜像文件删除。<pre>
 docker ps -a | grep "Exited" | awk '{print $1 }'|xargs docker stop
@@ -274,7 +274,7 @@ docker images|grep none|awk '{print $3 }'|xargs docker rmi
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cikktzggg0015agimlsyg6uss" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cikku2low0015bsimb93kx381" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
