@@ -99,7 +99,7 @@ apt-get install docker.io
 <h1 id="docker__u4E2D_u7684_u955C_u50CF_u548C_u5BB9_u5668"><a href="#docker__u4E2D_u7684_u955C_u50CF_u548C_u5BB9_u5668" class="headerlink" title="docker 中的镜像和容器"></a>docker 中的镜像和容器</h1><p>在动手 pull 一个镜像之前，还要啰嗦一下，那就是对 docker 中的<b>镜像</b> ，<b>容器</b> 这两个名词的理解。<br><br>如果将镜像文件比作是 Java 编程语言中的类(文件)的话，那么容器便是基于 Java 类所实例化(new) 的一个对象实例。<br><br>镜像文件是不会被轻易改变的，它由唯一ID号码所标识，该 ID 号码和远程 pull 该镜像文件的镜像库中的文件 ID 号码保持一致。<br><br>而通过镜像文件实例化的容器一旦被创建，运行之后便是时刻处于变化状态。当然如果你如果想保存容器的当前状态的话，<br><br>也可以通过docker 提供的命令，将容器X(当前的状态)写入镜像文件中，这样再次通过镜像文件生成容器实例的时候，<br><br>该被生成的容器实例所处状态便和容器 X 是保持一致的。但是在这里也需要知道容器也是由不同的 ID 号码所唯一标识的，<br><br>就如同 Java 编程中每个类对象都由不同的 hashCode来标识一样。</p>
 <hr>
 <h1 id="u4F7F_u7528_docker"><a href="#u4F7F_u7528_docker" class="headerlink" title="使用 docker"></a>使用 docker</h1><p>在 docker 安装好了之后，输入 docker 命令之后会有很多参数提示信息，在这里介绍几个十分常用的命令:</p>
-<h2 id="docker_-h"><a href="#docker_-h" class="headerlink" title="docker -h"></a>docker -h</h2><p>该命令用来显示 docker 的帮助选项</p>
+<h3 id="docker_-h"><a href="#docker_-h" class="headerlink" title="docker -h"></a>docker -h</h3><p>该命令用来显示 docker 的帮助选项</p>
 <h3 id="docker_version"><a href="#docker_version" class="headerlink" title="docker version"></a>docker version</h3><p>用来显示当前 Docker 的版本信息，啰嗦一句， docker 在 1.8 版本之后才能够支持本地向 docker-hub 上面提交 docker 镜像文件。<br>所以有些时候查看 docker version 还是很有必要的(曾经使用 1.2 的 docker 提交镜像文件一个整下午失败的教训)</p>
 <h3 id="docker_info"><a href="#docker_info" class="headerlink" title="docker info"></a>docker info</h3><p>该命令用来显示当前系统中 Docker 的信息，镜像文件和被创建的容器数目等信息</p>
 <h3 id="docker_login"><a href="#docker_login" class="headerlink" title="docker login"></a>docker login</h3><p>该命令在你想 <a href="https://hub.docker.com/" target="_blank" rel="external">docker-hub</a> 上面注册信息之后，可以在命令行通过该命令远程登录， <br><br>如同 github 上面注册信息并添加ssh-key 之后通过 ssh 远程登录一样。</p>
@@ -229,10 +229,10 @@ $docker export -o kylin27_container_wget.tar.gz b4bfcdde7b31
 # 等待之后，便会在当前路径下面找到名为 kylin27_container_wget.tar.gz 的归档文件
 </pre>
 </li>
-<li><p>生成该容器的镜像文件<br><pre><br>$docker commit b4bfcdde7b31 ubuntu_14:wget</pre></p>
+<li><p>生成该容器的镜像文件<br><pre><br>$docker commit b4bfcdde7b31 ubuntu_14:wget<br>// 冒号后面的是为镜像文件创建的标签，而冒号前面是该镜像文件对应镜像库的名称</pre></p>
 </li>
 </ul>
-<h1 id="u5192_u53F7_u540E_u9762_u7684_u662F_u4E3A_u955C_u50CF_u6587_u4EF6_u521B_u5EFA_u7684_u6807_u7B7E_uFF0C_u800C_u5192_u53F7_u524D_u9762_u662F_u8BE5_u955C_u50CF_u6587_u4EF6_u5BF9_u5E94_u955C_u50CF_u5E93_u7684_u540D_u79F0"><a href="#u5192_u53F7_u540E_u9762_u7684_u662F_u4E3A_u955C_u50CF_u6587_u4EF6_u521B_u5EFA_u7684_u6807_u7B7E_uFF0C_u800C_u5192_u53F7_u524D_u9762_u662F_u8BE5_u955C_u50CF_u6587_u4EF6_u5BF9_u5E94_u955C_u50CF_u5E93_u7684_u540D_u79F0" class="headerlink" title="冒号后面的是为镜像文件创建的标签，而冒号前面是该镜像文件对应镜像库的名称"></a>冒号后面的是为镜像文件创建的标签，而冒号前面是该镜像文件对应镜像库的名称</h1><p></p>
+<p></p>
 <ul>
 <li><p>为该镜像文件打标签<br>在将镜像文件提交到 docker-hub 上面的时候需要注意两点 1. 确保成功 login 2. 确保 docker 镜像文件所打的标签符合 docker-hub 格式<br>必定如果你用过 github 的话(没用过也不会看到这篇搭建在 github 上面的博客)应该熟悉 github 上面的 repository 的命名和路径规则<br> 通常是用户名+资源库名称，道理放到 docker-hub 上面也是一样的。</p>
 <pre>
@@ -247,18 +247,16 @@ kylin27/ubuntu14    wget                44552cea1d79        5 minutes ago       
 ubuntu              14.04               8693db7e8a00        3 weeks ago         187.9 MB
 </pre>
 
+<p>看到ubuntu_14 和 kylin27/ubuntu14 这两个镜像文件虽然镜像库名称不同，但是 IMAGE ID 却是相同的，这就是方便区分标识，但却最大程度上减少冗余文件的存储的思想所在。</p>
 </li>
-</ul>
-<p>看到ubuntu_14 和 kylin27/ubuntu14 这两个镜像文件虽然镜像库名称不同，但是 IMAGE ID 确实相同的，这就是方便区分标识，但却最大程度上减少冗余文件的存储的思想所在。</p>
-<ul>
 <li><p>为该<b>镜像</b>创建文档文件<br><pre><br>$docker save -o kylin27.tar ubuntu_14:wget<br></pre><br>随后便可以在当前目录下面看到名为 kylin27.tar 的归档文件</p>
 </li>
-<li><p>将该镜像文件推送到 docker-hub 上面 <b>在推送镜像文件之前，需要先把系统中生成该镜像文件的容器给停止(血与泪的教训) </b><br><pre><br>$docker stop b4bfcdde7b31<br>$docker push kylin27/ubuntu14:wget</pre></p>
+<li><p>将该镜像文件推送到 docker-hub 上面 <b>在推送镜像文件之前，需要先把系统中生成该镜像文件的容器给停止(血与泪的教训) </b><br><pre><br>$docker stop b4bfcdde7b31<br>$docker push kylin27/ubuntu14:wget<br>output message:<br>The push refers to a repository [kylin27/ubuntu14] (len: 1)<br>44552cea1d79: Image already exists<br>8693db7e8a00: Image successfully pushed<br>a4c5be5b6e59: Image successfully pushed<br>c4fae638e7ce: Image successfully pushed<br>f15ce52fc004: Pushing 46.76 MB/65.68 MB</pre></p>
 </li>
 </ul>
-<p>output message:<br>The push refers to a repository [kylin27/ubuntu14] (len: 1)<br>44552cea1d79: Image already exists<br>8693db7e8a00: Image successfully pushed<br>a4c5be5b6e59: Image successfully pushed<br>c4fae638e7ce: Image successfully pushed<br>f15ce52fc004: Pushing 46.76 MB/65.68 MB<br></p>
+<p></p>
 <ul>
-<li>再来介绍一个 docker 中比较使用的批量删除 none 镜像文件的命令<br>在频繁创建删除 docker 镜像文件之后便会生成很多名为 none 的镜像文件，在这里可以通过下面的命令将所有无用的 none 镜像文件删除。<pre>
+<li>再来介绍一个 docker 中实用的批量删除 none 镜像文件的命令<br>在频繁创建删除 docker 镜像文件之后便会生成很多名为 none 的镜像文件，在这里可以通过下面的命令将所有无用的 none 镜像文件删除。<pre>
 docker ps -a | grep "Exited" | awk '{print $1 }'|xargs docker stop
 docker ps -a | grep "Exited" | awk '{print $1 }'|xargs docker rm
 docker images|grep none|awk '{print $3 }'|xargs docker rmi
@@ -271,7 +269,7 @@ docker images|grep none|awk '{print $3 }'|xargs docker rmi
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cikktt4wf00158wimnlbxrili" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cikktzggg0015agimlsyg6uss" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
@@ -363,7 +361,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cikktt4vd00008wimwz2ajn4l" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cikktzgf70000agim4wc8ao1a" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/datastructure/">datastructure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
@@ -465,7 +463,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cikktt4wb00118wimb615uvq4" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cikktzggc0011agim8moo3qkx" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming-theory/">programming-theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
@@ -599,7 +597,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cikktt4w5000q8wimboysnhtv" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cikktzgg4000qagimg99l6w1k" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/search-engine/">search-engine</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -718,7 +716,7 @@ public class TestLog4j{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cikktt4vy000f8wim6yd338q4" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cikktzgfx000fagimxqnzp71t" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a></li></ul>
@@ -811,7 +809,7 @@ deploy:
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cikktt4w1000i8wimxdb0k480" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cikktzgfz000iagimgr3zk5xb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows/">windows</a></li></ul>
@@ -910,7 +908,7 @@ deploy:
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cikktt4vt00058wim78bmje50" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cikktzgfq0005agim80616lxd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cv/">cv</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li></ul>
@@ -1009,7 +1007,7 @@ deploy:
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2015/10/25/hello-world/" data-id="cikktt4vx000c8wim8gnm7ji4" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2015/10/25/hello-world/" data-id="cikktzgfu000cagimm0v3cshg" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cv-blog-doc/">cv,blog,doc</a></li></ul>
