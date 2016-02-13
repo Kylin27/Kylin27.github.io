@@ -65,748 +65,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2016.2.12.scala_BiMap" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/12/2016.2.12.scala_BiMap/" class="article-date">
-  <time datetime="2016-02-11T16:00:00.000Z" itemprop="datePublished">2016-02-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/12/2016.2.12.scala_BiMap/">google guava&#39;s BiMap</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description:<br><br>google guava 中提供的一种非常有用的数据结构，双向 Map。是的，你没有听错，就是相比于普通仅能够提供 key 到 value 映射的 Map ，双向Map既能够提供 key 到 value 的映射，有能够提供 value 到 key 的映射。<br>这在某些特定场合是非常有用的，那么接下来简单介绍一下 BiMap 的使用方法。</p>
-<hr>
-<h1 id="BiMap__u6240_u652F_u6301_u7684_u65B9_u6CD5"><a href="#BiMap__u6240_u652F_u6301_u7684_u65B9_u6CD5" class="headerlink" title="BiMap 所支持的方法"></a>BiMap<k,v> 所支持的方法</k,v></h1><h2 id="V_forcePut_28K_key_2C_V_value_29"><a href="#V_forcePut_28K_key_2C_V_value_29" class="headerlink" title="V forcePut(K key, V value)"></a>V forcePut(K key, V value)</h2><ul>
-<li>方法介绍: 该方法用来强制执行 BiMap<k,v> 所继承的 Map<k,v> put() 方法. 也就是说如果 map 中有<br>“a-key”-&gt;”a-value” 的话，在执行 biMap.forcePut(“a-key”,”a-value2”) “a-value2” 会强制取代 “a-value” 的位置</k,v></k,v></li>
-</ul>
-<h2 id="BiMap_inverse"><a href="#BiMap_inverse" class="headerlink" title="BiMap inverse"></a>BiMap<v,k> inverse</v,k></h2><ul>
-<li>方法介绍: 该方法会将当前的<k,v> 转换成 <v,k> </v,k></k,v></li>
-</ul>
-<h2 id="V_put_28K_key__2C_V_value_29"><a href="#V_put_28K_key__2C_V_value_29" class="headerlink" title="V put(K key , V value)"></a>V put(K key , V value)</h2><ul>
-<li>方法介绍: 该方法用来向数据结构中放入 key-value 键值对<h2 id="void_putAll_28Map_26lt_3B_uFF1F_extends_K_2C__3F_extends_V_26gt_3B_map__29"><a href="#void_putAll_28Map_26lt_3B_uFF1F_extends_K_2C__3F_extends_V_26gt_3B_map__29" class="headerlink" title="void putAll(Map&lt;？ extends K, ? extends V&gt; map )"></a>void putAll(Map&lt;？ extends K, ? extends V&gt; map )</h2></li>
-<li>该方法用来将 Map<k1,v1> 类型的一次性全部放入到当前 BiMap<k,v> 中，不过值得注意的是 K1, V1 必须要是 K,V 类型或使其子类<h2 id="Set_values_28_29"><a href="#Set_values_28_29" class="headerlink" title="Set values()"></a>Set<v> values()</v></h2></k,v></k1,v1></li>
-<li>该方法用以集合的方式来获得 BiMap 的值集合</li>
-</ul>
-<hr>
-<ul>
-<li>下面通过一个例子来介绍一下如何使用 BiMap，通过一个 Seq 类型的字符串 List 生成 key-value 对字典，</li>
-<li>然后将字典进行反转操作，将原来的 k-v 编程 v-k 映射map </li>
-</ul>
-<pre>
-object MatchPatternTester extends App{
-
-    // 将传入的 Seqp[String] 通过 zipWithIndex.toMap 的方式
-    // 转换成 Map<string,int> 类型，然后通过调用 ImmutableBiMap 中的 putAll 方法
-    // 将其传入到 ImmutableBiMap 中，然后调用它的 build 方法生成 BiMap<string,int> 
-
-    def getMapFromSeq(dict: Seq[String]): Unit ={
-        val kTv = ImmutableBiMap.builder[String,Int]()
-              .putAll(dict.zipWithIndex.toMap[String,Int])
-              .build()
-
-    // 获取 BiMap 的 key 集合
-    val values = kTv.keySet()
-
-    // 通过获取的 key 集合遍历 BiMap<string,int> 中的每个 key-value 元素对
-    values.foreach( (x: String ) => println("key " + x +" value "+ kTv(x)))
-
-    // 调用 BiMap 的 inverse 方法来将 BiMap<string,int> 转换成 BiMap<int,string>    
-    val inverseMap = kTv.inverse()
-
-    // 获取反转之后的 key 集合
-    val values2 = inverseMap.keySet()
-    // 在获取 key 集合之后遍历反转之后的 BiMap<int,string> 
-    values2.foreach((k: Int ) => println("key " +k + " value "+ inverseMap(k)))
-
-  }
-
-  // 创建传入参数(Seq[String])
-  val listInput = List[String]("aimer","aimer","kylin","kokia","rurutia","kylin")
-
-  getMapFromSeq(listInput)
-
-}
-</int,string></int,string></string,int></string,int></string,int></string,int></pre>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cikktqkad0000o8imusuyk01v" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/datastructure/">datastructure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016.2.5.scala_theory" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/11/2016.2.5.scala_theory/" class="article-date">
-  <time datetime="2016-02-10T16:00:00.000Z" itemprop="datePublished">2016-02-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/11/2016.2.5.scala_theory/">scala编程相关知识1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description:<br>这篇博客中记录一下 scala 编程语言中的知识点</p>
-<hr>
-<h1 id="case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5"><a href="#case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5" class="headerlink" title="case class 在 scala 中的使用方法"></a>case class 在 scala 中的使用方法</h1><p> case class 和 java 中所定义的 class 二者类似</p>
-<ul>
-<li>在创建 case class 对象实例的时候，可以不用在实例前面加上 new 关键字</li>
-</ul>
-<pre>
-case class apple(name:String)
-class banana(color:String)
-
-val app = apple("i am a apple — —b")
-val ban = new banana("i am yellow — —||")
-</pre>
-
-<ul>
-<li><p>case class 创建的类对象实例调用 .toString 方法时显示出来的字体更漂亮<br>case class 实例会将 ‘case class 名称(里面是成员变量名称)’ 显示出来<br>class 的 .toString 方法会显示类似 java 语言直接打 Object 象信息的数据<br>如果你想通过打印的方式来快速获取类对象中的成员数据信息的话，推荐使用 case class</p>
-</li>
-<li><p>case class 默认实现了 equals 和 hashCode 两个方法，所以 case class 实例化的对象可直接调用这两个方法</p>
-</li>
-<li><p>case class 实现了(extends) Serializable ，可以对 case class 对象执行序列化操作</p>
-</li>
-<li>在声明 case class 的时候，传入的构造参数均是 public 的可以直接通过 实例名称.构造函数参数名称<br>来访问</li>
-</ul>
-<pre>
-case class Document(docId: String, body: String="", label: Set[String] = Set.empty, integerLabel: Int)
-其中 body: String="" 这种赋值方式是默认赋值，如果调用者没有为该参数指定参数数值的话，就会使用默认的赋值。
-如果调用者为该参数指定特定数值的话，该指定的特定数值便会替代该指定默认参数数值
-但是如果最后一个参数为必须传入数值的参数类型的话，中间的参数数值是必须要给定的
-
-1. val doc1 = Document("id1",2)
-   println(doc1.toString) // 将会出错
-2. val doc2 = Document("id2","doc2",Set("abc","eft")
-   println(doc1.label)  // output Set(abc,eft)   
-</pre>
-
-<ul>
-<li>case class 对象实例支持模式匹配，这是 scala 为何要提出 case class 这一类型的原因</li>
-</ul>
-<pre>
-abstract  class methodX
-case class test1(n: Int) extends methodX
-case class test2(a: Int, b: Int) extends methodX
-
-object MatchPatternTester extends App{
-
-  def matchTester(term: methodX ){
-    term match{
-      case test1(n) =>
-        println("this is test1" +n)
-      case test2(a,b) =>
-        println("this is test2 a , b"+a +" " +b)
-    }
-  }
-
- val x1 = test1(1027)
-
- val x1Result =matchTester(x1)
-
- val x2 = test2(10,72)
- val x2Result = matchTester(x2)
-
-}
-</pre>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cikktqkbi0011o8imbe7ryghx" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming-theory/">programming-theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016.2.5.search_engine_theory" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/06/2016.2.5.search_engine_theory/" class="article-date">
-  <time datetime="2016-02-05T16:00:00.000Z" itemprop="datePublished">2016-02-06</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/06/2016.2.5.search_engine_theory/">搜索引擎知识点整理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。<br><br>由于在开发 github 上的 <a href="https://github.com/Kylin27/StackExchangeRecommener/" target="_blank" rel="external">StackExchangeRecommenderSystem</a> 时候会用到 lucene，<br>所以在这里先来复习一下搜索引擎中的基础知识和算法。</p>
-<hr>
-<h1 id="u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6"><a href="#u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6" class="headerlink" title="索引的基础知识"></a>索引的基础知识</h1><p>索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及<br>对网页所创建索引，来提高程序的查询效率。<br>索引在日常生活中也很常见:字典目录中某个词语后面标识了出现该词的页码。<br>下面我们来一起学习一下，关于索引常见的词汇:</p>
-<ul>
-<li>文档(Document): 索引所标定的’目标对象’: 是数据库索引，那么文档便是数据表中的某条记录;<br>如果是对网页创建的’倒排索引’(索引的一种类型)，那么文档便是网页的页面； 这个’目标对象’<br>还可以是某种具体的文件，例如 word，PDF文档</li>
-<li>文档集合 (Document Collection): 就是上述’文档’构成的集合</li>
-<li>文档编号(Document ID): 在搜索引擎内部为每个文档赋予的唯一标识，可以在文档集合中唯一标识一个文档</li>
-<li>单词编号(Word ID): 用来唯一标识某个单词</li>
-<li>倒排索引(Inverted Index): 普通的索引是为某个文档创建索引出在该文档中某个单词，<br>而倒排索引则是以单词为主题，通过单词来索引出出现该单词出现的文件； 倒排索引由两部分组成<br>{单词词典,和出现该单词的文档集合}</li>
-<li>单词词典(Lexicon): 搜索引擎通中的索引单位是单词，单词词典是在所有文档集合中出现过的单词所构成的集合；<br>而在单词词典中的每条索引项中记录的信息有{单词信息，单词所指向出现该单词的文章集合-倒排列表} </li>
-<li>倒排列表(PostingList): 倒排列表指的是，出现过某个单词的所有文档所构成的列表和该单词在该文档中出现的<br> 位置信息； 倒排列表中的每条记录我们可以将其称作是倒排项(Posting).</li>
-<li><p>倒排文件(Inverted File): 倒排文件是存储倒排索引的物理文件。我们都已经知道了倒排索引由两部分组成，<br>分别是，单词词典和倒排列表. 在此基础上，存放倒排列表的文件就叫做倒排文件。   </p>
-<hr>
-<h2 id="u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50"><a href="#u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50" class="headerlink" title="倒排索引小例子"></a>倒排索引小例子</h2><p>比如那今天的知乎日报新闻来举例</p>
-<pre>
-文章编号            文章标题
-1                    如何自己制定健身训练计划？
-2                    女生怎么健身锻炼好身材？
-3                    减肥对外貌的改变有多大？
-4                    健身教练有哪些内幕？
-5                   女生如何锻炼减肥既简单有健康？
-</pre>
-<pre>
-单词 ID         单词        倒排列表
-  1.            自己          {1}
-  2.            女生          {2,5}
-  3.            减肥            {3,5}
-  4.            健身          {1,2}
-  5.            教练          {4}
-  6.            简单          {5}
-  7.            训练          {1}
-  8.            外貌          {3}
-  9.            改变          {3}
-  10.            哪些          {4}    
-  11.         内幕          {5}
-  12.            锻造          {2,5}
-  13.            身材          {2}    
-  14.            训练          {1}
-  15.            计划          {1}
- </pre>
-
-</li>
-</ul>
-<p>当然，我们也为了让索引列表更细致的记录索引文件的信息来添加上某个词语出现的频率信息，TF 便是用来描述词语在某个文章中出现的次数的. 例如 ‘女生’ 这个词语在文章 2，5 均出现过，并且出现 1 次<br>便可以记成 女生 {2;1,5;1} 这样子。更加细致的记录方式是，将这个单词出现的位置也记录下来：<br><br>例如 ‘女生’这个单词在文章2,5中出现的位置分别是第 1 个位置，就写成如下的格式<br>女生 { (2;1;<1>),(5;1;<1>) }</1></1></p>
-<hr>
-<h1 id="u5355_u8BCD_u8BCD_u5178__28Lexicon_29"><a href="#u5355_u8BCD_u8BCD_u5178__28Lexicon_29" class="headerlink" title="单词词典 (Lexicon)"></a>单词词典 (Lexicon)</h1><p>单词词典存放了在文档集合中出现过的所有单词的相关信息的同时也记录了该单词集合中的每个单词<br>所映射到的倒排列表在倒排文件中的位置信息。</p>
-<p>可以试想一下，如果需要创建索引的文档集合十分的巨大，那么随之提出出来的单词词典中所存放的单词数量<br>也是十分庞大的。在数据结构课程中我们已经学习过，如果要快速的定位某个单词(键值)的话可以借助于<br>哈希链表或是树形词典这类的数据结构。 </p>
-<h2 id="u54C8_u5E0C_u52A0_u94FE_u8868_-__u5355_u8BCD_u8BCD_u5178"><a href="#u54C8_u5E0C_u52A0_u94FE_u8868_-__u5355_u8BCD_u8BCD_u5178" class="headerlink" title="哈希加链表 - 单词词典"></a>哈希加链表 - 单词词典</h2><p>   哈希加链表是处理哈希表冲突的一种解决方法，哈希表有随之配套的 hash 散列函数，会为每个输入的<br>   key 键生成’唯一’标定该key 对应 value 的标识，但是如果 hash 散列函数选取的不当的话，便会造成<br>   不同的 key 生成了重复的标识； 这就是所谓的’冲突’的发生，处理’冲突’有着不同的方法，<br>   加链表就是在发生冲突的 key 的后面开辟一块空间存放后来的 key ; 待到查找的时候，通过 hash 散列函数<br>   找到该 hash 生成数值指定的链表头，沿着链表继续寻找就可以了。</p>
-<h2 id="u6811_u5F62_u7ED3_u6784_-__u5355_u8BCD_u8BCD_u5178"><a href="#u6811_u5F62_u7ED3_u6784_-__u5355_u8BCD_u8BCD_u5178" class="headerlink" title="树形结构 - 单词词典"></a>树形结构 - 单词词典</h2><p>   前缀树和后缀树都是可以做单词词典很好的数据结构</p>
-<hr>
-<h1 id="u5012_u6392_u5217_u8868"><a href="#u5012_u6392_u5217_u8868" class="headerlink" title="倒排列表"></a>倒排列表</h1><p>  在前面我们提到过了，倒排列表中的基本构成单元倒排索引项中包含字段有:<br>  {单词出现的文档的唯一编号,单词出现频率,&lt;单词在文档中的位置1,位置2,位置3…&gt;}<br>  但是在实际的应用中为了尽量节省内存，通常会使用文档编号的差值来取代文章的唯一编号。</p>
-<hr>
-<h1 id="u5EFA_u7ACB_u7D22_u5F15"><a href="#u5EFA_u7ACB_u7D22_u5F15" class="headerlink" title="建立索引"></a>建立索引</h1><p>建立索引有着不同的方法,同时索引也分为动态索引和静态索引，其中静态索引是生成索引之后在修改文档集合中的<br>文档之后，不能自动的更新之前索引文件 ； 而动态索引则是生成索引之后，修改文档集合中的文件内容之后<br>会随之自动的更新文档文件。</p>
-<h2 id="u9759_u6001_u7D22_u5F15"><a href="#u9759_u6001_u7D22_u5F15" class="headerlink" title="静态索引"></a>静态索引</h2><h3 id="u4E24_u904D_u6587_u6863_u904D_u5386_u6CD5"><a href="#u4E24_u904D_u6587_u6863_u904D_u5386_u6CD5" class="headerlink" title="两遍文档遍历法"></a>两遍文档遍历法</h3><p>两遍文档遍历法在创建索引的时候需要对文档集合执行两遍扫描，在创建索引的时候仅需要内存即可，整个过程无需磁盘参与。</p>
-<ul>
-<li>首次扫描:<br>算出为该文档集合创建的索引所需的内存容量大小:搜集文档集合包含文档个数 N ，文档集合中不重复单词总数 M, 每个单词在多少个文档中出现 DF. 将所有单词的 DF 数值进行加和便是建立最终索引所需要的内存大小。</li>
-<li><p>第二次扫描:</p>
-<pre><code>首次扫描已经确定了文档集合中的每个单词的 DF信息，在第二次扫描的时候，为每个单词的 DF 信息
-</code></pre><p>分配内存空间，并使用指针将单词集合与单词的 DF 信息将连接即可，也就是简历每个单词的倒排列表信息；<br>但是通过上面的陈述可知，在单词倒排列表中的倒排索引项仅仅包含单词 DF信息还是不够的；对文档 ID 或是文档 ID 偏移量的计算以及单词在文档中出现位移和出现次数等这些信息都可以在第二次扫描的时候来完成。<br>  等到两遍扫描结束之后，将内存中创建的倒排列表和单词词典信息写入到磁盘中就完成了索引的创建了。</p>
-</li>
-<li><p>对两遍文档遍历法的评估: 因为全程使用的是内存无需磁盘的参与，所以连通文档集合和生成的倒排列表等数据信息均需要存放到内存中，这需要内存足够大，或者是仅仅适用于创建文档集合规模较小的索引。同时，需要对文档进行两次扫描，比较耗时在速度上并不占优势。      </p>
-<h3 id="u6392_u5E8F_u6CD5"><a href="#u6392_u5E8F_u6CD5" class="headerlink" title="排序法"></a>排序法</h3><p>排序法为文档集合创建索引是为了弥补两遍遍历法建立索引过程中，对内存消耗大这一缺点提出的。两边遍历索引生成方法使用内存的大小是不固定的，如果文档集合大内存开辟就会大一些，相反便会小一些。而排序法无论文档集合如何，其所需要的内存大小均是固定分配的。开辟的内存空间主要用来存放词典信息和索引的中间结果。<br>每当中间结果将内存吃空的时候，便会统一将内存中的中间数据写入到磁盘中。遵循上述倒排索引中所介绍的两部分的结构-单词词典,倒排列表(倒排列表的组成单元是倒排索引项)，在整个的排序法创建文件集合索引的过程中，单词词典始终是作为常驻内存的数据结构的。</p>
-</li>
-<li>读取文档，对文档进行编号，每个文档为其创建唯一的标识 ID 号码</li>
-<li><p>解析文档，每当在文档中遇到新单词，</p>
-<pre>
-{ 
-查看该单词在单词词典中是否有记录 
-1. 有记录，获取该单词在词典中的 ID 号码
-2. 单词词典中没有记录该单词，为该单词创建全词典唯一的 ID 号码，然后将其收录到单词词典中
-}
-</pre>
-</li>
-<li><p>在对当前文档完成了读取和解析之后，便能够为当前文档中出现的每个单词均创建包含着如下信息</p>
-</li>
-</ul>
-<pre>
- (单词ID,文档ID,单词频率)
-</pre>
-
-<p>上述三元组便可以作为倒排索引列表中的索引项了，将该三元组索引项集合追加到用来存放中间处理结果的大小固定的内存缓冲区中。然后便可以开始处理下一个文档了。<br></p>
-<ul>
-<li>在内存缓冲区被占满之前需要将缓冲区中的数据写入到磁盘临时文件中去，不过在写入之前需要对内存中的三元组序列执行排序操作； 首先按照单词 ID 进行非递减，然后按照文档 ID 进行非递减排序。由于内存中存放的中间结果并不一定全都是同一个文件生成的中间信息，所以会有单词ID 相同但是文档ID不同的情况，这种情况按照文档ID非递减的规则进行排序。<b>PS: 在上述的全部过程中，单词词典是常驻内存的</b> </li>
-<li>每次执行向磁盘中写入中间缓存文件操作均是写入一个新的缓存文件，而不是在之前的缓存文件中执行追加。在对所文档集合中的每个文档均读取解析之后，剩下的工作便是合并临时写入磁盘的所有的中间文件了。由于写入磁盘之前在内存中执行了先按单词ID然后文章ID进行排序的操作，所以在合并的时候，只要首先将所有中间文件中单词ID相同的三元组合并为一个数组(由三元组元素构成的有序序列)，而所有的数组组合起来便是该文件的倒排列表了。接下来只要将倒排列表中的内容写入到文件中即可。而这个文件便是所谓的索引文件了。      </li>
-<li>对排序法的评估: 在排序法创建文档集合索引的过程中，单词词典作为常驻内存数据结构并不会被写入到磁盘的中间临时文件中且大小也随着解析文档个数的增多而变大，同时排序法中分配的内存大小是固定的，所以当单词词典大小变大之后，每次用来缓存三元组的个数也会随之减少，如果单词词典继续增大会无法缓存解析文件而生成的三元组，这样便会频繁的执行写入操作,从而导致程序整体性能的下降。</li>
-</ul>
-<h3 id="u5F52_u5E76_u6CD5"><a href="#u5F52_u5E76_u6CD5" class="headerlink" title="归并法"></a>归并法</h3><p>归并法是为了弥补排序法中，单词词典常驻内存耗空分配的固定内存这一缺陷而提出的。归并法的特点是在每次执行三元组数据信息写入的同时也会将单词词典信息写入到中间临时文件中。这样便可以保证为程序分配固定大小的内存会全部用于后续索引的创建。</p>
-<ul>
-<li>归并法的执行过程和排序法大部分相同，不同之处之一是在写入中间缓存文件中是将 {单词词典，三元组集合} 写入到中间缓存文件中<pre><code>之二是在文档集合中的全部文档完成解析之后，将所有生成的临时文件进行合并的时候，每个临时文件中存放的是最终倒排列表的一部分；
-而最后的合并操作便是将所有的部分倒排列表合并成一个完成的倒排列表。
-</code></pre></li>
-</ul>
-<h2 id="u5206_u5E03_u5F0F_u7D22_u5F15"><a href="#u5206_u5E03_u5F0F_u7D22_u5F15" class="headerlink" title="分布式索引"></a>分布式索引</h2><p>分布式索引和数据库中的’分片’ 技术有些类似，数据库的’分片’ 技术是通过将一张大数据库表中的信息按照表中的某个属性字段<br>中的不同值/或是范围分割成许多个来自于该大数据表的’子表’； 常用作’分片’的属性有地域和时间 ；<br>而分布式索引技术则是将文档集合按照文档或者是单词来对索引进行划分。</p>
-<h3 id="u6309_u7167_u6587_u6863_u6765_u5212_u5206_u7D22_u5F15"><a href="#u6309_u7167_u6587_u6863_u6765_u5212_u5206_u7D22_u5F15" class="headerlink" title="按照文档来划分索引"></a>按照文档来划分索引</h3><p>将大的文档集合划分成分布于不同机器上的文档子集，为每个文档自己创建各自的索引。<br>在执行查询的时候，会在每个机器上面执行查询，并把来自于每个子集的查询结果进行合并生成最终查询结果</p>
-<h3 id="u6309_u7167_u5355_u8BCD_u6765_u5212_u5206_u7D22_u5F15"><a href="#u6309_u7167_u5355_u8BCD_u6765_u5212_u5206_u7D22_u5F15" class="headerlink" title="按照单词来划分索引"></a>按照单词来划分索引</h3><p>在创建按照单词划分的倒排索引的时候，划分发生在合并中间缓存文件生成最终索引文件的时候。<br>每当将来自于所有中间缓存文件中的同一单词ID的三元组合并之后，将该三元组集合+单词发送到某台主机上面。<br>便完成了按照该单词对索引进行’分片’的操作。<br>在实际的应用场景中，按照文档来进行索引的划分这种方法比较常使用，而按照单词的划分仅仅在特定场合下使用。<br>因为按照单词来划分索引的可扩展性、均衡负载和容错性都不是很好。</p>
-<h1 id="u67E5_u8BE2_u5904_u7406"><a href="#u67E5_u8BE2_u5904_u7406" class="headerlink" title="查询处理"></a>查询处理</h1><h2 id="u4E00_u6B21_u4E00_u4E2A_u5355_u8BCD_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u4E00_u6B21_u4E00_u4E2A_u5355_u8BCD_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="一次一个单词的查询处理"></a>一次一个单词的查询处理</h2><p>将用户查询语句执行清洗(我通常把去掉语句中无用符号和去掉停用词的操作叫做’清洗’…好记),<br>然后执行分词操作将语句分成多个词语组成集合，获取每个词语的倒排列表，然后计算每个词语与倒排列表中的<br>每一个文件的相似度，计算相似度之后，如果有文档重复的(两个不同词语倒排索引到同一个文档)，那么将重复的文档<br>得分进行累加；最后将得出得分最高的 K 个文档(通过优先队列进行存放)作为查询结果进行返回即可</p>
-<h2 id="u4E00_u6B21_u4E00_u4E2A_u6587_u6863_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u4E00_u6B21_u4E00_u4E2A_u6587_u6863_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="一次一个文档的查询处理"></a>一次一个文档的查询处理</h2><h2 id="u8DF3_u8DC3_u6307_u9488_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u8DF3_u8DC3_u6307_u9488_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="跳跃指针的查询处理"></a>跳跃指针的查询处理</h2><h2 id="u77ED_u8BED_u67E5_u8BE2"><a href="#u77ED_u8BED_u67E5_u8BE2" class="headerlink" title="短语查询"></a>短语查询</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cikktqkbc000qo8imvs6wy3aj" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/search-engine/">search-engine</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-blog_2_5_2016_log4j_usage_note" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/05/blog_2_5_2016_log4j_usage_note/" class="article-date">
-  <time datetime="2016-02-04T16:00:00.000Z" itemprop="datePublished">2016-02-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/05/blog_2_5_2016_log4j_usage_note/">How to use log4j in your project ?</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description: This blog introduces two log4j log file patterns we often use in our java project</p>
-<h1 id="Log4j_Pattern_Note"><a href="#Log4j_Pattern_Note" class="headerlink" title="Log4j Pattern Note"></a>Log4j Pattern Note</h1><h2 id="Pattern1"><a href="#Pattern1" class="headerlink" title="Pattern1"></a>Pattern1</h2><h3 id="You_can_use_this_log_pattern_when_you_want_log_info_be_written_into_multi-log_files_instead_of_a_single_large_file"><a href="#You_can_use_this_log_pattern_when_you_want_log_info_be_written_into_multi-log_files_instead_of_a_single_large_file" class="headerlink" title="You can use this log pattern when you want log info be written into multi-log files instead of a single large file ."></a>You can use this log pattern when you want log info be written into multi-log files instead of a single large file .</h3><pre>
-#file name : log4j.properties
-log4j.rootLogger = appendername
-
-log4j.appender.appendername=org.apache.log4j.RollingFileAppender    
-# which file appender pattern your choose 
-
-log4j.appender.appendername.File=log/rlog.log                        
-# name of the log file in which the program going to write 
-
-log4j.appender.appendername.MaxFileSize = 100KB                        
-# threshold of the log file , if current log file size >= 100 KB 
-# log4j will create a new log file to write in
-
-log4j.appender.appendername.MaxBackupIndex = 2                        
-# limit the maximum number of log file log4j will create
-# here we set max log file number equals to 2 , if log4j create 2 files
-# next time , if the rlog.log.2's size is >= 100KB ,
-# log4j will clean the rlog.log.1's content and continue writing new log info into rlog.log.1
-
-log4j.appender.appendername.layout = org.apache.log4j.PatternLayout
-log4j.appender.appendername.layout.ConversionPattern = %p %t %c - %m %n  # output log info pattern                                                                
-</pre>
-
-<h2 id="Pattern2"><a href="#Pattern2" class="headerlink" title="Pattern2"></a>Pattern2</h2><h3 id="You_can_use_this_log_pattern_if_you_would_like_your_log_info_output_to_both_console_and_file"><a href="#You_can_use_this_log_pattern_if_you_would_like_your_log_info_output_to_both_console_and_file" class="headerlink" title="You can use this log pattern if you would like your log info output to both console and file"></a>You can use this log pattern if you would like your log info output to both console and file</h3><h3 id="This_pattern_also_supports_separating_error_log_info_into_a_single_error_log_file"><a href="#This_pattern_also_supports_separating_error_log_info_into_a_single_error_log_file" class="headerlink" title="This pattern also supports separating error log info into a single error log file"></a>This pattern also supports separating error log info into a single error log file</h3><pre>
-# file name : log4j.properties
-log4j.rootLogger = debug,FILE,CONSOLE,ERRORFILE
-
-# output log info to console
-log4j.appender.CONSOLE = org.apache.log4j.ConsoleAppender
-log4j.appender.CONSOLE.Target = System.out
-log4j.appender.CONSOLE.layout = org.apache.log4j.PatternLayout
-log4j.appender.CONSOLE.layout.ConversionPattern = [%p] %t %c %l - %m %n
-
-# %p log info level : {DEBUG,INFO,WARN,ERROR,FATAL}
-# %t name of the thread that generates log info
-# %c log info is generated by which class 
-# %l which class , which thread , on which line 's event produce the log info
-# %m output code's info
-
-# output log info to log files
-log4j.appender.FILE = org.apache.log4j.DailyRollingFileAppender
-log4j.appender.FILE.File = logs/rlog.log
-log4j.appender.FILE.Threshold = DEBUG  
-# this is used to limit the log level , 
-#if the log's level is higher than DEBUG ( like INFO, ERROR) output log info
-
-log4j.appender.FILE.MaxFileSize=50KB
-log4j.appender.FILE.MaxBackupIndex = 2
-log4j.appender.FILE.layout = org.apache.log4j.PatternLayout
-log4j.appender.FILE.layout.ConversionPattern = [%p] %t %c %l - %m %n
-
-# output error (log level >= ERROR) into a single file
-log4j.appender.ERRORFILE = org.apache.log4j.DailyRollingFileAppender
-log4j.appender.ERRORFILE = logs/error.log
-log4j.appender.ERRORFILE.Threshold = ERROR
-log4j.appender.ERRORFILE.layout = org.apache.log4j.PatternLayout
-log4j.appender.ERRORFILE.layout.ConversionPattern =  [%p] %t %c %l - %m %n
-
-</pre>
-
-<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><p>Here is a simple example to use log4j to output log info</p>
-<pre><code>
-// log4j.properties is under 'resources' folder
-
-public class TestLog4j{
-    public static void main (String [] args ){
-        URL url = new URL("/log4j.properties") ;
-        PropertyConfigurator.configure(url.getPath()) ;
-        Logger logger = Logger.getLogger(TestLog4j.class) ;
-
-        logger.debug("this is a debug message") ;
-        logger.error("error info will output to two files") ;
-    }
-
-}
-
-</code></pre>
-
-<p>end </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cikktqkb4000fo8imp4q1em1s" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-blog_2_3_2016" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/05/blog_2_3_2016/" class="article-date">
-  <time datetime="2016-02-04T16:00:00.000Z" itemprop="datePublished">2016-02-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/05/blog_2_3_2016/">2 Build Blog on Windows by Node.js and Hexo</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description: This blog introduces how to build your own blog on windows OS. with the help of Node.js and Hexo <br></p>
-<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git<br></h3><p>Download Git  and register an account in <a href="https://github.com/" target="_blank" rel="external">GitHub</a> ,<br><br>Make sure SSH is installed on your windows OS. Create DSA or RSA keys by running commands below</p>
-<pre> 
-$ cd ~/.ssh * 
-$ ssh-keygen -t rsa -C youremail@email.com  
- </pre>
-
-<p>Add the generated key rsa*.pub content to your <a href="https://github.com/settings/profile" target="_blank" rel="external">GitHub</a> <br><br><a href="https://github.com/settings/ssh" target="_blank" rel="external">SSH keys</a>  <a href="https://github.com/settings/ssh#" target="_blank" rel="external">New SSH key</a> <br><br>Paste your ssh rsa.pub key to it<br><br>Setup your cmd/git hub bash ,tab</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br></pre></td></tr></table></figure>
-<p>Your will receive a message like this “Hi , welcome to git hub blabla “. <br><br>But now ,remember you have not got your token string yet which means you couldn’t ‘deploy’ your hexo blog to github.<br><br>Go to the <a href="https://github.com/settings/profile" target="_blank" rel="external">GitHub Setting Page</a> and press the <a href="https://github.com/settings/tokens" target="_blank" rel="external">Personal access tokens</a> then <a href="https://github.com/settings/tokens/new" target="_blank" rel="external">Generate new token</a> and confirm your password again .<br>  Write in the token name (Token description) in order your can distinguish this token to other tokens , select scopes (just like setting functions of the token) , and the last step is press the green ‘Generate token’ button.  Like this you’ll get your ‘Personal access tokens’<br><br>Open your git bash again , and tab in commands </p>
-<pre> 
-$ git config --global user.name "your name" 
-$ git config --global user.email "your email"
-$ git config --global usr.token "paste the personal access tokens your just got here"
- </pre>
-
-<hr>
-<h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js <br></h3><p>Download <a href="https://nodejs.org/en/download/stable/" target="_blank" rel="external">Node.js for Windows</a><br><br>Install Node.js and add both Node.js and npm’s path to environment’s PATH<br><br><b>Create two folders with the name of ‘node_cache’ and ‘node_global’under node.js’s folder </b><br><br>Open git bash under current folder(by clicking right mouse -&gt; git bash), and tab </p>
-<pre> 
-$ npm config ls
-$ npm config set cache 'the absolute path you created folder node_cache'
-$ npm config set prefix 'the absolute path you created folder node_global'  
- </pre>
-
-<hr>
-<h3 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo  <br></h3><p> Open your git bash again,change your current to one folder your want your hexo installed in, tab in</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo</span><br></pre></td></tr></table></figure>
-<h2 id="Local_Blog_Server"><a href="#Local_Blog_Server" class="headerlink" title="Local Blog Server"></a>Local Blog Server</h2><p> After hexo installed , do not forget add the hexo(the executable binary file)’s location into env’s PATH too<br><br> Make a new folder which you want to store blog’s file and change current path to it<br><br> Tab in </p>
-<pre> 
-$ hexo init         # this command like git init , initialize the blog workspace and generate files
-$ npm install    # wait for a while
-$ hexo g         # hexo g is the command which short for hexo generate
-$ hexo s         # deploy your hexo template on localhost's server(0.0.0.0:4000)
-</pre>
-
-<h2 id="Deploy_Blog_to_Git_28like_this_blog_29"><a href="#Deploy_Blog_to_Git_28like_this_blog_29" class="headerlink" title="Deploy Blog to Git(like this blog)"></a>Deploy Blog to Git(like this blog)</h2><p> Create a new respo. on your github with the name <b>‘your github account name’.github.io</b><br><br> Deploy Blog to Git ‘s step is a little different from deploying it on local server<br><br> Open git bash on hexo blog’s path and tab in the commands below</p>
-<pre> 
-$ hexo init 
-$ npm install
-$ npm install hexo-deployer-git --save # download git corresponding plugins
-</pre>
-
-<p> Open your _config.yml file , update the #Deployment’s part content like this</p>
-<pre> 
-# Deployment
-## Docs: http://hexo.io/docs/deployment.html
-deploy:
-  type: git
-  repository: git@github.com:'your github account name'.github.io.git  #--> do not forget replace it
-  branch: master
-</pre> 
-
-<p> After update _config.yml file , tab in commands</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo d    <span class="comment"># short command for hexo deploy</span></span><br></pre></td></tr></table></figure>
-<p>Open your browser, and tab in <a href="https://&#39;your" target="_blank" rel="external">https://&#39;your</a> github account name’.github.io you will see the blog your just create<br><br>If your want to add new blogs just add a new .md file (mark down edit style) under your blog’s source/_post/ folder<br><br>You can change your blog’s name by changing _config.yml’s ‘title’ content<br><br>Good luck !</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cikktqkb7000io8imveupd5ii" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows/">windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-my_cv" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/25/my_cv/" class="article-date">
-  <time datetime="2015-10-24T16:00:00.000Z" itemprop="datePublished">2015-10-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/25/my_cv/">My CV</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="u4E2A_u4EBA_u4FE1_u606F"><a href="#u4E2A_u4EBA_u4FE1_u606F" class="headerlink" title="个人信息"></a>个人信息</h1><ul>
-<li>Aimer/女/1989</li>
-<li>本科/萌鹿大学计算机系 </li>
-<li>工作年限：3年</li>
-<li>微博：<a href="http://weibo.com/jobdeer" target="_blank" rel="external">@JobDeer</a> （<code>如果没有技术相关内容，也可以不放</code>）</li>
-<li>技术博客：<a href="http://blog.github.io" target="_blank" rel="external">http://blog.github.io</a> ( <code>使用GitHub Host的Big较高</code>  )</li>
-<li><p>Github: <a href="http://github.com/geekcompany" target="_blank" rel="external">http://github.com/geekcompany</a> ( <code>有原创repo的Github帐号会极大的提升你的个人品牌</code>  )</p>
-</li>
-<li><p>期望职位：PHP高级程序员，应用架构师</p>
-</li>
-<li>期望薪资：税前月薪15k~20k，特别喜欢的公司可例外</li>
-<li>期望城市：北京</li>
-</ul>
-<hr>
-<h1 id="u8054_u7CFB_u65B9_u5F0F"><a href="#u8054_u7CFB_u65B9_u5F0F" class="headerlink" title="联系方式"></a>联系方式</h1><p>（HR会打印你的简历，用于在面试的时候联系，所以联系方式放到最上边会比较方便）</p>
-<ul>
-<li>手机：135<strong><em>**</em></strong> （<code>如果是外地手机，可注明。如经常关机，要写上最优联系时间</code>）</li>
-<li>Email：goodman@gmail.com （<code>虽然我觉得QQ邮箱无所谓，不过有些技术人员比较反感，建议用G</code>）</li>
-<li>QQ/微信号：6<strong><em>*</em></strong>（<code>提供一个通过网络可以联系到你的方式</code>）</li>
-</ul>
-<hr>
-<h1 id="u5DE5_u4F5C_u7ECF_u5386"><a href="#u5DE5_u4F5C_u7ECF_u5386" class="headerlink" title="工作经历"></a>工作经历</h1><p>（工作经历按逆序排列，最新的在最前边，按公司做一级分组，公司内按二级分组）</p>
-<h2 id="ABC_u516C_u53F8__uFF08_2012_u5E749_u6708__7E_2014_u5E749_u6708__uFF09"><a href="#ABC_u516C_u53F8__uFF08_2012_u5E749_u6708__7E_2014_u5E749_u6708__uFF09" class="headerlink" title="ABC公司 （ 2012年9月 ~ 2014年9月 ）"></a>ABC公司 （ 2012年9月 ~ 2014年9月 ）</h2><h3 id="DEF_u9879_u76EE"><a href="#DEF_u9879_u76EE" class="headerlink" title="DEF项目"></a>DEF项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
-<h3 id="GHI_u9879_u76EE"><a href="#GHI_u9879_u76EE" class="headerlink" title="GHI项目"></a>GHI项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
-<h3 id="u5176_u4ED6_u9879_u76EE"><a href="#u5176_u4ED6_u9879_u76EE" class="headerlink" title="其他项目"></a>其他项目</h3><p>（每个公司写2~3个核心项目就好了，如果你有非常大量的项目，那么按分类进行合并，每一类选一个典型写出来。其他的一笔带过即可。）</p>
-<h2 id="JKL_u516C_u53F8__uFF08_2010_u5E743_u6708__7E_2012_u5E748_u6708__uFF09"><a href="#JKL_u516C_u53F8__uFF08_2010_u5E743_u6708__7E_2012_u5E748_u6708__uFF09" class="headerlink" title="JKL公司 （ 2010年3月 ~ 2012年8月 ）"></a>JKL公司 （ 2010年3月 ~ 2012年8月 ）</h2><h3 id="MNO_u9879_u76EE"><a href="#MNO_u9879_u76EE" class="headerlink" title="MNO项目"></a>MNO项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
-<h3 id="PQR_u9879_u76EE"><a href="#PQR_u9879_u76EE" class="headerlink" title="PQR项目"></a>PQR项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
-<h3 id="u5176_u4ED6_u9879_u76EE-1"><a href="#u5176_u4ED6_u9879_u76EE-1" class="headerlink" title="其他项目"></a>其他项目</h3><p>（每个公司写2~3个核心项目就好了，如果你有非常大量的项目，那么按分类进行合并，每一类选一个典型写出来。其他的一笔带过即可。）</p>
-<hr>
-<h1 id="u5F00_u6E90_u9879_u76EE_u548C_u4F5C_u54C1"><a href="#u5F00_u6E90_u9879_u76EE_u548C_u4F5C_u54C1" class="headerlink" title="开源项目和作品"></a>开源项目和作品</h1><p>（这一段用于放置工作以外的、可证明你的能力的材料）</p>
-<h2 id="u5F00_u6E90_u9879_u76EE"><a href="#u5F00_u6E90_u9879_u76EE" class="headerlink" title="开源项目"></a>开源项目</h2><p>（对于程序员来讲，没有什么比Show me the code能有说服力了）</p>
-<ul>
-<li><a href="http://github.com/yourname/projectname" target="_blank" rel="external">STU</a> : 项目的简要说明，Star和Fork数多的可以注明</li>
-<li><a href="http://github.com/yourname/projectname" target="_blank" rel="external">WXYZ</a> : 项目的简要说明，Star和Fork数多的可以注明</li>
-</ul>
-<h2 id="u6280_u672F_u6587_u7AE0"><a href="#u6280_u672F_u6587_u7AE0" class="headerlink" title="技术文章"></a>技术文章</h2><p>（挑选你写作或翻译的技术文章，好的文章可以从侧面证实你的表达和沟通能力，也帮助招聘方更了解你）</p>
-<ul>
-<li><a href="http://get.jobdeer.com/706.get" target="_blank" rel="external">一个产品经理眼中的云计算：前生今世和未来</a></li>
-<li><a href="http://get.jobdeer.com/343.get" target="_blank" rel="external">来自HeroKu的HTTP API 设计指南(翻译文章)</a> （ <code>好的翻译文章可以侧证你对英文技术文档的阅读能力</code>）</li>
-</ul>
-<h2 id="u6F14_u8BB2_u548C_u8BB2_u4E49"><a href="#u6F14_u8BB2_u548C_u8BB2_u4E49" class="headerlink" title="演讲和讲义"></a>演讲和讲义</h2><p>（放置你代表公司在一些技术会议上做过的演讲，以及你在公司分享时制作的讲义）</p>
-<ul>
-<li>2014架构师大会演讲：<a href="http://jobdeer.com" target="_blank" rel="external">如何通过Docker优化内部开发</a><ul>
-<li>9月公司内部分享：<a href="http://jobdeer.com" target="_blank" rel="external">云计算的前生今世</a></li>
-</ul>
-</li>
-</ul>
-<h1 id="u6280_u80FD_u6E05_u5355"><a href="#u6280_u80FD_u6E05_u5355" class="headerlink" title="技能清单"></a>技能清单</h1><p>（我一般主张将技能清单写入到工作经历里边去。不过很难完整，所以有这么一段也不错）</p>
-<p>以下均为我熟练使用的技能</p>
-<ul>
-<li>Web开发：PHP/Hack/Node</li>
-<li>Web框架：ThinkPHP/Yaf/Yii/Lavaral/LazyPHP</li>
-<li>前端框架：Bootstrap/AngularJS/EmberJS/HTML5/Cocos2dJS/ionic</li>
-<li>前端工具：Bower/Gulp/SaSS/LeSS/PhoneGap</li>
-<li>数据库相关：MySQL/PgSQL/PDO/SQLite</li>
-<li>版本管理、文档和自动化部署工具：Svn/Git/PHPDoc/Phing/Composer</li>
-<li>单元测试：PHPUnit/SimpleTest/Qunit</li>
-<li>云和开放平台：SAE/BAE/AWS/微博开放平台/微信应用开发</li>
-</ul>
-<hr>
-<h1 id="u81F4_u8C22"><a href="#u81F4_u8C22" class="headerlink" title="致谢"></a>致谢</h1><p>感谢您花时间阅读我的简历，期待能有机会和您共事。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cikktqkaz0005o8imjledeq9p" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cv/">cv</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/25/hello-world/" class="article-date">
-  <time datetime="2015-10-24T16:00:00.000Z" itemprop="datePublished">2015-10-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/25/hello-world/">My CV</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="u4E2A_u4EBA_u4FE1_u606F"><a href="#u4E2A_u4EBA_u4FE1_u606F" class="headerlink" title="个人信息"></a>个人信息</h1><ul>
-<li>谢慧/女/1989</li>
-<li>本科/萌鹿大学计算机系 </li>
-<li>工作年限：3年</li>
-<li>微博：<a href="http://weibo.com/jobdeer" target="_blank" rel="external">@JobDeer</a> （<code>如果没有技术相关内容，也可以不放</code>）</li>
-<li>技术博客：<a href="http://blog.github.io" target="_blank" rel="external">http://blog.github.io</a> ( <code>使用GitHub Host的Big较高</code>  )</li>
-<li><p>Github: <a href="http://github.com/geekcompany" target="_blank" rel="external">http://github.com/geekcompany</a> ( <code>有原创repo的Github帐号会极大的提升你的个人品牌</code>  )</p>
-</li>
-<li><p>期望职位：PHP高级程序员，应用架构师</p>
-</li>
-<li>期望薪资：税前月薪15k~20k，特别喜欢的公司可例外</li>
-<li>期望城市：北京</li>
-</ul>
-<hr>
-<h1 id="u8054_u7CFB_u65B9_u5F0F"><a href="#u8054_u7CFB_u65B9_u5F0F" class="headerlink" title="联系方式"></a>联系方式</h1><p>（HR会打印你的简历，用于在面试的时候联系，所以联系方式放到最上边会比较方便）</p>
-<ul>
-<li>手机：135<strong><em>**</em></strong> （<code>如果是外地手机，可注明。如经常关机，要写上最优联系时间</code>）</li>
-<li>Email：goodman@gmail.com （<code>虽然我觉得QQ邮箱无所谓，不过有些技术人员比较反感，建议用G</code>）</li>
-<li>QQ/微信号：6<strong><em>*</em></strong>（<code>提供一个通过网络可以联系到你的方式</code>）</li>
-</ul>
-<hr>
-<h1 id="u5DE5_u4F5C_u7ECF_u5386"><a href="#u5DE5_u4F5C_u7ECF_u5386" class="headerlink" title="工作经历"></a>工作经历</h1><p>（工作经历按逆序排列，最新的在最前边，按公司做一级分组，公司内按二级分组）</p>
-<h2 id="ABC_u516C_u53F8__uFF08_2012_u5E749_u6708__7E_2014_u5E749_u6708__uFF09"><a href="#ABC_u516C_u53F8__uFF08_2012_u5E749_u6708__7E_2014_u5E749_u6708__uFF09" class="headerlink" title="ABC公司 （ 2012年9月 ~ 2014年9月 ）"></a>ABC公司 （ 2012年9月 ~ 2014年9月 ）</h2><h3 id="DEF_u9879_u76EE"><a href="#DEF_u9879_u76EE" class="headerlink" title="DEF项目"></a>DEF项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
-<h3 id="GHI_u9879_u76EE"><a href="#GHI_u9879_u76EE" class="headerlink" title="GHI项目"></a>GHI项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
-<h3 id="u5176_u4ED6_u9879_u76EE"><a href="#u5176_u4ED6_u9879_u76EE" class="headerlink" title="其他项目"></a>其他项目</h3><p>（每个公司写2~3个核心项目就好了，如果你有非常大量的项目，那么按分类进行合并，每一类选一个典型写出来。其他的一笔带过即可。）</p>
-<h2 id="JKL_u516C_u53F8__uFF08_2010_u5E743_u6708__7E_2012_u5E748_u6708__uFF09"><a href="#JKL_u516C_u53F8__uFF08_2010_u5E743_u6708__7E_2012_u5E748_u6708__uFF09" class="headerlink" title="JKL公司 （ 2010年3月 ~ 2012年8月 ）"></a>JKL公司 （ 2010年3月 ~ 2012年8月 ）</h2><h3 id="MNO_u9879_u76EE"><a href="#MNO_u9879_u76EE" class="headerlink" title="MNO项目"></a>MNO项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
-<h3 id="PQR_u9879_u76EE"><a href="#PQR_u9879_u76EE" class="headerlink" title="PQR项目"></a>PQR项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
-<h3 id="u5176_u4ED6_u9879_u76EE-1"><a href="#u5176_u4ED6_u9879_u76EE-1" class="headerlink" title="其他项目"></a>其他项目</h3><p>（每个公司写2~3个核心项目就好了，如果你有非常大量的项目，那么按分类进行合并，每一类选一个典型写出来。其他的一笔带过即可。）</p>
-<hr>
-<h1 id="u5F00_u6E90_u9879_u76EE_u548C_u4F5C_u54C1"><a href="#u5F00_u6E90_u9879_u76EE_u548C_u4F5C_u54C1" class="headerlink" title="开源项目和作品"></a>开源项目和作品</h1><p>（这一段用于放置工作以外的、可证明你的能力的材料）</p>
-<h2 id="u5F00_u6E90_u9879_u76EE"><a href="#u5F00_u6E90_u9879_u76EE" class="headerlink" title="开源项目"></a>开源项目</h2><p>（对于程序员来讲，没有什么比Show me the code能有说服力了）</p>
-<ul>
-<li><a href="http://github.com/yourname/projectname" target="_blank" rel="external">STU</a> : 项目的简要说明，Star和Fork数多的可以注明</li>
-<li><a href="http://github.com/yourname/projectname" target="_blank" rel="external">WXYZ</a> : 项目的简要说明，Star和Fork数多的可以注明</li>
-</ul>
-<h2 id="u6280_u672F_u6587_u7AE0"><a href="#u6280_u672F_u6587_u7AE0" class="headerlink" title="技术文章"></a>技术文章</h2><p>（挑选你写作或翻译的技术文章，好的文章可以从侧面证实你的表达和沟通能力，也帮助招聘方更了解你）</p>
-<ul>
-<li><a href="http://get.jobdeer.com/706.get" target="_blank" rel="external">一个产品经理眼中的云计算：前生今世和未来</a></li>
-<li><a href="http://get.jobdeer.com/343.get" target="_blank" rel="external">来自HeroKu的HTTP API 设计指南(翻译文章)</a> （ <code>好的翻译文章可以侧证你对英文技术文档的阅读能力</code>）</li>
-</ul>
-<h2 id="u6F14_u8BB2_u548C_u8BB2_u4E49"><a href="#u6F14_u8BB2_u548C_u8BB2_u4E49" class="headerlink" title="演讲和讲义"></a>演讲和讲义</h2><p>（放置你代表公司在一些技术会议上做过的演讲，以及你在公司分享时制作的讲义）</p>
-<ul>
-<li>2014架构师大会演讲：<a href="http://jobdeer.com" target="_blank" rel="external">如何通过Docker优化内部开发</a><ul>
-<li>9月公司内部分享：<a href="http://jobdeer.com" target="_blank" rel="external">云计算的前生今世</a></li>
-</ul>
-</li>
-</ul>
-<h1 id="u6280_u80FD_u6E05_u5355"><a href="#u6280_u80FD_u6E05_u5355" class="headerlink" title="技能清单"></a>技能清单</h1><p>（我一般主张将技能清单写入到工作经历里边去。不过很难完整，所以有这么一段也不错）</p>
-<p>以下均为我熟练使用的技能</p>
-<ul>
-<li>Web开发：PHP/Hack/Node</li>
-<li>Web框架：ThinkPHP/Yaf/Yii/Lavaral/LazyPHP</li>
-<li>前端框架：Bootstrap/AngularJS/EmberJS/HTML5/Cocos2dJS/ionic</li>
-<li>前端工具：Bower/Gulp/SaSS/LeSS/PhoneGap</li>
-<li>数据库相关：MySQL/PgSQL/PDO/SQLite</li>
-<li>版本管理、文档和自动化部署工具：Svn/Git/PHPDoc/Phing/Composer</li>
-<li>单元测试：PHPUnit/SimpleTest/Qunit</li>
-<li>云和开放平台：SAE/BAE/AWS/微博开放平台/微信应用开发</li>
-</ul>
-<hr>
-<h1 id="u81F4_u8C22"><a href="#u81F4_u8C22" class="headerlink" title="致谢"></a>致谢</h1><p>感谢您花时间阅读我的简历，期待能有机会和您共事。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2015/10/25/hello-world/" data-id="cikktqkb3000co8imb8e1xrpo" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cv-blog-doc/">cv,blog,doc</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-2016.2.13.docker_install" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/1016/02/13/2016.2.13.docker_install/" class="article-date">
-  <time datetime="1016-02-12T16:00:00.000Z" itemprop="datePublished">1016-02-13</time>
+    <a href="/2016/02/13/2016.2.13.docker_install/" class="article-date">
+  <time datetime="2016-02-12T16:00:00.000Z" itemprop="datePublished">2016-02-13</time>
 </a>
     
   </div>
@@ -817,7 +79,7 @@ deploy:
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/1016/02/13/2016.2.13.docker_install/">在 Ubuntu 上面安装部署 docker</a>
+      <a class="article-title" href="/2016/02/13/2016.2.13.docker_install/">在 Ubuntu 上面安装部署 docker</a>
     </h1>
   
 
@@ -1009,10 +271,748 @@ docker images|grep none|awk '{print $3 }'|xargs docker rmi
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/1016/02/13/2016.2.13.docker_install/" data-id="cikktqkbl0015o8immfp5m9hv" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cikktt4wf00158wimnlbxrili" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016.2.12.scala_BiMap" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/12/2016.2.12.scala_BiMap/" class="article-date">
+  <time datetime="2016-02-11T16:00:00.000Z" itemprop="datePublished">2016-02-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/12/2016.2.12.scala_BiMap/">google guava&#39;s BiMap</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description:<br><br>google guava 中提供的一种非常有用的数据结构，双向 Map。是的，你没有听错，就是相比于普通仅能够提供 key 到 value 映射的 Map ，双向Map既能够提供 key 到 value 的映射，有能够提供 value 到 key 的映射。<br>这在某些特定场合是非常有用的，那么接下来简单介绍一下 BiMap 的使用方法。</p>
+<hr>
+<h1 id="BiMap__u6240_u652F_u6301_u7684_u65B9_u6CD5"><a href="#BiMap__u6240_u652F_u6301_u7684_u65B9_u6CD5" class="headerlink" title="BiMap 所支持的方法"></a>BiMap<k,v> 所支持的方法</k,v></h1><h2 id="V_forcePut_28K_key_2C_V_value_29"><a href="#V_forcePut_28K_key_2C_V_value_29" class="headerlink" title="V forcePut(K key, V value)"></a>V forcePut(K key, V value)</h2><ul>
+<li>方法介绍: 该方法用来强制执行 BiMap<k,v> 所继承的 Map<k,v> put() 方法. 也就是说如果 map 中有<br>“a-key”-&gt;”a-value” 的话，在执行 biMap.forcePut(“a-key”,”a-value2”) “a-value2” 会强制取代 “a-value” 的位置</k,v></k,v></li>
+</ul>
+<h2 id="BiMap_inverse"><a href="#BiMap_inverse" class="headerlink" title="BiMap inverse"></a>BiMap<v,k> inverse</v,k></h2><ul>
+<li>方法介绍: 该方法会将当前的<k,v> 转换成 <v,k> </v,k></k,v></li>
+</ul>
+<h2 id="V_put_28K_key__2C_V_value_29"><a href="#V_put_28K_key__2C_V_value_29" class="headerlink" title="V put(K key , V value)"></a>V put(K key , V value)</h2><ul>
+<li>方法介绍: 该方法用来向数据结构中放入 key-value 键值对<h2 id="void_putAll_28Map_26lt_3B_uFF1F_extends_K_2C__3F_extends_V_26gt_3B_map__29"><a href="#void_putAll_28Map_26lt_3B_uFF1F_extends_K_2C__3F_extends_V_26gt_3B_map__29" class="headerlink" title="void putAll(Map&lt;？ extends K, ? extends V&gt; map )"></a>void putAll(Map&lt;？ extends K, ? extends V&gt; map )</h2></li>
+<li>该方法用来将 Map<k1,v1> 类型的一次性全部放入到当前 BiMap<k,v> 中，不过值得注意的是 K1, V1 必须要是 K,V 类型或使其子类<h2 id="Set_values_28_29"><a href="#Set_values_28_29" class="headerlink" title="Set values()"></a>Set<v> values()</v></h2></k,v></k1,v1></li>
+<li>该方法用以集合的方式来获得 BiMap 的值集合</li>
+</ul>
+<hr>
+<ul>
+<li>下面通过一个例子来介绍一下如何使用 BiMap，通过一个 Seq 类型的字符串 List 生成 key-value 对字典，</li>
+<li>然后将字典进行反转操作，将原来的 k-v 编程 v-k 映射map </li>
+</ul>
+<pre>
+object MatchPatternTester extends App{
+
+    // 将传入的 Seqp[String] 通过 zipWithIndex.toMap 的方式
+    // 转换成 Map<string,int> 类型，然后通过调用 ImmutableBiMap 中的 putAll 方法
+    // 将其传入到 ImmutableBiMap 中，然后调用它的 build 方法生成 BiMap<string,int> 
+
+    def getMapFromSeq(dict: Seq[String]): Unit ={
+        val kTv = ImmutableBiMap.builder[String,Int]()
+              .putAll(dict.zipWithIndex.toMap[String,Int])
+              .build()
+
+    // 获取 BiMap 的 key 集合
+    val values = kTv.keySet()
+
+    // 通过获取的 key 集合遍历 BiMap<string,int> 中的每个 key-value 元素对
+    values.foreach( (x: String ) => println("key " + x +" value "+ kTv(x)))
+
+    // 调用 BiMap 的 inverse 方法来将 BiMap<string,int> 转换成 BiMap<int,string>    
+    val inverseMap = kTv.inverse()
+
+    // 获取反转之后的 key 集合
+    val values2 = inverseMap.keySet()
+    // 在获取 key 集合之后遍历反转之后的 BiMap<int,string> 
+    values2.foreach((k: Int ) => println("key " +k + " value "+ inverseMap(k)))
+
+  }
+
+  // 创建传入参数(Seq[String])
+  val listInput = List[String]("aimer","aimer","kylin","kokia","rurutia","kylin")
+
+  getMapFromSeq(listInput)
+
+}
+</int,string></int,string></string,int></string,int></string,int></string,int></pre>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cikktt4vd00008wimwz2ajn4l" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/datastructure/">datastructure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016.2.5.scala_theory" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/11/2016.2.5.scala_theory/" class="article-date">
+  <time datetime="2016-02-10T16:00:00.000Z" itemprop="datePublished">2016-02-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/11/2016.2.5.scala_theory/">scala编程相关知识1</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description:<br>这篇博客中记录一下 scala 编程语言中的知识点</p>
+<hr>
+<h1 id="case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5"><a href="#case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5" class="headerlink" title="case class 在 scala 中的使用方法"></a>case class 在 scala 中的使用方法</h1><p> case class 和 java 中所定义的 class 二者类似</p>
+<ul>
+<li>在创建 case class 对象实例的时候，可以不用在实例前面加上 new 关键字</li>
+</ul>
+<pre>
+case class apple(name:String)
+class banana(color:String)
+
+val app = apple("i am a apple — —b")
+val ban = new banana("i am yellow — —||")
+</pre>
+
+<ul>
+<li><p>case class 创建的类对象实例调用 .toString 方法时显示出来的字体更漂亮<br>case class 实例会将 ‘case class 名称(里面是成员变量名称)’ 显示出来<br>class 的 .toString 方法会显示类似 java 语言直接打 Object 象信息的数据<br>如果你想通过打印的方式来快速获取类对象中的成员数据信息的话，推荐使用 case class</p>
+</li>
+<li><p>case class 默认实现了 equals 和 hashCode 两个方法，所以 case class 实例化的对象可直接调用这两个方法</p>
+</li>
+<li><p>case class 实现了(extends) Serializable ，可以对 case class 对象执行序列化操作</p>
+</li>
+<li>在声明 case class 的时候，传入的构造参数均是 public 的可以直接通过 实例名称.构造函数参数名称<br>来访问</li>
+</ul>
+<pre>
+case class Document(docId: String, body: String="", label: Set[String] = Set.empty, integerLabel: Int)
+其中 body: String="" 这种赋值方式是默认赋值，如果调用者没有为该参数指定参数数值的话，就会使用默认的赋值。
+如果调用者为该参数指定特定数值的话，该指定的特定数值便会替代该指定默认参数数值
+但是如果最后一个参数为必须传入数值的参数类型的话，中间的参数数值是必须要给定的
+
+1. val doc1 = Document("id1",2)
+   println(doc1.toString) // 将会出错
+2. val doc2 = Document("id2","doc2",Set("abc","eft")
+   println(doc1.label)  // output Set(abc,eft)   
+</pre>
+
+<ul>
+<li>case class 对象实例支持模式匹配，这是 scala 为何要提出 case class 这一类型的原因</li>
+</ul>
+<pre>
+abstract  class methodX
+case class test1(n: Int) extends methodX
+case class test2(a: Int, b: Int) extends methodX
+
+object MatchPatternTester extends App{
+
+  def matchTester(term: methodX ){
+    term match{
+      case test1(n) =>
+        println("this is test1" +n)
+      case test2(a,b) =>
+        println("this is test2 a , b"+a +" " +b)
+    }
+  }
+
+ val x1 = test1(1027)
+
+ val x1Result =matchTester(x1)
+
+ val x2 = test2(10,72)
+ val x2Result = matchTester(x2)
+
+}
+</pre>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cikktt4wb00118wimb615uvq4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming-theory/">programming-theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016.2.5.search_engine_theory" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/06/2016.2.5.search_engine_theory/" class="article-date">
+  <time datetime="2016-02-05T16:00:00.000Z" itemprop="datePublished">2016-02-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/06/2016.2.5.search_engine_theory/">搜索引擎知识点整理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。<br><br>由于在开发 github 上的 <a href="https://github.com/Kylin27/StackExchangeRecommener/" target="_blank" rel="external">StackExchangeRecommenderSystem</a> 时候会用到 lucene，<br>所以在这里先来复习一下搜索引擎中的基础知识和算法。</p>
+<hr>
+<h1 id="u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6"><a href="#u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6" class="headerlink" title="索引的基础知识"></a>索引的基础知识</h1><p>索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及<br>对网页所创建索引，来提高程序的查询效率。<br>索引在日常生活中也很常见:字典目录中某个词语后面标识了出现该词的页码。<br>下面我们来一起学习一下，关于索引常见的词汇:</p>
+<ul>
+<li>文档(Document): 索引所标定的’目标对象’: 是数据库索引，那么文档便是数据表中的某条记录;<br>如果是对网页创建的’倒排索引’(索引的一种类型)，那么文档便是网页的页面； 这个’目标对象’<br>还可以是某种具体的文件，例如 word，PDF文档</li>
+<li>文档集合 (Document Collection): 就是上述’文档’构成的集合</li>
+<li>文档编号(Document ID): 在搜索引擎内部为每个文档赋予的唯一标识，可以在文档集合中唯一标识一个文档</li>
+<li>单词编号(Word ID): 用来唯一标识某个单词</li>
+<li>倒排索引(Inverted Index): 普通的索引是为某个文档创建索引出在该文档中某个单词，<br>而倒排索引则是以单词为主题，通过单词来索引出出现该单词出现的文件； 倒排索引由两部分组成<br>{单词词典,和出现该单词的文档集合}</li>
+<li>单词词典(Lexicon): 搜索引擎通中的索引单位是单词，单词词典是在所有文档集合中出现过的单词所构成的集合；<br>而在单词词典中的每条索引项中记录的信息有{单词信息，单词所指向出现该单词的文章集合-倒排列表} </li>
+<li>倒排列表(PostingList): 倒排列表指的是，出现过某个单词的所有文档所构成的列表和该单词在该文档中出现的<br> 位置信息； 倒排列表中的每条记录我们可以将其称作是倒排项(Posting).</li>
+<li><p>倒排文件(Inverted File): 倒排文件是存储倒排索引的物理文件。我们都已经知道了倒排索引由两部分组成，<br>分别是，单词词典和倒排列表. 在此基础上，存放倒排列表的文件就叫做倒排文件。   </p>
+<hr>
+<h2 id="u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50"><a href="#u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50" class="headerlink" title="倒排索引小例子"></a>倒排索引小例子</h2><p>比如那今天的知乎日报新闻来举例</p>
+<pre>
+文章编号            文章标题
+1                    如何自己制定健身训练计划？
+2                    女生怎么健身锻炼好身材？
+3                    减肥对外貌的改变有多大？
+4                    健身教练有哪些内幕？
+5                   女生如何锻炼减肥既简单有健康？
+</pre>
+<pre>
+单词 ID         单词        倒排列表
+  1.            自己          {1}
+  2.            女生          {2,5}
+  3.            减肥            {3,5}
+  4.            健身          {1,2}
+  5.            教练          {4}
+  6.            简单          {5}
+  7.            训练          {1}
+  8.            外貌          {3}
+  9.            改变          {3}
+  10.            哪些          {4}    
+  11.         内幕          {5}
+  12.            锻造          {2,5}
+  13.            身材          {2}    
+  14.            训练          {1}
+  15.            计划          {1}
+ </pre>
+
+</li>
+</ul>
+<p>当然，我们也为了让索引列表更细致的记录索引文件的信息来添加上某个词语出现的频率信息，TF 便是用来描述词语在某个文章中出现的次数的. 例如 ‘女生’ 这个词语在文章 2，5 均出现过，并且出现 1 次<br>便可以记成 女生 {2;1,5;1} 这样子。更加细致的记录方式是，将这个单词出现的位置也记录下来：<br><br>例如 ‘女生’这个单词在文章2,5中出现的位置分别是第 1 个位置，就写成如下的格式<br>女生 { (2;1;<1>),(5;1;<1>) }</1></1></p>
+<hr>
+<h1 id="u5355_u8BCD_u8BCD_u5178__28Lexicon_29"><a href="#u5355_u8BCD_u8BCD_u5178__28Lexicon_29" class="headerlink" title="单词词典 (Lexicon)"></a>单词词典 (Lexicon)</h1><p>单词词典存放了在文档集合中出现过的所有单词的相关信息的同时也记录了该单词集合中的每个单词<br>所映射到的倒排列表在倒排文件中的位置信息。</p>
+<p>可以试想一下，如果需要创建索引的文档集合十分的巨大，那么随之提出出来的单词词典中所存放的单词数量<br>也是十分庞大的。在数据结构课程中我们已经学习过，如果要快速的定位某个单词(键值)的话可以借助于<br>哈希链表或是树形词典这类的数据结构。 </p>
+<h2 id="u54C8_u5E0C_u52A0_u94FE_u8868_-__u5355_u8BCD_u8BCD_u5178"><a href="#u54C8_u5E0C_u52A0_u94FE_u8868_-__u5355_u8BCD_u8BCD_u5178" class="headerlink" title="哈希加链表 - 单词词典"></a>哈希加链表 - 单词词典</h2><p>   哈希加链表是处理哈希表冲突的一种解决方法，哈希表有随之配套的 hash 散列函数，会为每个输入的<br>   key 键生成’唯一’标定该key 对应 value 的标识，但是如果 hash 散列函数选取的不当的话，便会造成<br>   不同的 key 生成了重复的标识； 这就是所谓的’冲突’的发生，处理’冲突’有着不同的方法，<br>   加链表就是在发生冲突的 key 的后面开辟一块空间存放后来的 key ; 待到查找的时候，通过 hash 散列函数<br>   找到该 hash 生成数值指定的链表头，沿着链表继续寻找就可以了。</p>
+<h2 id="u6811_u5F62_u7ED3_u6784_-__u5355_u8BCD_u8BCD_u5178"><a href="#u6811_u5F62_u7ED3_u6784_-__u5355_u8BCD_u8BCD_u5178" class="headerlink" title="树形结构 - 单词词典"></a>树形结构 - 单词词典</h2><p>   前缀树和后缀树都是可以做单词词典很好的数据结构</p>
+<hr>
+<h1 id="u5012_u6392_u5217_u8868"><a href="#u5012_u6392_u5217_u8868" class="headerlink" title="倒排列表"></a>倒排列表</h1><p>  在前面我们提到过了，倒排列表中的基本构成单元倒排索引项中包含字段有:<br>  {单词出现的文档的唯一编号,单词出现频率,&lt;单词在文档中的位置1,位置2,位置3…&gt;}<br>  但是在实际的应用中为了尽量节省内存，通常会使用文档编号的差值来取代文章的唯一编号。</p>
+<hr>
+<h1 id="u5EFA_u7ACB_u7D22_u5F15"><a href="#u5EFA_u7ACB_u7D22_u5F15" class="headerlink" title="建立索引"></a>建立索引</h1><p>建立索引有着不同的方法,同时索引也分为动态索引和静态索引，其中静态索引是生成索引之后在修改文档集合中的<br>文档之后，不能自动的更新之前索引文件 ； 而动态索引则是生成索引之后，修改文档集合中的文件内容之后<br>会随之自动的更新文档文件。</p>
+<h2 id="u9759_u6001_u7D22_u5F15"><a href="#u9759_u6001_u7D22_u5F15" class="headerlink" title="静态索引"></a>静态索引</h2><h3 id="u4E24_u904D_u6587_u6863_u904D_u5386_u6CD5"><a href="#u4E24_u904D_u6587_u6863_u904D_u5386_u6CD5" class="headerlink" title="两遍文档遍历法"></a>两遍文档遍历法</h3><p>两遍文档遍历法在创建索引的时候需要对文档集合执行两遍扫描，在创建索引的时候仅需要内存即可，整个过程无需磁盘参与。</p>
+<ul>
+<li>首次扫描:<br>算出为该文档集合创建的索引所需的内存容量大小:搜集文档集合包含文档个数 N ，文档集合中不重复单词总数 M, 每个单词在多少个文档中出现 DF. 将所有单词的 DF 数值进行加和便是建立最终索引所需要的内存大小。</li>
+<li><p>第二次扫描:</p>
+<pre><code>首次扫描已经确定了文档集合中的每个单词的 DF信息，在第二次扫描的时候，为每个单词的 DF 信息
+</code></pre><p>分配内存空间，并使用指针将单词集合与单词的 DF 信息将连接即可，也就是简历每个单词的倒排列表信息；<br>但是通过上面的陈述可知，在单词倒排列表中的倒排索引项仅仅包含单词 DF信息还是不够的；对文档 ID 或是文档 ID 偏移量的计算以及单词在文档中出现位移和出现次数等这些信息都可以在第二次扫描的时候来完成。<br>  等到两遍扫描结束之后，将内存中创建的倒排列表和单词词典信息写入到磁盘中就完成了索引的创建了。</p>
+</li>
+<li><p>对两遍文档遍历法的评估: 因为全程使用的是内存无需磁盘的参与，所以连通文档集合和生成的倒排列表等数据信息均需要存放到内存中，这需要内存足够大，或者是仅仅适用于创建文档集合规模较小的索引。同时，需要对文档进行两次扫描，比较耗时在速度上并不占优势。      </p>
+<h3 id="u6392_u5E8F_u6CD5"><a href="#u6392_u5E8F_u6CD5" class="headerlink" title="排序法"></a>排序法</h3><p>排序法为文档集合创建索引是为了弥补两遍遍历法建立索引过程中，对内存消耗大这一缺点提出的。两边遍历索引生成方法使用内存的大小是不固定的，如果文档集合大内存开辟就会大一些，相反便会小一些。而排序法无论文档集合如何，其所需要的内存大小均是固定分配的。开辟的内存空间主要用来存放词典信息和索引的中间结果。<br>每当中间结果将内存吃空的时候，便会统一将内存中的中间数据写入到磁盘中。遵循上述倒排索引中所介绍的两部分的结构-单词词典,倒排列表(倒排列表的组成单元是倒排索引项)，在整个的排序法创建文件集合索引的过程中，单词词典始终是作为常驻内存的数据结构的。</p>
+</li>
+<li>读取文档，对文档进行编号，每个文档为其创建唯一的标识 ID 号码</li>
+<li><p>解析文档，每当在文档中遇到新单词，</p>
+<pre>
+{ 
+查看该单词在单词词典中是否有记录 
+1. 有记录，获取该单词在词典中的 ID 号码
+2. 单词词典中没有记录该单词，为该单词创建全词典唯一的 ID 号码，然后将其收录到单词词典中
+}
+</pre>
+</li>
+<li><p>在对当前文档完成了读取和解析之后，便能够为当前文档中出现的每个单词均创建包含着如下信息</p>
+</li>
+</ul>
+<pre>
+ (单词ID,文档ID,单词频率)
+</pre>
+
+<p>上述三元组便可以作为倒排索引列表中的索引项了，将该三元组索引项集合追加到用来存放中间处理结果的大小固定的内存缓冲区中。然后便可以开始处理下一个文档了。<br></p>
+<ul>
+<li>在内存缓冲区被占满之前需要将缓冲区中的数据写入到磁盘临时文件中去，不过在写入之前需要对内存中的三元组序列执行排序操作； 首先按照单词 ID 进行非递减，然后按照文档 ID 进行非递减排序。由于内存中存放的中间结果并不一定全都是同一个文件生成的中间信息，所以会有单词ID 相同但是文档ID不同的情况，这种情况按照文档ID非递减的规则进行排序。<b>PS: 在上述的全部过程中，单词词典是常驻内存的</b> </li>
+<li>每次执行向磁盘中写入中间缓存文件操作均是写入一个新的缓存文件，而不是在之前的缓存文件中执行追加。在对所文档集合中的每个文档均读取解析之后，剩下的工作便是合并临时写入磁盘的所有的中间文件了。由于写入磁盘之前在内存中执行了先按单词ID然后文章ID进行排序的操作，所以在合并的时候，只要首先将所有中间文件中单词ID相同的三元组合并为一个数组(由三元组元素构成的有序序列)，而所有的数组组合起来便是该文件的倒排列表了。接下来只要将倒排列表中的内容写入到文件中即可。而这个文件便是所谓的索引文件了。      </li>
+<li>对排序法的评估: 在排序法创建文档集合索引的过程中，单词词典作为常驻内存数据结构并不会被写入到磁盘的中间临时文件中且大小也随着解析文档个数的增多而变大，同时排序法中分配的内存大小是固定的，所以当单词词典大小变大之后，每次用来缓存三元组的个数也会随之减少，如果单词词典继续增大会无法缓存解析文件而生成的三元组，这样便会频繁的执行写入操作,从而导致程序整体性能的下降。</li>
+</ul>
+<h3 id="u5F52_u5E76_u6CD5"><a href="#u5F52_u5E76_u6CD5" class="headerlink" title="归并法"></a>归并法</h3><p>归并法是为了弥补排序法中，单词词典常驻内存耗空分配的固定内存这一缺陷而提出的。归并法的特点是在每次执行三元组数据信息写入的同时也会将单词词典信息写入到中间临时文件中。这样便可以保证为程序分配固定大小的内存会全部用于后续索引的创建。</p>
+<ul>
+<li>归并法的执行过程和排序法大部分相同，不同之处之一是在写入中间缓存文件中是将 {单词词典，三元组集合} 写入到中间缓存文件中<pre><code>之二是在文档集合中的全部文档完成解析之后，将所有生成的临时文件进行合并的时候，每个临时文件中存放的是最终倒排列表的一部分；
+而最后的合并操作便是将所有的部分倒排列表合并成一个完成的倒排列表。
+</code></pre></li>
+</ul>
+<h2 id="u5206_u5E03_u5F0F_u7D22_u5F15"><a href="#u5206_u5E03_u5F0F_u7D22_u5F15" class="headerlink" title="分布式索引"></a>分布式索引</h2><p>分布式索引和数据库中的’分片’ 技术有些类似，数据库的’分片’ 技术是通过将一张大数据库表中的信息按照表中的某个属性字段<br>中的不同值/或是范围分割成许多个来自于该大数据表的’子表’； 常用作’分片’的属性有地域和时间 ；<br>而分布式索引技术则是将文档集合按照文档或者是单词来对索引进行划分。</p>
+<h3 id="u6309_u7167_u6587_u6863_u6765_u5212_u5206_u7D22_u5F15"><a href="#u6309_u7167_u6587_u6863_u6765_u5212_u5206_u7D22_u5F15" class="headerlink" title="按照文档来划分索引"></a>按照文档来划分索引</h3><p>将大的文档集合划分成分布于不同机器上的文档子集，为每个文档自己创建各自的索引。<br>在执行查询的时候，会在每个机器上面执行查询，并把来自于每个子集的查询结果进行合并生成最终查询结果</p>
+<h3 id="u6309_u7167_u5355_u8BCD_u6765_u5212_u5206_u7D22_u5F15"><a href="#u6309_u7167_u5355_u8BCD_u6765_u5212_u5206_u7D22_u5F15" class="headerlink" title="按照单词来划分索引"></a>按照单词来划分索引</h3><p>在创建按照单词划分的倒排索引的时候，划分发生在合并中间缓存文件生成最终索引文件的时候。<br>每当将来自于所有中间缓存文件中的同一单词ID的三元组合并之后，将该三元组集合+单词发送到某台主机上面。<br>便完成了按照该单词对索引进行’分片’的操作。<br>在实际的应用场景中，按照文档来进行索引的划分这种方法比较常使用，而按照单词的划分仅仅在特定场合下使用。<br>因为按照单词来划分索引的可扩展性、均衡负载和容错性都不是很好。</p>
+<h1 id="u67E5_u8BE2_u5904_u7406"><a href="#u67E5_u8BE2_u5904_u7406" class="headerlink" title="查询处理"></a>查询处理</h1><h2 id="u4E00_u6B21_u4E00_u4E2A_u5355_u8BCD_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u4E00_u6B21_u4E00_u4E2A_u5355_u8BCD_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="一次一个单词的查询处理"></a>一次一个单词的查询处理</h2><p>将用户查询语句执行清洗(我通常把去掉语句中无用符号和去掉停用词的操作叫做’清洗’…好记),<br>然后执行分词操作将语句分成多个词语组成集合，获取每个词语的倒排列表，然后计算每个词语与倒排列表中的<br>每一个文件的相似度，计算相似度之后，如果有文档重复的(两个不同词语倒排索引到同一个文档)，那么将重复的文档<br>得分进行累加；最后将得出得分最高的 K 个文档(通过优先队列进行存放)作为查询结果进行返回即可</p>
+<h2 id="u4E00_u6B21_u4E00_u4E2A_u6587_u6863_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u4E00_u6B21_u4E00_u4E2A_u6587_u6863_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="一次一个文档的查询处理"></a>一次一个文档的查询处理</h2><h2 id="u8DF3_u8DC3_u6307_u9488_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u8DF3_u8DC3_u6307_u9488_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="跳跃指针的查询处理"></a>跳跃指针的查询处理</h2><h2 id="u77ED_u8BED_u67E5_u8BE2"><a href="#u77ED_u8BED_u67E5_u8BE2" class="headerlink" title="短语查询"></a>短语查询</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cikktt4w5000q8wimboysnhtv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/search-engine/">search-engine</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-blog_2_5_2016_log4j_usage_note" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/05/blog_2_5_2016_log4j_usage_note/" class="article-date">
+  <time datetime="2016-02-04T16:00:00.000Z" itemprop="datePublished">2016-02-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/05/blog_2_5_2016_log4j_usage_note/">How to use log4j in your project ?</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description: This blog introduces two log4j log file patterns we often use in our java project</p>
+<h1 id="Log4j_Pattern_Note"><a href="#Log4j_Pattern_Note" class="headerlink" title="Log4j Pattern Note"></a>Log4j Pattern Note</h1><h2 id="Pattern1"><a href="#Pattern1" class="headerlink" title="Pattern1"></a>Pattern1</h2><h3 id="You_can_use_this_log_pattern_when_you_want_log_info_be_written_into_multi-log_files_instead_of_a_single_large_file"><a href="#You_can_use_this_log_pattern_when_you_want_log_info_be_written_into_multi-log_files_instead_of_a_single_large_file" class="headerlink" title="You can use this log pattern when you want log info be written into multi-log files instead of a single large file ."></a>You can use this log pattern when you want log info be written into multi-log files instead of a single large file .</h3><pre>
+#file name : log4j.properties
+log4j.rootLogger = appendername
+
+log4j.appender.appendername=org.apache.log4j.RollingFileAppender    
+# which file appender pattern your choose 
+
+log4j.appender.appendername.File=log/rlog.log                        
+# name of the log file in which the program going to write 
+
+log4j.appender.appendername.MaxFileSize = 100KB                        
+# threshold of the log file , if current log file size >= 100 KB 
+# log4j will create a new log file to write in
+
+log4j.appender.appendername.MaxBackupIndex = 2                        
+# limit the maximum number of log file log4j will create
+# here we set max log file number equals to 2 , if log4j create 2 files
+# next time , if the rlog.log.2's size is >= 100KB ,
+# log4j will clean the rlog.log.1's content and continue writing new log info into rlog.log.1
+
+log4j.appender.appendername.layout = org.apache.log4j.PatternLayout
+log4j.appender.appendername.layout.ConversionPattern = %p %t %c - %m %n  # output log info pattern                                                                
+</pre>
+
+<h2 id="Pattern2"><a href="#Pattern2" class="headerlink" title="Pattern2"></a>Pattern2</h2><h3 id="You_can_use_this_log_pattern_if_you_would_like_your_log_info_output_to_both_console_and_file"><a href="#You_can_use_this_log_pattern_if_you_would_like_your_log_info_output_to_both_console_and_file" class="headerlink" title="You can use this log pattern if you would like your log info output to both console and file"></a>You can use this log pattern if you would like your log info output to both console and file</h3><h3 id="This_pattern_also_supports_separating_error_log_info_into_a_single_error_log_file"><a href="#This_pattern_also_supports_separating_error_log_info_into_a_single_error_log_file" class="headerlink" title="This pattern also supports separating error log info into a single error log file"></a>This pattern also supports separating error log info into a single error log file</h3><pre>
+# file name : log4j.properties
+log4j.rootLogger = debug,FILE,CONSOLE,ERRORFILE
+
+# output log info to console
+log4j.appender.CONSOLE = org.apache.log4j.ConsoleAppender
+log4j.appender.CONSOLE.Target = System.out
+log4j.appender.CONSOLE.layout = org.apache.log4j.PatternLayout
+log4j.appender.CONSOLE.layout.ConversionPattern = [%p] %t %c %l - %m %n
+
+# %p log info level : {DEBUG,INFO,WARN,ERROR,FATAL}
+# %t name of the thread that generates log info
+# %c log info is generated by which class 
+# %l which class , which thread , on which line 's event produce the log info
+# %m output code's info
+
+# output log info to log files
+log4j.appender.FILE = org.apache.log4j.DailyRollingFileAppender
+log4j.appender.FILE.File = logs/rlog.log
+log4j.appender.FILE.Threshold = DEBUG  
+# this is used to limit the log level , 
+#if the log's level is higher than DEBUG ( like INFO, ERROR) output log info
+
+log4j.appender.FILE.MaxFileSize=50KB
+log4j.appender.FILE.MaxBackupIndex = 2
+log4j.appender.FILE.layout = org.apache.log4j.PatternLayout
+log4j.appender.FILE.layout.ConversionPattern = [%p] %t %c %l - %m %n
+
+# output error (log level >= ERROR) into a single file
+log4j.appender.ERRORFILE = org.apache.log4j.DailyRollingFileAppender
+log4j.appender.ERRORFILE = logs/error.log
+log4j.appender.ERRORFILE.Threshold = ERROR
+log4j.appender.ERRORFILE.layout = org.apache.log4j.PatternLayout
+log4j.appender.ERRORFILE.layout.ConversionPattern =  [%p] %t %c %l - %m %n
+
+</pre>
+
+<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><p>Here is a simple example to use log4j to output log info</p>
+<pre><code>
+// log4j.properties is under 'resources' folder
+
+public class TestLog4j{
+    public static void main (String [] args ){
+        URL url = new URL("/log4j.properties") ;
+        PropertyConfigurator.configure(url.getPath()) ;
+        Logger logger = Logger.getLogger(TestLog4j.class) ;
+
+        logger.debug("this is a debug message") ;
+        logger.error("error info will output to two files") ;
+    }
+
+}
+
+</code></pre>
+
+<p>end </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cikktt4vy000f8wim6yd338q4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-blog_2_3_2016" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/05/blog_2_3_2016/" class="article-date">
+  <time datetime="2016-02-04T16:00:00.000Z" itemprop="datePublished">2016-02-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/05/blog_2_3_2016/">2 Build Blog on Windows by Node.js and Hexo</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description: This blog introduces how to build your own blog on windows OS. with the help of Node.js and Hexo <br></p>
+<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git<br></h3><p>Download Git  and register an account in <a href="https://github.com/" target="_blank" rel="external">GitHub</a> ,<br><br>Make sure SSH is installed on your windows OS. Create DSA or RSA keys by running commands below</p>
+<pre> 
+$ cd ~/.ssh * 
+$ ssh-keygen -t rsa -C youremail@email.com  
+ </pre>
+
+<p>Add the generated key rsa*.pub content to your <a href="https://github.com/settings/profile" target="_blank" rel="external">GitHub</a> <br><br><a href="https://github.com/settings/ssh" target="_blank" rel="external">SSH keys</a>  <a href="https://github.com/settings/ssh#" target="_blank" rel="external">New SSH key</a> <br><br>Paste your ssh rsa.pub key to it<br><br>Setup your cmd/git hub bash ,tab</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<p>Your will receive a message like this “Hi , welcome to git hub blabla “. <br><br>But now ,remember you have not got your token string yet which means you couldn’t ‘deploy’ your hexo blog to github.<br><br>Go to the <a href="https://github.com/settings/profile" target="_blank" rel="external">GitHub Setting Page</a> and press the <a href="https://github.com/settings/tokens" target="_blank" rel="external">Personal access tokens</a> then <a href="https://github.com/settings/tokens/new" target="_blank" rel="external">Generate new token</a> and confirm your password again .<br>  Write in the token name (Token description) in order your can distinguish this token to other tokens , select scopes (just like setting functions of the token) , and the last step is press the green ‘Generate token’ button.  Like this you’ll get your ‘Personal access tokens’<br><br>Open your git bash again , and tab in commands </p>
+<pre> 
+$ git config --global user.name "your name" 
+$ git config --global user.email "your email"
+$ git config --global usr.token "paste the personal access tokens your just got here"
+ </pre>
+
+<hr>
+<h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js <br></h3><p>Download <a href="https://nodejs.org/en/download/stable/" target="_blank" rel="external">Node.js for Windows</a><br><br>Install Node.js and add both Node.js and npm’s path to environment’s PATH<br><br><b>Create two folders with the name of ‘node_cache’ and ‘node_global’under node.js’s folder </b><br><br>Open git bash under current folder(by clicking right mouse -&gt; git bash), and tab </p>
+<pre> 
+$ npm config ls
+$ npm config set cache 'the absolute path you created folder node_cache'
+$ npm config set prefix 'the absolute path you created folder node_global'  
+ </pre>
+
+<hr>
+<h3 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo  <br></h3><p> Open your git bash again,change your current to one folder your want your hexo installed in, tab in</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo</span><br></pre></td></tr></table></figure>
+<h2 id="Local_Blog_Server"><a href="#Local_Blog_Server" class="headerlink" title="Local Blog Server"></a>Local Blog Server</h2><p> After hexo installed , do not forget add the hexo(the executable binary file)’s location into env’s PATH too<br><br> Make a new folder which you want to store blog’s file and change current path to it<br><br> Tab in </p>
+<pre> 
+$ hexo init         # this command like git init , initialize the blog workspace and generate files
+$ npm install    # wait for a while
+$ hexo g         # hexo g is the command which short for hexo generate
+$ hexo s         # deploy your hexo template on localhost's server(0.0.0.0:4000)
+</pre>
+
+<h2 id="Deploy_Blog_to_Git_28like_this_blog_29"><a href="#Deploy_Blog_to_Git_28like_this_blog_29" class="headerlink" title="Deploy Blog to Git(like this blog)"></a>Deploy Blog to Git(like this blog)</h2><p> Create a new respo. on your github with the name <b>‘your github account name’.github.io</b><br><br> Deploy Blog to Git ‘s step is a little different from deploying it on local server<br><br> Open git bash on hexo blog’s path and tab in the commands below</p>
+<pre> 
+$ hexo init 
+$ npm install
+$ npm install hexo-deployer-git --save # download git corresponding plugins
+</pre>
+
+<p> Open your _config.yml file , update the #Deployment’s part content like this</p>
+<pre> 
+# Deployment
+## Docs: http://hexo.io/docs/deployment.html
+deploy:
+  type: git
+  repository: git@github.com:'your github account name'.github.io.git  #--> do not forget replace it
+  branch: master
+</pre> 
+
+<p> After update _config.yml file , tab in commands</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo d    <span class="comment"># short command for hexo deploy</span></span><br></pre></td></tr></table></figure>
+<p>Open your browser, and tab in <a href="https://&#39;your" target="_blank" rel="external">https://&#39;your</a> github account name’.github.io you will see the blog your just create<br><br>If your want to add new blogs just add a new .md file (mark down edit style) under your blog’s source/_post/ folder<br><br>You can change your blog’s name by changing _config.yml’s ‘title’ content<br><br>Good luck !</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cikktt4w1000i8wimxdb0k480" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows/">windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-my_cv" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/25/my_cv/" class="article-date">
+  <time datetime="2015-10-24T16:00:00.000Z" itemprop="datePublished">2015-10-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/25/my_cv/">My CV</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="u4E2A_u4EBA_u4FE1_u606F"><a href="#u4E2A_u4EBA_u4FE1_u606F" class="headerlink" title="个人信息"></a>个人信息</h1><ul>
+<li>Aimer/女/1989</li>
+<li>本科/萌鹿大学计算机系 </li>
+<li>工作年限：3年</li>
+<li>微博：<a href="http://weibo.com/jobdeer" target="_blank" rel="external">@JobDeer</a> （<code>如果没有技术相关内容，也可以不放</code>）</li>
+<li>技术博客：<a href="http://blog.github.io" target="_blank" rel="external">http://blog.github.io</a> ( <code>使用GitHub Host的Big较高</code>  )</li>
+<li><p>Github: <a href="http://github.com/geekcompany" target="_blank" rel="external">http://github.com/geekcompany</a> ( <code>有原创repo的Github帐号会极大的提升你的个人品牌</code>  )</p>
+</li>
+<li><p>期望职位：PHP高级程序员，应用架构师</p>
+</li>
+<li>期望薪资：税前月薪15k~20k，特别喜欢的公司可例外</li>
+<li>期望城市：北京</li>
+</ul>
+<hr>
+<h1 id="u8054_u7CFB_u65B9_u5F0F"><a href="#u8054_u7CFB_u65B9_u5F0F" class="headerlink" title="联系方式"></a>联系方式</h1><p>（HR会打印你的简历，用于在面试的时候联系，所以联系方式放到最上边会比较方便）</p>
+<ul>
+<li>手机：135<strong><em>**</em></strong> （<code>如果是外地手机，可注明。如经常关机，要写上最优联系时间</code>）</li>
+<li>Email：goodman@gmail.com （<code>虽然我觉得QQ邮箱无所谓，不过有些技术人员比较反感，建议用G</code>）</li>
+<li>QQ/微信号：6<strong><em>*</em></strong>（<code>提供一个通过网络可以联系到你的方式</code>）</li>
+</ul>
+<hr>
+<h1 id="u5DE5_u4F5C_u7ECF_u5386"><a href="#u5DE5_u4F5C_u7ECF_u5386" class="headerlink" title="工作经历"></a>工作经历</h1><p>（工作经历按逆序排列，最新的在最前边，按公司做一级分组，公司内按二级分组）</p>
+<h2 id="ABC_u516C_u53F8__uFF08_2012_u5E749_u6708__7E_2014_u5E749_u6708__uFF09"><a href="#ABC_u516C_u53F8__uFF08_2012_u5E749_u6708__7E_2014_u5E749_u6708__uFF09" class="headerlink" title="ABC公司 （ 2012年9月 ~ 2014年9月 ）"></a>ABC公司 （ 2012年9月 ~ 2014年9月 ）</h2><h3 id="DEF_u9879_u76EE"><a href="#DEF_u9879_u76EE" class="headerlink" title="DEF项目"></a>DEF项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
+<h3 id="GHI_u9879_u76EE"><a href="#GHI_u9879_u76EE" class="headerlink" title="GHI项目"></a>GHI项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
+<h3 id="u5176_u4ED6_u9879_u76EE"><a href="#u5176_u4ED6_u9879_u76EE" class="headerlink" title="其他项目"></a>其他项目</h3><p>（每个公司写2~3个核心项目就好了，如果你有非常大量的项目，那么按分类进行合并，每一类选一个典型写出来。其他的一笔带过即可。）</p>
+<h2 id="JKL_u516C_u53F8__uFF08_2010_u5E743_u6708__7E_2012_u5E748_u6708__uFF09"><a href="#JKL_u516C_u53F8__uFF08_2010_u5E743_u6708__7E_2012_u5E748_u6708__uFF09" class="headerlink" title="JKL公司 （ 2010年3月 ~ 2012年8月 ）"></a>JKL公司 （ 2010年3月 ~ 2012年8月 ）</h2><h3 id="MNO_u9879_u76EE"><a href="#MNO_u9879_u76EE" class="headerlink" title="MNO项目"></a>MNO项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
+<h3 id="PQR_u9879_u76EE"><a href="#PQR_u9879_u76EE" class="headerlink" title="PQR项目"></a>PQR项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
+<h3 id="u5176_u4ED6_u9879_u76EE-1"><a href="#u5176_u4ED6_u9879_u76EE-1" class="headerlink" title="其他项目"></a>其他项目</h3><p>（每个公司写2~3个核心项目就好了，如果你有非常大量的项目，那么按分类进行合并，每一类选一个典型写出来。其他的一笔带过即可。）</p>
+<hr>
+<h1 id="u5F00_u6E90_u9879_u76EE_u548C_u4F5C_u54C1"><a href="#u5F00_u6E90_u9879_u76EE_u548C_u4F5C_u54C1" class="headerlink" title="开源项目和作品"></a>开源项目和作品</h1><p>（这一段用于放置工作以外的、可证明你的能力的材料）</p>
+<h2 id="u5F00_u6E90_u9879_u76EE"><a href="#u5F00_u6E90_u9879_u76EE" class="headerlink" title="开源项目"></a>开源项目</h2><p>（对于程序员来讲，没有什么比Show me the code能有说服力了）</p>
+<ul>
+<li><a href="http://github.com/yourname/projectname" target="_blank" rel="external">STU</a> : 项目的简要说明，Star和Fork数多的可以注明</li>
+<li><a href="http://github.com/yourname/projectname" target="_blank" rel="external">WXYZ</a> : 项目的简要说明，Star和Fork数多的可以注明</li>
+</ul>
+<h2 id="u6280_u672F_u6587_u7AE0"><a href="#u6280_u672F_u6587_u7AE0" class="headerlink" title="技术文章"></a>技术文章</h2><p>（挑选你写作或翻译的技术文章，好的文章可以从侧面证实你的表达和沟通能力，也帮助招聘方更了解你）</p>
+<ul>
+<li><a href="http://get.jobdeer.com/706.get" target="_blank" rel="external">一个产品经理眼中的云计算：前生今世和未来</a></li>
+<li><a href="http://get.jobdeer.com/343.get" target="_blank" rel="external">来自HeroKu的HTTP API 设计指南(翻译文章)</a> （ <code>好的翻译文章可以侧证你对英文技术文档的阅读能力</code>）</li>
+</ul>
+<h2 id="u6F14_u8BB2_u548C_u8BB2_u4E49"><a href="#u6F14_u8BB2_u548C_u8BB2_u4E49" class="headerlink" title="演讲和讲义"></a>演讲和讲义</h2><p>（放置你代表公司在一些技术会议上做过的演讲，以及你在公司分享时制作的讲义）</p>
+<ul>
+<li>2014架构师大会演讲：<a href="http://jobdeer.com" target="_blank" rel="external">如何通过Docker优化内部开发</a><ul>
+<li>9月公司内部分享：<a href="http://jobdeer.com" target="_blank" rel="external">云计算的前生今世</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="u6280_u80FD_u6E05_u5355"><a href="#u6280_u80FD_u6E05_u5355" class="headerlink" title="技能清单"></a>技能清单</h1><p>（我一般主张将技能清单写入到工作经历里边去。不过很难完整，所以有这么一段也不错）</p>
+<p>以下均为我熟练使用的技能</p>
+<ul>
+<li>Web开发：PHP/Hack/Node</li>
+<li>Web框架：ThinkPHP/Yaf/Yii/Lavaral/LazyPHP</li>
+<li>前端框架：Bootstrap/AngularJS/EmberJS/HTML5/Cocos2dJS/ionic</li>
+<li>前端工具：Bower/Gulp/SaSS/LeSS/PhoneGap</li>
+<li>数据库相关：MySQL/PgSQL/PDO/SQLite</li>
+<li>版本管理、文档和自动化部署工具：Svn/Git/PHPDoc/Phing/Composer</li>
+<li>单元测试：PHPUnit/SimpleTest/Qunit</li>
+<li>云和开放平台：SAE/BAE/AWS/微博开放平台/微信应用开发</li>
+</ul>
+<hr>
+<h1 id="u81F4_u8C22"><a href="#u81F4_u8C22" class="headerlink" title="致谢"></a>致谢</h1><p>感谢您花时间阅读我的简历，期待能有机会和您共事。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cikktt4vt00058wim78bmje50" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cv/">cv</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/25/hello-world/" class="article-date">
+  <time datetime="2015-10-24T16:00:00.000Z" itemprop="datePublished">2015-10-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/25/hello-world/">My CV</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="u4E2A_u4EBA_u4FE1_u606F"><a href="#u4E2A_u4EBA_u4FE1_u606F" class="headerlink" title="个人信息"></a>个人信息</h1><ul>
+<li>谢慧/女/1989</li>
+<li>本科/萌鹿大学计算机系 </li>
+<li>工作年限：3年</li>
+<li>微博：<a href="http://weibo.com/jobdeer" target="_blank" rel="external">@JobDeer</a> （<code>如果没有技术相关内容，也可以不放</code>）</li>
+<li>技术博客：<a href="http://blog.github.io" target="_blank" rel="external">http://blog.github.io</a> ( <code>使用GitHub Host的Big较高</code>  )</li>
+<li><p>Github: <a href="http://github.com/geekcompany" target="_blank" rel="external">http://github.com/geekcompany</a> ( <code>有原创repo的Github帐号会极大的提升你的个人品牌</code>  )</p>
+</li>
+<li><p>期望职位：PHP高级程序员，应用架构师</p>
+</li>
+<li>期望薪资：税前月薪15k~20k，特别喜欢的公司可例外</li>
+<li>期望城市：北京</li>
+</ul>
+<hr>
+<h1 id="u8054_u7CFB_u65B9_u5F0F"><a href="#u8054_u7CFB_u65B9_u5F0F" class="headerlink" title="联系方式"></a>联系方式</h1><p>（HR会打印你的简历，用于在面试的时候联系，所以联系方式放到最上边会比较方便）</p>
+<ul>
+<li>手机：135<strong><em>**</em></strong> （<code>如果是外地手机，可注明。如经常关机，要写上最优联系时间</code>）</li>
+<li>Email：goodman@gmail.com （<code>虽然我觉得QQ邮箱无所谓，不过有些技术人员比较反感，建议用G</code>）</li>
+<li>QQ/微信号：6<strong><em>*</em></strong>（<code>提供一个通过网络可以联系到你的方式</code>）</li>
+</ul>
+<hr>
+<h1 id="u5DE5_u4F5C_u7ECF_u5386"><a href="#u5DE5_u4F5C_u7ECF_u5386" class="headerlink" title="工作经历"></a>工作经历</h1><p>（工作经历按逆序排列，最新的在最前边，按公司做一级分组，公司内按二级分组）</p>
+<h2 id="ABC_u516C_u53F8__uFF08_2012_u5E749_u6708__7E_2014_u5E749_u6708__uFF09"><a href="#ABC_u516C_u53F8__uFF08_2012_u5E749_u6708__7E_2014_u5E749_u6708__uFF09" class="headerlink" title="ABC公司 （ 2012年9月 ~ 2014年9月 ）"></a>ABC公司 （ 2012年9月 ~ 2014年9月 ）</h2><h3 id="DEF_u9879_u76EE"><a href="#DEF_u9879_u76EE" class="headerlink" title="DEF项目"></a>DEF项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
+<h3 id="GHI_u9879_u76EE"><a href="#GHI_u9879_u76EE" class="headerlink" title="GHI项目"></a>GHI项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
+<h3 id="u5176_u4ED6_u9879_u76EE"><a href="#u5176_u4ED6_u9879_u76EE" class="headerlink" title="其他项目"></a>其他项目</h3><p>（每个公司写2~3个核心项目就好了，如果你有非常大量的项目，那么按分类进行合并，每一类选一个典型写出来。其他的一笔带过即可。）</p>
+<h2 id="JKL_u516C_u53F8__uFF08_2010_u5E743_u6708__7E_2012_u5E748_u6708__uFF09"><a href="#JKL_u516C_u53F8__uFF08_2010_u5E743_u6708__7E_2012_u5E748_u6708__uFF09" class="headerlink" title="JKL公司 （ 2010年3月 ~ 2012年8月 ）"></a>JKL公司 （ 2010年3月 ~ 2012年8月 ）</h2><h3 id="MNO_u9879_u76EE"><a href="#MNO_u9879_u76EE" class="headerlink" title="MNO项目"></a>MNO项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
+<h3 id="PQR_u9879_u76EE"><a href="#PQR_u9879_u76EE" class="headerlink" title="PQR项目"></a>PQR项目</h3><p>我在此项目负责了哪些工作，分别在哪些地方做得出色/和别人不一样/成长快，这个项目中，我最困难的问题是什么，我采取了什么措施，最后结果如何。这个项目中，我最自豪的技术细节是什么，为什么，实施前和实施后的数据对比如何，同事和领导对此的反应如何。</p>
+<h3 id="u5176_u4ED6_u9879_u76EE-1"><a href="#u5176_u4ED6_u9879_u76EE-1" class="headerlink" title="其他项目"></a>其他项目</h3><p>（每个公司写2~3个核心项目就好了，如果你有非常大量的项目，那么按分类进行合并，每一类选一个典型写出来。其他的一笔带过即可。）</p>
+<hr>
+<h1 id="u5F00_u6E90_u9879_u76EE_u548C_u4F5C_u54C1"><a href="#u5F00_u6E90_u9879_u76EE_u548C_u4F5C_u54C1" class="headerlink" title="开源项目和作品"></a>开源项目和作品</h1><p>（这一段用于放置工作以外的、可证明你的能力的材料）</p>
+<h2 id="u5F00_u6E90_u9879_u76EE"><a href="#u5F00_u6E90_u9879_u76EE" class="headerlink" title="开源项目"></a>开源项目</h2><p>（对于程序员来讲，没有什么比Show me the code能有说服力了）</p>
+<ul>
+<li><a href="http://github.com/yourname/projectname" target="_blank" rel="external">STU</a> : 项目的简要说明，Star和Fork数多的可以注明</li>
+<li><a href="http://github.com/yourname/projectname" target="_blank" rel="external">WXYZ</a> : 项目的简要说明，Star和Fork数多的可以注明</li>
+</ul>
+<h2 id="u6280_u672F_u6587_u7AE0"><a href="#u6280_u672F_u6587_u7AE0" class="headerlink" title="技术文章"></a>技术文章</h2><p>（挑选你写作或翻译的技术文章，好的文章可以从侧面证实你的表达和沟通能力，也帮助招聘方更了解你）</p>
+<ul>
+<li><a href="http://get.jobdeer.com/706.get" target="_blank" rel="external">一个产品经理眼中的云计算：前生今世和未来</a></li>
+<li><a href="http://get.jobdeer.com/343.get" target="_blank" rel="external">来自HeroKu的HTTP API 设计指南(翻译文章)</a> （ <code>好的翻译文章可以侧证你对英文技术文档的阅读能力</code>）</li>
+</ul>
+<h2 id="u6F14_u8BB2_u548C_u8BB2_u4E49"><a href="#u6F14_u8BB2_u548C_u8BB2_u4E49" class="headerlink" title="演讲和讲义"></a>演讲和讲义</h2><p>（放置你代表公司在一些技术会议上做过的演讲，以及你在公司分享时制作的讲义）</p>
+<ul>
+<li>2014架构师大会演讲：<a href="http://jobdeer.com" target="_blank" rel="external">如何通过Docker优化内部开发</a><ul>
+<li>9月公司内部分享：<a href="http://jobdeer.com" target="_blank" rel="external">云计算的前生今世</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="u6280_u80FD_u6E05_u5355"><a href="#u6280_u80FD_u6E05_u5355" class="headerlink" title="技能清单"></a>技能清单</h1><p>（我一般主张将技能清单写入到工作经历里边去。不过很难完整，所以有这么一段也不错）</p>
+<p>以下均为我熟练使用的技能</p>
+<ul>
+<li>Web开发：PHP/Hack/Node</li>
+<li>Web框架：ThinkPHP/Yaf/Yii/Lavaral/LazyPHP</li>
+<li>前端框架：Bootstrap/AngularJS/EmberJS/HTML5/Cocos2dJS/ionic</li>
+<li>前端工具：Bower/Gulp/SaSS/LeSS/PhoneGap</li>
+<li>数据库相关：MySQL/PgSQL/PDO/SQLite</li>
+<li>版本管理、文档和自动化部署工具：Svn/Git/PHPDoc/Phing/Composer</li>
+<li>单元测试：PHPUnit/SimpleTest/Qunit</li>
+<li>云和开放平台：SAE/BAE/AWS/微博开放平台/微信应用开发</li>
+</ul>
+<hr>
+<h1 id="u81F4_u8C22"><a href="#u81F4_u8C22" class="headerlink" title="致谢"></a>致谢</h1><p>感谢您花时间阅读我的简历，期待能有机会和您共事。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2015/10/25/hello-world/" data-id="cikktt4vx000c8wim8gnm7ji4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cv-blog-doc/">cv,blog,doc</a></li></ul>
 
     </footer>
   </div>
@@ -1050,7 +1050,7 @@ docker images|grep none|awk '{print $3 }'|xargs docker rmi
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/1016/02/">February 1016</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -1060,6 +1060,10 @@ docker images|grep none|awk '{print $3 }'|xargs docker rmi
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/02/13/2016.2.13.docker_install/">在 Ubuntu 上面安装部署 docker</a>
+          </li>
         
           <li>
             <a href="/2016/02/12/2016.2.12.scala_BiMap/">google guava&#39;s BiMap</a>
@@ -1075,10 +1079,6 @@ docker images|grep none|awk '{print $3 }'|xargs docker rmi
         
           <li>
             <a href="/2016/02/05/blog_2_5_2016_log4j_usage_note/">How to use log4j in your project ?</a>
-          </li>
-        
-          <li>
-            <a href="/2016/02/05/blog_2_3_2016/">2 Build Blog on Windows by Node.js and Hexo</a>
           </li>
         
       </ul>
