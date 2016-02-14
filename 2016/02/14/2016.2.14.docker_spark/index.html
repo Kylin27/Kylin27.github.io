@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用 docker 来构建 spark 集群 | Kylin&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Description:在上一博客中介绍了如何在 ubuntu 上面部署 docker 系统，以及 docker 的基本命令; 在本篇博客中将会介绍如何利用 docker-hub 上的资源来快速搭建一个 spark 集群
+
+如何使用 dockerfile 来生成 docker 镜像文件 在后续的步骤中有一个镜像文件是无法直接从 docker-hub 的镜像库中直接下载的，但是可以从 github">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 docker 来构建 spark 集群">
+<meta property="og:url" content="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/index.html">
+<meta property="og:site_name" content="Kylin's Blog">
+<meta property="og:description" content="Description:在上一博客中介绍了如何在 ubuntu 上面部署 docker 系统，以及 docker 的基本命令; 在本篇博客中将会介绍如何利用 docker-hub 上的资源来快速搭建一个 spark 集群
+
+如何使用 dockerfile 来生成 docker 镜像文件 在后续的步骤中有一个镜像文件是无法直接从 docker-hub 的镜像库中直接下载的，但是可以从 github">
+<meta property="og:updated_time" content="2016-02-14T08:50:29.346Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 docker 来构建 spark 集群">
+<meta name="twitter:description" content="Description:在上一博客中介绍了如何在 ubuntu 上面部署 docker 系统，以及 docker 的基本命令; 在本篇博客中将会介绍如何利用 docker-hub 上的资源来快速搭建一个 spark 集群
+
+如何使用 dockerfile 来生成 docker 镜像文件 在后续的步骤中有一个镜像文件是无法直接从 docker-hub 的镜像库中直接下载的，但是可以从 github">
+  
+    <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kylin&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Kylin27@outlook.com</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://kylin27.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2016.2.14.docker_spark" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/14/2016.2.14.docker_spark/" class="article-date">
+  <time datetime="2016-02-13T16:00:00.000Z" itemprop="datePublished">2016-02-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用 docker 来构建 spark 集群
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description:<br>在<a href="https://kylin27.github.io/2016/02/13/2016.2.13.docker_install/">上一博客</a>中介绍了如何在 ubuntu 上面部署 docker 系统，以及 docker 的基本命令; 在本篇博客中将会介绍如何利用 docker-hub 上的资源来快速搭建一个 spark 集群</p>
+<hr>
+<h1 id="u5982_u4F55_u4F7F_u7528_dockerfile__u6765_u751F_u6210_docker__u955C_u50CF_u6587_u4EF6"><a href="#u5982_u4F55_u4F7F_u7528_dockerfile__u6765_u751F_u6210_docker__u955C_u50CF_u6587_u4EF6" class="headerlink" title="如何使用 dockerfile 来生成 docker 镜像文件"></a>如何使用 dockerfile 来生成 docker 镜像文件</h1><p> 在后续的步骤中有一个镜像文件是无法直接从 docker-hub 的镜像库中直接下载的，但是可以从 github 上面下载到该镜像文件的 dockerfile 文件。 所以在这里介绍一下如何使用 dockerfile 来创建 docker 镜像文件。 如果今后需要的话，将会详细介绍一下如何根据自己的需要来定制编写自己的 dockerfile .</p>
+<h3 id="docker_build"><a href="#docker_build" class="headerlink" title="docker build"></a>docker build</h3><p> 用来将指定路径的中 dockerfile 生成 docker 镜像文件</p>
+ <pre>
+ docker build -t="amplab/apache-hadoop-hdfs-precise:1.2.1" . 
+
+ // 上述命令会搜索当前路径，看是否有 dockerfile 文件，如果有，那么执行该 dockerfile 文件，并根据该 dockerfile 文件生成
+ // docker 镜像文件。同时又将该镜像文件打上名为 'amplab/apache-hadoop-hdfs-precise:1.2.1' 的标签
+ // 由于后面会通过 github 上面提供的 deploy.sh 脚本来构建 spark 系统，所以尽最大可能的保持 hadoop 的镜像文件的名称一致性 
+ </pre>
+
+
+<h1 id="u4ECE_docker-hub__u4E2D_u4E0B_u8F7D_u955C_u50CF_u6587_u4EF6"><a href="#u4ECE_docker-hub__u4E2D_u4E0B_u8F7D_u955C_u50CF_u6587_u4EF6" class="headerlink" title="从 docker-hub 中下载镜像文件"></a>从 docker-hub 中下载镜像文件</h1><p>首先确保正确登录 docker-hub 账号<br>其实我安装 spark 的主要目的是为了使用 spark 提供的 GraphX 和 mllib 这两个工具，而 mllib 中在 spark-0.9 之后才支持，<br>所以，在这里我安装的是 spark-1.0.0 版本<br><b>在执行 pull 命令之前,我开启了翻墙的软件,这样可以节省时间</b></p>
+<pre>
+sudo docker pull amplab/apache-hadoop-hdfs-precise:1.2.1   
+// 这个镜像在 docker-hub 上面找不到，所以需要根据 github 可以获得的 Dockerfile 来构建其镜像文件
+
+$docker pull amplab/dnsmasq-precise:1.0.0
+$docker pull amplab/spark-worker:1.0.0
+$docker pull amplab/spark-master:1.0.1
+$docker pull amplab/spark-shell:1.0.1
+
+$docker images                // 通过该命令查看系统中的镜像文件
+
+REPOSITORY               TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+ubuntu_14                wget                44552cea1d79        7 hours ago         187.9 MB
+ubuntu                   14.04               8693db7e8a00        3 weeks ago         187.9 MB
+amplab/spark-shell       1.0.0               c18acb8d81a0        20 months ago       964.3 MB
+amplab/spark-worker      1.0.0               6f77966546ee        20 months ago       964.3 MB
+amplab/spark-master      1.0.0               a43b969cfeff        20 months ago       964.3 MB
+amplab/dnsmasq-precise   latest              d9cdba2ae123        23 months ago       205.8 MB
+
+</pre>
+
+<h1 id="u4ECE_git-hub__u4E0A_u9762_u4E0B_u8F7D_u8FD0_u884C_docker__u955C_u50CF_u6587_u4EF6_u7684_u811A_u672C"><a href="#u4ECE_git-hub__u4E0A_u9762_u4E0B_u8F7D_u8FD0_u884C_docker__u955C_u50CF_u6587_u4EF6_u7684_u811A_u672C" class="headerlink" title="从 git-hub 上面下载运行 docker 镜像文件的脚本"></a>从 git-hub 上面下载运行 docker 镜像文件的脚本</h1><pre>
+$wget https://github.com/amplab/docker-scripts/archive/master.zip
+$unzip master.zip
+</pre>
+
+<h1 id="u542F_u52A8_spark__u96C6_u7FA4"><a href="#u542F_u52A8_spark__u96C6_u7FA4" class="headerlink" title="启动 spark 集群"></a>启动 spark 集群</h1><p>将路径切换到包含 /deploy 文件夹的路径下面</p>
+<pre>
+./deploy/deploy.sh -i amplab/spark:1.0.0 -w 3
+
+$docker ps                 // 通过该命令来查看系统中正在运行的容器信息
+
+CONTAINER ID        IMAGE                           COMMAND                CREATED              STATUS              PORTS                NAMES
+855415af179d        amplab/spark-shell:1.0.0        "/root/spark_shell_f   About a minute ago   Up About a minute   8888/tcp             cocky_meitner           
+5bb8f871e474        amplab/spark-shell:1.0.0        "/root/spark_shell_f   2 minutes ago        Up 2 minutes        8888/tcp             modest_brown            
+2c2d49565559        amplab/spark-worker:1.0.0       "/root/spark_worker_   5 minutes ago        Up 5 minutes        8888/tcp             silly_ptolemy           
+24b16b64e6ad        amplab/spark-worker:1.0.0       "/root/spark_worker_   5 minutes ago        Up 5 minutes        8888/tcp             compassionate_lalande   
+25efa7bbeb20        amplab/spark-worker:1.0.0       "/root/spark_worker_   5 minutes ago        Up 5 minutes        8888/tcp             happy_curie             
+1ba8d72a6cd2        amplab/spark-master:1.0.0       "/root/spark_master_   6 minutes ago        Up 6 minutes        7077/tcp, 8080/tcp   kickass_jones           
+3a8c3a8906df        amplab/dnsmasq-precise:latest   "/root/dnsmasq_files   6 minutes ago        Up 6 minutes 
+
+</pre>
+
+<p>具体的参数解释可以戳<a href="https://github.com/amplab/docker-scripts#testing" target="_blank" rel="external">这里</a><br>-w 是用来指定 spark 运行之后对应的 worker 进程个数<br>从上面输入 docker ps 命令之后显示出来的信息可以推知，我们总共创建了: spark-shell , spark-worker , spark-master, dns<br>这些容器运行，但是没有 hadoop 运行, 于是在熟悉上述流程的我又查了其他的几个spark 集群镜像文件，<a href="https://hub.docker.com/r/sequenceiq/spark/" target="_blank" rel="external">找了一个合适的</a> 接下来试试这个镜像文件好了… </p>
+<hr>
+<h1 id="u4E0D_u8FC7_u5148_u6765_u5C06_u5F53_u524D_u7CFB_u7EDF_u4E2D_u7684_u6240_u6709_u8FD0_u884C_u5BB9_u5668_u505C_u6B62"><a href="#u4E0D_u8FC7_u5148_u6765_u5C06_u5F53_u524D_u7CFB_u7EDF_u4E2D_u7684_u6240_u6709_u8FD0_u884C_u5BB9_u5668_u505C_u6B62" class="headerlink" title="不过先来将当前系统中的所有运行容器停止"></a>不过先来将当前系统中的所有运行容器停止</h1><pre>
+// 同样现将路径切换到 ./deploy 文件夹的路径下面
+$ ./deploy/kill_all.sh spark
+$ ./deploy/kill_all.sh namespace
+</pre>
+
+<hr>
+<h1 id="u5C06_u8BE5_u955C_u50CF_u6587_u4EF6_u4E0B_u8F7D_u5230_u672C_u5730"><a href="#u5C06_u8BE5_u955C_u50CF_u6587_u4EF6_u4E0B_u8F7D_u5230_u672C_u5730" class="headerlink" title="将该镜像文件下载到本地"></a>将该镜像文件下载到本地</h1><pre>
+$docker pull sequenceiq/spark:v1.6.0onHadoop2.6.0
+成功下载显示信息:
+...
+95d969caad90: Download complete 
+2d727ce74b86: Download complete 
+28c9338da9a6: Download complete 
+cb7d9861a895: Download complete 
+73bb712333d9: Download complete 
+a466bc76549f: Download complete 
+441cf02fdf7d: Download complete 
+056efae329d8: Download complete 
+Status: Downloaded newer image for sequenceiq/spark:v1.6.0onHadoop2.6.0
+</pre>
+
+<h1 id="u4ECE_docker__u955C_u50CF_u6587_u4EF6_u751F_u6210_u5E76_u8FD0_u884C_u5BB9_u5668"><a href="#u4ECE_docker__u955C_u50CF_u6587_u4EF6_u751F_u6210_u5E76_u8FD0_u884C_u5BB9_u5668" class="headerlink" title="从 docker 镜像文件生成并运行容器"></a>从 docker 镜像文件生成并运行容器</h1><p>先来查看一下当前系统中所有的镜像文件</p>
+<pre>
+$docker images     // 先来查看一下当前系统中所有的镜像文件
+REPOSITORY               TAG                   IMAGE ID            CREATED             VIRTUAL SIZE
+ubuntu_14                wget                  44552cea1d79        24 hours ago        187.9 MB
+ubuntu                   14.04                 8693db7e8a00        3 weeks ago         187.9 MB
+sequenceiq/spark         v1.6.0onHadoop2.6.0   056efae329d8        5 weeks ago         2.877 GB
+amplab/spark-shell       1.0.0                 c18acb8d81a0        20 months ago       964.3 MB
+amplab/spark-worker      1.0.0                 6f77966546ee        20 months ago       964.3 MB
+amplab/spark-master      1.0.0                 a43b969cfeff        20 months ago       964.3 MB
+amplab/dnsmasq-precise   latest                d9cdba2ae123        23 months ago       205.8 MB
+</pre>
+
+<p>再运行镜像文件生成容器实例</p>
+<pre>
+$docker run -it sequenceiq/spark:v1.6.0onHadoop2.6.0  bash 
+
+成功运行显示信息:
+Starting sshd:                                             [  OK  ]
+Starting namenodes on [1f25c1d3d790]
+1f25c1d3d790: starting namenode, logging to /usr/local/hadoop/logs/hadoop-root-namenode-1f25c1d3d790.out
+localhost: starting datanode, logging to /usr/local/hadoop/logs/hadoop-root-datanode-1f25c1d3d790.out
+Starting secondary namenodes [0.0.0.0]
+<b>上述 docker 运行命令作用是是从刚刚下载到本地的 docker 镜像文件中生成 docker 容器(该容器中就包含部署好了的 hadoop 和 spark 软件)；
+生成容器之后，登录到该容器中，并运行 bash 命令</b>
+
+成功登录显示信息:
+bash-4.1# ls     // <b>先显示一下容器中的基本信息 </b>      
+bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  pam-1.1.1-17.el6.src.rpm  proc  root  rpmbuild  sbin  selinux  srv  sys  tmp  usr  var
+bash-4.1# jps     // <b>然后查看一下容器系统中运行的进程都有什么。 可以看出有 Hadoop 节点和 Spark 等相关进程在运行</b> 
+562 NodeManager
+353 SecondaryNameNode
+109 NameNode
+183 DataNode
+636 Jps
+482 ResourceManager
+</pre>
+
+<h1 id="u8FD0_u884C_spark__u4E2D_u7684_counter__u6D4B_u8BD5_u7A0B_u5E8F"><a href="#u8FD0_u884C_spark__u4E2D_u7684_counter__u6D4B_u8BD5_u7A0B_u5E8F" class="headerlink" title="运行 spark 中的 counter 测试程序"></a>运行 spark 中的 counter 测试程序</h1><pre>
+<b>首先需要运行一下 spark-shell , 直接在当前 bash 命令行中输入如下命令 </b>
+$spark-shell \
+ --master yarn-client \
+ --driver-memory 1g \
+ --executor-memory 1g \
+ --executor-cores 1
+
+<b>如果成功，将会显示如下信息:</b>
+
+16/02/14 02:57:02 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/02/14 02:57:03 INFO spark.SecurityManager: Changing view acls to: root
+16/02/14 02:57:03 INFO spark.SecurityManager: Changing modify acls to: root
+16/02/14 02:57:03 INFO spark.SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: Set(root); users with modify permissions: Set(root)
+16/02/14 02:57:04 INFO spark.HttpServer: Starting HTTP Server
+16/02/14 02:57:04 INFO server.Server: jetty-8.y.z-SNAPSHOT
+16/02/14 02:57:04 INFO server.AbstractConnector: Started SocketConnector@0.0.0.0:58832
+16/02/14 02:57:04 INFO util.Utils: Successfully started service 'HTTP class server' on port 58832.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 1.6.0
+      /_/
+
+Using Scala version 2.10.5 (Java HotSpot(TM) 64-Bit Server VM, Java 1.7.0_51)
+Type in expressions to have them evaluated.
+... 后面反正还有挺多，最后会看到 scala> 命令行提示输入符
+
+<b>我们来测试一个最简单的计数程序调用好了</b>
+
+scala> sc.parallelize( 1 to 1000).count()
+16/02/14 03:01:56 INFO spark.SparkContext: Starting job: count at <console>:28
+16/02/14 03:01:56 INFO scheduler.DAGScheduler: Got job 0 (count at <console>:28) with 2 output partitions
+16/02/14 03:01:56 INFO scheduler.DAGScheduler: Final stage: ResultStage 0 (count at <console>:28)
+16/02/14 03:01:56 INFO scheduler.DAGScheduler: Parents of final stage: List()
+16/02/14 03:01:56 INFO scheduler.DAGScheduler: Missing parents: List()
+16/02/14 03:01:56 INFO scheduler.DAGScheduler: Submitting ResultStage 0 (ParallelCollectionRDD[0] at parallelize at <console>:28), which has no missing parents
+16/02/14 03:01:57 INFO storage.MemoryStore: Block broadcast_0 stored as values in memory (estimated size 1096.0 B, free 1096.0 B)
+16/02/14 03:01:57 INFO storage.MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 804.0 B, free 1900.0 B)
+16/02/14 03:01:57 INFO storage.BlockManagerInfo: Added broadcast_0_piece0 in memory on 172.17.0.10:48410 (size: 804.0 B, free: 517.4 MB)
+16/02/14 03:01:57 INFO spark.SparkContext: Created broadcast 0 from broadcast at DAGScheduler.scala:1006
+16/02/14 03:01:57 INFO scheduler.DAGScheduler: Submitting 2 missing tasks from ResultStage 0 (ParallelCollectionRDD[0] at parallelize at <console>:28)
+16/02/14 03:01:57 INFO cluster.YarnScheduler: Adding task set 0.0 with 2 tasks
+16/02/14 03:01:58 INFO scheduler.TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, 42ba3f37ce84, partition 0,PROCESS_LOCAL, 2078 bytes)
+16/02/14 03:01:58 INFO scheduler.TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1, 42ba3f37ce84, partition 1,PROCESS_LOCAL, 2135 bytes)
+16/02/14 03:02:04 INFO storage.BlockManagerInfo: Added broadcast_0_piece0 in memory on 42ba3f37ce84:58577 (size: 804.0 B, free: 517.4 MB)
+16/02/14 03:02:04 INFO storage.BlockManagerInfo: Added broadcast_0_piece0 in memory on 42ba3f37ce84:36276 (size: 804.0 B, free: 517.4 MB)
+16/02/14 03:02:09 INFO scheduler.TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 11580 ms on 42ba3f37ce84 (1/2)
+16/02/14 03:02:09 INFO scheduler.TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 11454 ms on 42ba3f37ce84 (2/2)
+16/02/14 03:02:09 INFO cluster.YarnScheduler: Removed TaskSet 0.0, whose tasks have all completed, from pool 
+16/02/14 03:02:09 INFO scheduler.DAGScheduler: ResultStage 0 (count at <console>:28) finished in 11.657 s
+16/02/14 03:02:09 INFO scheduler.DAGScheduler: Job 0 finished: count at <console>:28, took 13.058068 s
+res0: Long = 1000
+</console></console></console></console></console></console></console></pre>
+
+<p> 这样一个 spark 集群就搭建好了，如果需要把当前对容器做出的修改同步到原有的镜像文件(推荐重新另存一个新的镜像文件)，可以使用<a href="https://kylin27.github.io/2016/02/13/2016.2.13.docker_install/">上一篇博客中</a>介绍的 docker commit 这个命令</p>
+<h1 id="u5173_u4E8E_u6536_u5C3E_u5DE5_u4F5C"><a href="#u5173_u4E8E_u6536_u5C3E_u5DE5_u4F5C" class="headerlink" title="关于收尾工作"></a>关于收尾工作</h1><p>当前所处的状态是 scala&gt; 的命令行，输入 exit 便可以退出当前 scala 命令行交互的状态；<br>再次输入 exit (一次或是多次) 便可以退出当前登录的 spark-hadoop 集群容器，当然容器在你退出之后便会’消亡’,也就是不运行了系统回收它的资源咯，输入 docker ps 便查看不到容器信息；<br>如果在实际工作中推荐的做法是，在退出容器之前，在另一个远程访问终端内，将该容器的状态信息进行保存(归档或是生成镜像文件，如果乐意也可以将生成的镜像文件提交到 docker-hub 的上面)</p>
+<p>总之，博客中很多地方写的很啰嗦啦，因为我喜欢在自己经常犯的错误的地方啰嗦几句，不喜欢的话，来打我啊~<br>end</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cikmb5cak00009wim9f73vow9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dockerfile/">dockerfile</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/02/13/2016.2.13.docker_install/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">在 Ubuntu 上面安装部署 docker</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cv/">cv</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cv-blog-doc/">cv,blog,doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 20px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/cv/" style="font-size: 10px;">cv</a> <a href="/tags/cv-blog-doc/" style="font-size: 10px;">cv,blog,doc</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 20px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 20px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 10px;">spark</a> <a href="/tags/theory/" style="font-size: 10px;">theory</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/02/14/2016.2.14.docker_spark/">使用 docker 来构建 spark 集群</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/13/2016.2.13.docker_install/">在 Ubuntu 上面安装部署 docker</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/12/2016.2.12.scala_BiMap/">google guava&#39;s BiMap</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/11/2016.2.5.scala_theory/">scala编程相关知识1</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/06/2016.2.5.search_engine_theory/">搜索引擎知识点整理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Kylin<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>
