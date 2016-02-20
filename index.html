@@ -65,6 +65,246 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016.2.19.Google-Test 使用教程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/19/2016.2.19.Google-Test 使用教程/" class="article-date">
+  <time datetime="2016-02-18T16:00:00.000Z" itemprop="datePublished">2016-02-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/19/2016.2.19.Google-Test 使用教程/">Google 测试框架 g-Test 使用教程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description: 这篇文章简明介绍了 google 开源的一款 C++ 方向的测试框架 <a href="http://baike.baidu.com/link?url=BaRDfHesKkuurHcqjxM2g8vRMU9udYULmvOLn49k9pr79Il7uj6z7wlcf-BIe4sgJNLKTH8MN8MpMvdZseIEVK" target="_blank" rel="external">Gtest</a> 的使用方法做简单介绍,为后续整理发布的<a href="/">数据库引擎开发项目</a>(目前还没发布到博客中)做单元，模块测试方面的技术支撑。</p>
+<hr>
+<h2 id="G-Test__u7684_u5B89_u88C5"><a href="#G-Test__u7684_u5B89_u88C5" class="headerlink" title="G-Test 的安装"></a>G-Test 的安装</h2><ul>
+<li><p>通过 github 页面下载 gtest 的源码压缩包,命令如下<pre><br> $wget <a href="https://github.com/google/googletest/archive/master.zip" target="_blank" rel="external">https://github.com/google/googletest/archive/master.zip</a> </pre></p>
+</li>
+<li><p>解压之后，在目录下面看到 CMakeList.txt 文件，可知使用的是 cmake 编译工具，保证虚拟机处于联网(NAT模式)，输入命令下载 cmake 编译工具<pre><br>$apt-get install cmake </pre></p>
+</li>
+<li><p>下载 cmake 结束之后，测试其是否能够正常工作 <pre><code><br>$cmake<br>如果正常工作会显示如下内容<br>Usage<br>cmake [options] <path-to-source><br>cmake [options] <path-to-existing-build><br>Options -C <initial-cache> = Pre-load a script to populate the cache. </initial-cache></path-to-existing-build></path-to-source></code></pre></p>
+</li>
+<li><p>编译安装 gTest </p>
+</li>
+<li><pre><code><br>  mkdir cmake_dir<br> $ cd cmake_dir<br> $ cmake ../<br> 正确编译，显示信息如下<br>– The C compiler identification is GNU 4.9.2<br>– The CXX compiler identification is GNU 4.9.2<br>– Check for working C compiler: /usr/bin/cc<br>– Check for working C compiler: /usr/bin/cc – works<br>…<br>– Found Threads: TRUE<br>– Configuring done<br>– Generating done<br>– Build files have been written to: /gTester/googletest-master/cmake_dir<br></code></pre><br>在这里我们创建 cmake_dir 文件夹，并在该文件夹的下面执行 cmake 操作的目的是为了让 cmake 编译生成的中间文件与下载的 gTest 的项目文件二者之间分离开，不然会混淆. 在 cmake_dir 文件夹中生成的中间文件如下:</li>
+</ul>
+<pre><code>
+ CMakeCache.txt  CMakeFiles  cmake_install.cmake  CTestTestfile.cmake  googlemock  Makefile
+</code></pre>
+
+<p>   继续输入 make &amp;&amp; make install 来安装 gTest，如正确编译安装显示信息如下:</p>
+<pre><code>
+ Scanning dependencies of target gmock
+[ 14%] Building CXX object googlemock/CMakeFiles/gmock.dir/__/googletest/src/gtest-all.cc.o
+[ 28%] Building CXX object googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o
+Linking CXX static library libgmock.a
+...
+Install the project...
+-- Install configuration: ""
+-- Installing: /usr/local/lib/libgmock.a
+-- Installing: /usr/local/lib/libgmock_main.a
+-- Installing: /usr/local/include/gmock
+-- Installing: /usr/local/include/gmock/gmock-generated-actions.h
+-- Installing: /usr/local/include/gmock/gmock-cardinalities.h
+-- Installing: /usr/local/include/gmock/gmock-actions.h
+... 
+</code></pre> 
+
+<h2 id="gTest__u7684_u5165_u95E8_u7EA7_u4F7F_u7528_u4F8B_u5B50"><a href="#gTest__u7684_u5165_u95E8_u7EA7_u4F7F_u7528_u4F8B_u5B50" class="headerlink" title="gTest 的入门级使用例子"></a>gTest 的入门级使用例子</h2><ul>
+<li>使用 gTest 来编写最简单的测试用例<ul>
+<li>首先编写 C++ 文件  </li>
+</ul>
+</li>
+</ul>
+<pre><code>
+  // test.hpp
+#ifndef TEST_HPP__
+#define TEST_HPP__
+
+int getValue(int _value);
+
+#endif
+</code></pre>
+
+<pre><code>
+ // test.cpp
+#include "test.hpp"
+#include <cstdio>
+
+int getValue( int _value ){
+    return _value ;
+}</cstdio></code> </pre>
+
+
+<ul>
+<li>编写包含 gTest库函数的 C++ 测试文件 </li>
+</ul>
+<pre><code>
+#include "test.hpp"
+#include "gtest/gtest.h"
+
+// first we test ASSERT_TRUE
+
+void test_ASSERT_TRUE(){
+  ASSERT_TRUE(false) ;
+}
+
+void test_EXPECT_TRUE(){
+   EXPECT_TRUE(false) ;
+}
+
+int main( void ){
+  test_EXPECT_TRUE();
+
+  return 0;
+}
+</code></pre>
+
+<ul>
+<li>编写 Makefile 文件</li>
+</ul>
+<pre><code>
+GTEST_DIR=/gTester/googletest-master/googletest
+
+USER_DIR= ./
+
+CPPFLAGS += -I$(GTEST_DIR)/include
+
+CXXFLAGS += -g -Wall -Wextra
+
+TESTS = test_tester
+
+GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
+                $(GTEST_DIR)/include/gtest/internal/*.h
+
+all : $(TESTS)
+
+clean :
+        rm -f $(TESTS) *.a *.o
+
+GTEST_SRCS_= $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
+
+gtest-all.o : $(GTEST_SRCS_)
+        $(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
+                $(GTEST_DIR)/src/gtest-all.cc
+
+
+gtest_main.o : $(GTEST_SRCS_)
+        $(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c $(GTEST_DIR)/src/gtest_main.cc  
+
+gtest.a : gtest-all.o
+        $(AR) $(ARFLAGS) $@ $^  
+
+gtest_main.a : gtest-all.o gtest_main.o
+        $(AR) $(ARFLAGS) $@ $^  
+
+
+test.o : $(USER_DIR)/test.cpp $(USER_DIR)/test.hpp $(GTEST_HEADERS)
+        $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/test.cpp
+
+test_tester.o : $(USER_DIR)/test_tester.cpp $(USER_DIR)/test.hpp $(GTEST_HEADERS)
+        $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/test_tester.cpp
+
+test_tester : test.o test_tester.o gtest_main.a
+        $(CXX) $(CPPFLAGS) $(CXXFLAG) -pthread  $^ -o $@
+   </code></pre>
+
+<ul>
+<li>输入 make 命令生成可执行文件 test_tester</li>
+<li>运行 gTest 的测试文件，查看输出结果<pre> <code>.//test_tester.cpp:12: Failure
+Value of: false
+Actual: false
+Expected: true </code> </pre>
+
+</li>
+</ul>
+<h2 id="gTest__u4E2D_u65AD_u8A00_u4ECB_u7ECD"><a href="#gTest__u4E2D_u65AD_u8A00_u4ECB_u7ECD" class="headerlink" title="gTest 中断言介绍"></a>gTest 中断言介绍</h2><ul>
+<li><p><b>ASSERT_* 的断言函数如果判定最终结果不满足判定输出值，将会发出 断言失败 + 终止程序的结果</b></p>
+</li>
+<li><p><b>EXPECT_* 的断言函数如果判断最终结果不满足判定输出值，将仅会发出 断言失败 的提示信息</b>    </p>
+</li>
+</ul>
+<h3 id="u57FA_u672C_u65AD_u8A00_u8BF4_u660E"><a href="#u57FA_u672C_u65AD_u8A00_u8BF4_u660E" class="headerlink" title="基本断言说明"></a>基本断言说明</h3><ul>
+<li><p><pre><br>ASSERT_TRUE （condition）；<br>ASSERT_FALSE (condition) ；<br></pre><br>上述断言函数是这样的: 括号中的 condition 可以是一个返回结果为布尔值的函数，也可以是一个不二变量，同样也可以是一个逻辑表达式，只要最终返回的结果是布尔值就可以。而两个函数 ASSERT_TRUE 要求这个布尔值必须是 TRUE/真值，如果不是真便会输出’致命错误’并退出当前正在执行的函数。 ASSERT_FALSE 方法刚好相反，它期待的是一个 FALSE/假值，如果不满足同样输出’致命错误’信息，并退出当前正在执行的方法(程序)。</p>
+</li>
+<li><p><pre><br> EXPECT_TRUE(condition) ;<br> EXPECT_FALSE(condition) ;<br></pre><br>上述函数的断言是这样的: 如果括号中的 condition 变量返回的布尔值与断言期待的布尔值不同的话，不会退出当前正在执行的方法/程序。 它会继续允许程序的继续运行，但是会输出执行错误的提示信息（如果错误信息流定向是控制台显示器的话）</p>
+</li>
+</ul>
+<h3 id="u57FA_u4E8E_u4E24_u503C_u6BD4_u8F83_u7684_u65AD_u8A00_u51FD_u6570_u8BF4_u660E"><a href="#u57FA_u4E8E_u4E24_u503C_u6BD4_u8F83_u7684_u65AD_u8A00_u51FD_u6570_u8BF4_u660E" class="headerlink" title="基于两值比较的断言函数说明"></a>基于两值比较的断言函数说明</h3><ul>
+<li><p>在基于而知比较的断言函数中，传入的参数必须要满足下面两种条件中的一种</p>
+<ul>
+<li><p>是基本类型，可以直接进行逻辑比较</p>
+</li>
+<li><p>如果是符合类似(class ,struct)是需要重载比较运算符的</p>
+</li>
+<li><p>需要注意的是，如果传入的是指针类型的话，判定的并不是指针指向的数值内容是否相同，而是会判定指针是否指向同一块内存空间</p>
+</li>
+<li><b>如果需要判定指针指向字符串的逻辑关系，不要使用这一系列的断言函数</b> <br></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><pre><code>
+  ASSERT_EQ(expected, actual) ；  expected==actual
+  ASSERT_NE(expected, actual) ；  expected!=actual
+  ASSERT_LT(expected, actual) ；  expected 小于 actual, LT(less than)
+  ASSERT_LE(expected, actual) ；  expected 小于等于 actual, LE(less equal)
+  ASSERT_GT(expected, actual) ；  expected 大于 actual, GT(greater than)
+  ASSERT_GE(expected, actual) ；  expected 大于等于 actual, GE(greater equal)
+</code></pre>
+</li>
+<li><pre><code>
+EXPECT_EQ(expected, actual) ；
+EXPECT_NE(expected, actual) ；
+EXPECT_LT(expected, actual) ；
+EXPECT_LE(expected, actual) ；
+EXPECT_GT(expected, actual) ；
+EXPECT_GE(expected, actual) ；
+</code></pre>
+
+
+
+</li>
+</ul>
+<h3 id="u57FA_u4E8E_u5B57_u7B26_u4E32_u7684_u6BD4_u8F83_u65AD_u8A00_u8BF4_u660E"><a href="#u57FA_u4E8E_u5B57_u7B26_u4E32_u7684_u6BD4_u8F83_u65AD_u8A00_u8BF4_u660E" class="headerlink" title="基于字符串的比较断言说明"></a>基于字符串的比较断言说明</h3><ul>
+<li><pre><code>
+ASSERT_STREQ(str1,str2); str1's content = str2's content
+ASSERT_STRNE(str1,str2); str1's content != str2's content
+ASSERT_STRCASEEQ(str1,str2); str1's content = str2's content ,ignoring characters case
+ASSERT_STRCASENE(str1,str2); ignoring string characters' case, str1's content != str2's content 
+</code></pre>
+
+
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cikugmwq3000zjsimf3i81zqi" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gtest/">Gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gtest/">gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/manual/">manual</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试，使用手册，C-，tutorial/">测试，使用手册，C++ ，tutorial</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2016.2.18.dht.note" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/02/18/2016.2.18.dht.note/" class="article-date">
@@ -177,7 +417,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="ciktpw532000zwkim2x6zeh4v" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cikugmwqb0018jsimlvf4sj9a" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chord/">Chord</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DHT/">DHT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/P2P/">P2P</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/note/">note</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -226,7 +466,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="ciktpw53a0019wkimiz49gyyh" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cikugmwqf001ijsimvqjd2419" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/picture/">picture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/七牛/">七牛</a></li></ul>
@@ -442,7 +682,7 @@ res0: Long = 1000
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="ciktpw53g001hwkimvfsegzuy" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cikugmwqk001qjsimlw7eepdk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dockerfile/">dockerfile</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -696,7 +936,7 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="ciktpw53l001qwkim54t525rd" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cikugmwqo001zjsimk8wxmj2g" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
@@ -788,7 +1028,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="ciktpw51z0000wkim3vxcihqe" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cikugmwp40000jsimi4be2csb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/datastructure/">datastructure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
@@ -890,7 +1130,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="ciktpw52y000vwkimdo2ttcq3" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cikugmwpz000vjsimi6dyy32m" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming-theory/">programming-theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
@@ -1024,10 +1264,103 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="ciktpw52s000kwkimgmbzx3bp" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cikugmwpr000kjsimars2suhl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/search-engine/">search-engine</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-blog_2_3_2016" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/05/blog_2_3_2016/" class="article-date">
+  <time datetime="2016-02-04T16:00:00.000Z" itemprop="datePublished">2016-02-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/05/blog_2_3_2016/">2 Build Blog on Windows by Node.js and Hexo</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description: This blog introduces how to build your own blog on windows OS. with the help of Node.js and Hexo <br></p>
+<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git<br></h3><p>Download Git  and register an account in <a href="https://github.com/" target="_blank" rel="external">GitHub</a> ,<br><br>Make sure SSH is installed on your windows OS. Create DSA or RSA keys by running commands below</p>
+<pre> 
+$ cd ~/.ssh * 
+$ ssh-keygen -t rsa -C youremail@email.com  
+ </pre>
+
+<p>Add the generated key rsa*.pub content to your <a href="https://github.com/settings/profile" target="_blank" rel="external">GitHub</a> <br><br><a href="https://github.com/settings/ssh" target="_blank" rel="external">SSH keys</a>  <a href="https://github.com/settings/ssh#" target="_blank" rel="external">New SSH key</a> <br><br>Paste your ssh rsa.pub key to it<br><br>Setup your cmd/git hub bash ,tab</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<p>Your will receive a message like this “Hi , welcome to git hub blabla “. <br><br>But now ,remember you have not got your token string yet which means you couldn’t ‘deploy’ your hexo blog to github.<br><br>Go to the <a href="https://github.com/settings/profile" target="_blank" rel="external">GitHub Setting Page</a> and press the <a href="https://github.com/settings/tokens" target="_blank" rel="external">Personal access tokens</a> then <a href="https://github.com/settings/tokens/new" target="_blank" rel="external">Generate new token</a> and confirm your password again .<br>  Write in the token name (Token description) in order your can distinguish this token to other tokens , select scopes (just like setting functions of the token) , and the last step is press the green ‘Generate token’ button.  Like this you’ll get your ‘Personal access tokens’<br><br>Open your git bash again , and tab in commands </p>
+<pre> 
+$ git config --global user.name "your name" 
+$ git config --global user.email "your email"
+$ git config --global usr.token "paste the personal access tokens your just got here"
+ </pre>
+
+<hr>
+<h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js <br></h3><p>Download <a href="https://nodejs.org/en/download/stable/" target="_blank" rel="external">Node.js for Windows</a><br><br>Install Node.js and add both Node.js and npm’s path to environment’s PATH<br><br><b>Create two folders with the name of ‘node_cache’ and ‘node_global’under node.js’s folder </b><br><br>Open git bash under current folder(by clicking right mouse -&gt; git bash), and tab </p>
+<pre> 
+$ npm config ls
+$ npm config set cache 'the absolute path you created folder node_cache'
+$ npm config set prefix 'the absolute path you created folder node_global'  
+ </pre>
+
+<hr>
+<h3 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo  <br></h3><p> Open your git bash again,change your current to one folder your want your hexo installed in, tab in</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo</span><br></pre></td></tr></table></figure>
+<h2 id="Local_Blog_Server"><a href="#Local_Blog_Server" class="headerlink" title="Local Blog Server"></a>Local Blog Server</h2><p> After hexo installed , do not forget add the hexo(the executable binary file)’s location into env’s PATH too<br><br> Make a new folder which you want to store blog’s file and change current path to it<br><br> Tab in </p>
+<pre> 
+$ hexo init         # this command like git init , initialize the blog workspace and generate files
+$ npm install    # wait for a while
+$ hexo g         # hexo g is the command which short for hexo generate
+$ hexo s         # deploy your hexo template on localhost's server(0.0.0.0:4000)
+</pre>
+
+<h2 id="Deploy_Blog_to_Git_28like_this_blog_29"><a href="#Deploy_Blog_to_Git_28like_this_blog_29" class="headerlink" title="Deploy Blog to Git(like this blog)"></a>Deploy Blog to Git(like this blog)</h2><p> Create a new respo. on your github with the name <b>‘your github account name’.github.io</b><br><br> Deploy Blog to Git ‘s step is a little different from deploying it on local server<br><br> Open git bash on hexo blog’s path and tab in the commands below</p>
+<pre> 
+$ hexo init 
+$ npm install
+$ npm install hexo-deployer-git --save # download git corresponding plugins
+</pre>
+
+<p> Open your _config.yml file , update the #Deployment’s part content like this</p>
+<pre> 
+# Deployment
+## Docs: http://hexo.io/docs/deployment.html
+deploy:
+  type: git
+  repository: git@github.com:'your github account name'.github.io.git  #--> do not forget replace it
+  branch: master
+</pre> 
+
+<p> After update _config.yml file , tab in commands</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo d    <span class="comment"># short command for hexo deploy</span></span><br></pre></td></tr></table></figure>
+<p>Open your browser, and tab in <a href="https://&#39;your" target="_blank" rel="external">https://&#39;your</a> github account name’.github.io you will see the blog your just create<br><br>If your want to add new blogs just add a new .md file (mark down edit style) under your blog’s source/_post/ folder<br><br>You can change your blog’s name by changing _config.yml’s ‘title’ content<br><br>Good luck !</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cikugmwpo000bjsimn4tkdgxl" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows/">windows</a></li></ul>
 
     </footer>
   </div>
@@ -1143,7 +1476,7 @@ public class TestLog4j{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="ciktpw52m0008wkimn1ooork4" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cikugmwpm0008jsimf7mdoxf5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a></li></ul>
@@ -1155,250 +1488,10 @@ public class TestLog4j{
 
 
   
-    <article id="post-blog_2_3_2016" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/05/blog_2_3_2016/" class="article-date">
-  <time datetime="2016-02-04T16:00:00.000Z" itemprop="datePublished">2016-02-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/05/blog_2_3_2016/">2 Build Blog on Windows by Node.js and Hexo</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description: This blog introduces how to build your own blog on windows OS. with the help of Node.js and Hexo <br></p>
-<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git<br></h3><p>Download Git  and register an account in <a href="https://github.com/" target="_blank" rel="external">GitHub</a> ,<br><br>Make sure SSH is installed on your windows OS. Create DSA or RSA keys by running commands below</p>
-<pre> 
-$ cd ~/.ssh * 
-$ ssh-keygen -t rsa -C youremail@email.com  
- </pre>
-
-<p>Add the generated key rsa*.pub content to your <a href="https://github.com/settings/profile" target="_blank" rel="external">GitHub</a> <br><br><a href="https://github.com/settings/ssh" target="_blank" rel="external">SSH keys</a>  <a href="https://github.com/settings/ssh#" target="_blank" rel="external">New SSH key</a> <br><br>Paste your ssh rsa.pub key to it<br><br>Setup your cmd/git hub bash ,tab</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br></pre></td></tr></table></figure>
-<p>Your will receive a message like this “Hi , welcome to git hub blabla “. <br><br>But now ,remember you have not got your token string yet which means you couldn’t ‘deploy’ your hexo blog to github.<br><br>Go to the <a href="https://github.com/settings/profile" target="_blank" rel="external">GitHub Setting Page</a> and press the <a href="https://github.com/settings/tokens" target="_blank" rel="external">Personal access tokens</a> then <a href="https://github.com/settings/tokens/new" target="_blank" rel="external">Generate new token</a> and confirm your password again .<br>  Write in the token name (Token description) in order your can distinguish this token to other tokens , select scopes (just like setting functions of the token) , and the last step is press the green ‘Generate token’ button.  Like this you’ll get your ‘Personal access tokens’<br><br>Open your git bash again , and tab in commands </p>
-<pre> 
-$ git config --global user.name "your name" 
-$ git config --global user.email "your email"
-$ git config --global usr.token "paste the personal access tokens your just got here"
- </pre>
-
-<hr>
-<h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js <br></h3><p>Download <a href="https://nodejs.org/en/download/stable/" target="_blank" rel="external">Node.js for Windows</a><br><br>Install Node.js and add both Node.js and npm’s path to environment’s PATH<br><br><b>Create two folders with the name of ‘node_cache’ and ‘node_global’under node.js’s folder </b><br><br>Open git bash under current folder(by clicking right mouse -&gt; git bash), and tab </p>
-<pre> 
-$ npm config ls
-$ npm config set cache 'the absolute path you created folder node_cache'
-$ npm config set prefix 'the absolute path you created folder node_global'  
- </pre>
-
-<hr>
-<h3 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo  <br></h3><p> Open your git bash again,change your current to one folder your want your hexo installed in, tab in</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo</span><br></pre></td></tr></table></figure>
-<h2 id="Local_Blog_Server"><a href="#Local_Blog_Server" class="headerlink" title="Local Blog Server"></a>Local Blog Server</h2><p> After hexo installed , do not forget add the hexo(the executable binary file)’s location into env’s PATH too<br><br> Make a new folder which you want to store blog’s file and change current path to it<br><br> Tab in </p>
-<pre> 
-$ hexo init         # this command like git init , initialize the blog workspace and generate files
-$ npm install    # wait for a while
-$ hexo g         # hexo g is the command which short for hexo generate
-$ hexo s         # deploy your hexo template on localhost's server(0.0.0.0:4000)
-</pre>
-
-<h2 id="Deploy_Blog_to_Git_28like_this_blog_29"><a href="#Deploy_Blog_to_Git_28like_this_blog_29" class="headerlink" title="Deploy Blog to Git(like this blog)"></a>Deploy Blog to Git(like this blog)</h2><p> Create a new respo. on your github with the name <b>‘your github account name’.github.io</b><br><br> Deploy Blog to Git ‘s step is a little different from deploying it on local server<br><br> Open git bash on hexo blog’s path and tab in the commands below</p>
-<pre> 
-$ hexo init 
-$ npm install
-$ npm install hexo-deployer-git --save # download git corresponding plugins
-</pre>
-
-<p> Open your _config.yml file , update the #Deployment’s part content like this</p>
-<pre> 
-# Deployment
-## Docs: http://hexo.io/docs/deployment.html
-deploy:
-  type: git
-  repository: git@github.com:'your github account name'.github.io.git  #--> do not forget replace it
-  branch: master
-</pre> 
-
-<p> After update _config.yml file , tab in commands</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo d    <span class="comment"># short command for hexo deploy</span></span><br></pre></td></tr></table></figure>
-<p>Open your browser, and tab in <a href="https://&#39;your" target="_blank" rel="external">https://&#39;your</a> github account name’.github.io you will see the blog your just create<br><br>If your want to add new blogs just add a new .md file (mark down edit style) under your blog’s source/_post/ folder<br><br>You can change your blog’s name by changing _config.yml’s ‘title’ content<br><br>Good luck !</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="ciktpw52o000bwkimun1xwhyk" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows/">windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-my_cv" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/10/25/my_cv/" class="article-date">
-  <time datetime="2015-10-24T16:00:00.000Z" itemprop="datePublished">2015-10-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/25/my_cv/">谢慧</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <ul>
-<li><p>谢慧/女/1989</p>
-</li>
-<li><p>研究生在读/辽宁大学/信息学院 </p>
-</li>
-<li><p>技术博客： <a href="https://kylin27.github.io">https://kylin27.github.io</a></p>
-</li>
-<li><p>Github:  <a href="https://github.com/Kylin27" target="_blank" rel="external">https://github.com/Kylin27</a></p>
-</li>
-</ul>
-<hr>
-<h2 id="u8054_u7CFB_u65B9_u5F0F"><a href="#u8054_u7CFB_u65B9_u5F0F" class="headerlink" title="联系方式"></a>联系方式</h2><ul>
-<li><p>手机：15142046233  </p>
-</li>
-<li><p>Email：kylin27@outlook.com</p>
-</li>
-<li><p>QQ : 48060478</p>
-</li>
-</ul>
-<hr>
-<h2 id="u6559_u80B2_u80CC_u666F"><a href="#u6559_u80B2_u80CC_u666F" class="headerlink" title="教育背景"></a>教育背景</h2><ul>
-<li><p>2009.9-2013.6  | 辽宁大学 | 计算机科学与技术(软件方向) | 本科</p>
-</li>
-<li><p>2014.9-2017.6  | 辽宁大学 | 计算机软件与理论              | 研究生(保送)</p>
-</li>
-</ul>
-<hr>
-<h2 id="u56DB_u516D_u7EA7_u6210_u7EE9"><a href="#u56DB_u516D_u7EA7_u6210_u7EE9" class="headerlink" title="四六级成绩"></a>四六级成绩</h2><ul>
-<li>四级 522</li>
-<li>六级 485</li>
-</ul>
-<hr>
-<h2 id="u9879_u76EE_u7ECF_u9A8C"><a href="#u9879_u76EE_u7ECF_u9A8C" class="headerlink" title="项目经验"></a>项目经验</h2><h4 id="u57FA_u4E8E_zookeeper_Curator__u5B9E_u73B0_u7684_u5C0F_u578B_P2P_u7F51_u7EDC_u7CFB_u7EDF_2015-05_-_2015-11"><a href="#u57FA_u4E8E_zookeeper_Curator__u5B9E_u73B0_u7684_u5C0F_u578B_P2P_u7F51_u7EDC_u7CFB_u7EDF_2015-05_-_2015-11" class="headerlink" title="基于 zookeeper Curator 实现的小型 P2P网络系统 2015.05 - 2015.11"></a>基于 zookeeper Curator 实现的小型 P2P网络系统 2015.05 - 2015.11</h4><ul>
-<li>使用 zookeeper 的客户端 Curator 来快速获取 zookeeper 上数据结点变动的信息，从应用加深了对 zookeeper 所基于的 paxos 算法的理解</li>
-</ul>
-<ul>
-<li>使用 Netty 5.0 作为网络数据传输的底层工具，基于 Netty 编写自定义通讯协议,d对 Netty 通讯原理有了进一步的认识与学习</li>
-</ul>
-<ul>
-<li>编写用于Linux系统和Windows系统的shell,bat脚本用作最后程序的启动脚本</li>
-</ul>
-<ul>
-<li><p>通过将 DHT(分布式哈希表)中的 Chord 算法作为子模块添加到系统中，来大大提高系统中查找资源的效率。将逐个结点查询的资源查找算法使用 Chord查找算法替代，将时间复杂度从 O(N) 改进为 O(logN)。</p>
-</li>
-<li><p>项目链接地址: <a href="https://github.com/aimer1027/Netty_zk_p2p" target="_blank" rel="external">基于 zookeeper Curator 实现的小型 P2P网络系统</a></p>
-</li>
-</ul>
-<hr>
-<h4 id="u5927_u6570_u636E_u7B97_u6CD5_u5206_u6790_u5E73_u53F0_2013-09_-2014-04"><a href="#u5927_u6570_u636E_u7B97_u6CD5_u5206_u6790_u5E73_u53F0_2013-09_-2014-04" class="headerlink" title="大数据算法分析平台 2013.09 -2014.04"></a>大数据算法分析平台 2013.09 -2014.04</h4><ul>
-<li>在项目初期负责部署开发环境，使用 python 编写安装部署脚本在实验室集群上安装部署 Hadoop 和 Hive, HBase 等 Hadoop 相关子项目。并为开发组的组员编写安装部署说明手册，同时在虚拟机上执行 Hadoop 多借点分布式集群安装仿真实验。</li>
-</ul>
-<ul>
-<li>在项目中期负责数据的批量导入输出和数据清洗工作。期间尝试使用 Hive-API, Sqoop 最终使用 Pentahoo 的开源ELT来实现数据在数据库与Hive中的传递。 </li>
-</ul>
-<ul>
-<li>在项目中后期出于提高文件上传效率的需求，主要负责修改 Hadoop 底层用于传送数据的java 源码。通过使用多线程技术和增添重组 HDFS 底层文件块模块来实现数据块并发推送上传。</li>
-</ul>
-<ul>
-<li>在项目接近尾声的时候，应导师的要求系统研究 Hadoop 中的RPC框架 avro 及其通讯机制。<br>并对当时主流的 RPC 框架如，messagepack , protocol buffers, thrift , json 和 avro等进行调研实验工作。包括该 RPC 所支持开发语言,数据类型,序列化反序列化性能消耗等等做出详细参数对比，归纳整理后编写性能对比报告。</li>
-</ul>
-<hr>
-<h2 id="u5B9E_u4E60_u7ECF_u5386_2015-9_-_2015-12"><a href="#u5B9E_u4E60_u7ECF_u5386_2015-9_-_2015-12" class="headerlink" title="实习经历 2015.9 - 2015.12"></a>实习经历 2015.9 - 2015.12</h2><h4 id="Mycat__u5F00_u6E90_u9879_u76EE_u62C5_u4EFB_u9879_u76EE_u7ECF_u7406_u52A9_u7406"><a href="#Mycat__u5F00_u6E90_u9879_u76EE_u62C5_u4EFB_u9879_u76EE_u7ECF_u7406_u52A9_u7406" class="headerlink" title="Mycat 开源项目担任项目经理助理"></a><a href="https://github.com/MyCATApache/Mycat-Server" target="_blank" rel="external">Mycat</a> 开源项目担任项目经理助理</h4><ul>
-<li><p>负责开源志愿者信息的录入与汇总，并发布开发模块任务登记和任务领取信息。记录每名志愿者领取开发任务之后的详细开发进度。</p>
-</li>
-<li><p>向开源志愿者们广播项目开发进度和设计文档的重新与派发。测试、并合并志愿者提交到 GitHub 上面的模块代码，同时使用 GitHub 追踪记录每名开发者的提交信息。</p>
-</li>
-<li><p>参与编写整理 Mycat 的用户手册，README,ChangeLog 和 Release Note 等技术文档。</p>
-</li>
-</ul>
-<hr>
-<h2 id="u5F00_u6E90_u9879_u76EE_u548C_u6280_u672F_u6587_u7AE0"><a href="#u5F00_u6E90_u9879_u76EE_u548C_u6280_u672F_u6587_u7AE0" class="headerlink" title="开源项目和技术文章"></a>开源项目和技术文章</h2><h3 id="u5F00_u6E90_u9879_u76EE"><a href="#u5F00_u6E90_u9879_u76EE" class="headerlink" title="开源项目"></a>开源项目</h3><ul>
-<li><a href="https://github.com/Kylin27/SpamEmailClassifier" target="_blank" rel="external">基于朴素贝叶斯邮件垃圾分类器 Spark 实现</a> : 该项目使用的是 Spark mllib  中的朴素贝叶斯算法来对垃圾邮件和常规邮件进行分类处理。 通过 Spark mllib 提供的 Java API 来实现算法的调用。 处理流程分为 数据抽取，数据清洗，数据分析，数据分类和数据输出这五个步骤。</li>
-</ul>
-<ul>
-<li><a href="https://github.com/Kylin27/StackExchangeRecommener" target="_blank" rel="external">基于 Spark 实现的推荐系统</a> : 该项目主要用来对 <a href="https://archive.org/details/stackexchange" target="_blank" rel="external">StackExchange</a> 网站上归档的问题文件进行离线的推荐测试，部分模块的实现还在编写过程中。</li>
-</ul>
-<h3 id="u6280_u672F_u6587_u7AE0"><a href="#u6280_u672F_u6587_u7AE0" class="headerlink" title="技术文章"></a>技术文章</h3><ul>
-<li><p><a href="http://blog.chinaunix.net/uid/28595538/sid-211192-list-1.html" target="_blank" rel="external">boost asio 英文手册(翻译文章)</a></p>
-</li>
-<li><p><a href="http://blog.chinaunix.net/uid/28595538/sid-211485-list-1.html" target="_blank" rel="external">Java7 SDP 技术(翻译文章)</a> </p>
-</li>
-</ul>
-<hr>
-<h2 id="u6280_u80FD_u6E05_u5355"><a href="#u6280_u80FD_u6E05_u5355" class="headerlink" title="技能清单"></a>技能清单</h2><p>以下均为我熟练使用的技能</p>
-<ul>
-<li><p>开发语言：Java &gt; C/C++ &gt; Python &gt; Scala </p>
-</li>
-<li><p>大数据相关: Spark,Hadoop,Hive</p>
-</li>
-<li><p>数据库相关：MySQL/PgSQL/Redis/Kafka</p>
-</li>
-<li><p>版本管理、文档和自动化部署工具：Svn/Git/Hexo </p>
-</li>
-<li><p>单元测试： gtest(google 开源 C++ 测试框架)</p>
-</li>
-<li><p>云和开放平台： 阿里云(ECS)/微博开放平台/七牛存储</p>
-</li>
-<li><p>虚拟化平台: Docker, Virtual Box,VMware </p>
-</li>
-<li><p>大数据相关: Spark,Hadoop,Hive</p>
-</li>
-</ul>
-<hr>
-<h2 id="u83B7_u5956_u8BB0_u5F55"><a href="#u83B7_u5956_u8BB0_u5F55" class="headerlink" title="获奖记录"></a>获奖记录</h2><ul>
-<li>连续 2 年获得信息学院一等奖学金</li>
-</ul>
-<hr>
-<h2 id="u5B66_u6821_u6D3B_u52A8"><a href="#u5B66_u6821_u6D3B_u52A8" class="headerlink" title="学校活动"></a>学校活动</h2><ul>
-<li>学校网络中心成员，负责网络中心日常维护与管理</li>
-<li>学校科技部成员，主要负责管理举办每月的科技知识讲座活动</li>
-</ul>
-<hr>
-<h2 id="u81F4_u8C22"><a href="#u81F4_u8C22" class="headerlink" title="致谢"></a>致谢</h2><p>感谢您花时间阅读我的简历，期待能有机会和您共事。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="ciktpw52i0005wkim9w1i8av0" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/个人简历/">个人简历</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 </section>
         
@@ -1410,7 +1503,7 @@ deploy:
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试，使用手册，C-，tutorial/">测试，使用手册，C++ ，tutorial</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -1419,7 +1512,7 @@ deploy:
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 20px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/docker/" style="font-size: 20px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 20px;">github</a> <a href="/tags/hexo/" style="font-size: 20px;">hexo</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 20px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 10px;">spark</a> <a href="/tags/theory/" style="font-size: 20px;">theory</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a>
+      <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 20px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/docker/" style="font-size: 20px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 20px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 20px;">hexo</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 20px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 10px;">spark</a> <a href="/tags/theory/" style="font-size: 20px;">theory</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试，使用手册，C-，tutorial/" style="font-size: 10px;">测试，使用手册，C++ ，tutorial</a>
     </div>
   </div>
 
@@ -1428,7 +1521,7 @@ deploy:
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -1438,6 +1531,10 @@ deploy:
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/02/19/2016.2.19.Google-Test 使用教程/">Google 测试框架 g-Test 使用教程</a>
+          </li>
         
           <li>
             <a href="/2016/02/18/2016.2.18.dht.note/">DHT Chord 理论学习笔记 1</a>
@@ -1453,10 +1550,6 @@ deploy:
         
           <li>
             <a href="/2016/02/13/2016.2.13.docker_install/">在 Ubuntu 上面安装部署 docker</a>
-          </li>
-        
-          <li>
-            <a href="/2016/02/12/2016.2.12.scala_BiMap/">google guava&#39;s BiMap</a>
           </li>
         
       </ul>
