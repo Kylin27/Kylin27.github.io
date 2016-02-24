@@ -8,7 +8,10 @@
   <meta name="description" content="Description: 这篇文章简明介绍了 google 开源的一款 C++ 方向的测试框架 Gtest 的使用方法做简单介绍,为后续整理发布的数据库引擎开发项目(目前还没发布到博客中)做单元，模块测试方面的技术支撑。
 
 G-Test 的安装
-通过 github 页面下载 gtest 的源码压缩包,命令如下 $wget https://github.com/google/googletest/a">
+通过 github 页面下载 gtest 的源码压缩包,命令如下
+
+
+   $wget https://github.com/google/googlet">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Google 测试框架 g-Test 使用教程">
 <meta property="og:url" content="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/index.html">
@@ -16,14 +19,20 @@ G-Test 的安装
 <meta property="og:description" content="Description: 这篇文章简明介绍了 google 开源的一款 C++ 方向的测试框架 Gtest 的使用方法做简单介绍,为后续整理发布的数据库引擎开发项目(目前还没发布到博客中)做单元，模块测试方面的技术支撑。
 
 G-Test 的安装
-通过 github 页面下载 gtest 的源码压缩包,命令如下 $wget https://github.com/google/googletest/a">
-<meta property="og:updated_time" content="2016-02-24T05:28:32.627Z">
+通过 github 页面下载 gtest 的源码压缩包,命令如下
+
+
+   $wget https://github.com/google/googlet">
+<meta property="og:updated_time" content="2016-02-24T05:40:15.482Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Google 测试框架 g-Test 使用教程">
 <meta name="twitter:description" content="Description: 这篇文章简明介绍了 google 开源的一款 C++ 方向的测试框架 Gtest 的使用方法做简单介绍,为后续整理发布的数据库引擎开发项目(目前还没发布到博客中)做单元，模块测试方面的技术支撑。
 
 G-Test 的安装
-通过 github 页面下载 gtest 的源码压缩包,命令如下 $wget https://github.com/google/googletest/a">
+通过 github 页面下载 gtest 的源码压缩包,命令如下
+
+
+   $wget https://github.com/google/googlet">
   
     <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
   
@@ -98,16 +107,49 @@ G-Test 的安装
         <p>Description: 这篇文章简明介绍了 google 开源的一款 C++ 方向的测试框架 <a href="http://baike.baidu.com/link?url=BaRDfHesKkuurHcqjxM2g8vRMU9udYULmvOLn49k9pr79Il7uj6z7wlcf-BIe4sgJNLKTH8MN8MpMvdZseIEVK" target="_blank" rel="external">Gtest</a> 的使用方法做简单介绍,为后续整理发布的<a href="/">数据库引擎开发项目</a>(目前还没发布到博客中)做单元，模块测试方面的技术支撑。</p>
 <hr>
 <h2 id="G-Test__u7684_u5B89_u88C5"><a href="#G-Test__u7684_u5B89_u88C5" class="headerlink" title="G-Test 的安装"></a>G-Test 的安装</h2><ul>
-<li><p>通过 github 页面下载 gtest 的源码压缩包,命令如下<pre><br> $wget <a href="https://github.com/google/googletest/archive/master.zip" target="_blank" rel="external">https://github.com/google/googletest/archive/master.zip</a> </pre></p>
-</li>
-<li><p>解压之后，在目录下面看到 CMakeList.txt 文件，可知使用的是 cmake 编译工具，保证虚拟机处于联网(NAT模式)，输入命令下载 cmake 编译工具<pre><br>$apt-get install cmake </pre></p>
-</li>
-<li><p>下载 cmake 结束之后，测试其是否能够正常工作 <pre><code><br>$cmake<br>如果正常工作会显示如下内容<br>Usage<br>cmake [options] <path-to-source><br>cmake [options] <path-to-existing-build><br>Options -C <initial-cache> = Pre-load a script to populate the cache. </initial-cache></path-to-existing-build></path-to-source></code></pre></p>
-</li>
-<li><p>编译安装 gTest </p>
-</li>
-<li><pre><code><br>  mkdir cmake_dir<br> $ cd cmake_dir<br> $ cmake ../<br> 正确编译，显示信息如下<br>– The C compiler identification is GNU 4.9.2<br>– The CXX compiler identification is GNU 4.9.2<br>– Check for working C compiler: /usr/bin/cc<br>– Check for working C compiler: /usr/bin/cc – works<br>…<br>– Found Threads: TRUE<br>– Configuring done<br>– Generating done<br>– Build files have been written to: /gTester/googletest-master/cmake_dir<br></code></pre><br>在这里我们创建 cmake_dir 文件夹，并在该文件夹的下面执行 cmake 操作的目的是为了让 cmake 编译生成的中间文件与下载的 gTest 的项目文件二者之间分离开，不然会混淆. 在 cmake_dir 文件夹中生成的中间文件如下:</li>
+<li>通过 github 页面下载 gtest 的源码压缩包,命令如下</li>
 </ul>
+<pre><code>
+   $wget https://github.com/google/googletest/archive/master.zip 
+</code></pre>
+
+<ul>
+<li>解压之后，在目录下面看到 CMakeList.txt 文件，可知使用的是 cmake 编译工具，保证虚拟机处于联网(NAT模式)，输入命令下载 cmake 编译工具</li>
+</ul>
+<pre><code>
+  $apt-get install cmake 
+</code></pre>
+
+<ul>
+<li>下载 cmake 结束之后，测试其是否能够正常工作 </li>
+</ul>
+<pre><code>
+$cmake
+如果正常工作会显示如下内容
+Usage
+  cmake [options] <path-to-source>
+  cmake [options] <path-to-existing-build>
+  Options -C <initial-cache> = Pre-load a script to populate the cache. 
+</initial-cache></path-to-existing-build></path-to-source></code></pre>
+
+<p> 编译安装 gTest </p>
+<pre><code>
+    $ mkdir cmake_dir
+    $ cd cmake_dir
+    $ cmake ../
+    正确编译，显示信息如下
+-- The C compiler identification is GNU 4.9.2
+-- The CXX compiler identification is GNU 4.9.2
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+...
+-- Found Threads: TRUE  
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /gTester/googletest-master/cmake_dir
+ </code></pre> 
+   在这里我们创建 cmake_dir 文件夹，并在该文件夹的下面执行 cmake 操作的目的是为了让 cmake 编译生成的中间文件与下载的 gTest 的项目文件二者之间分离开，不然会混淆. 在 cmake_dir 文件夹中生成的中间文件如下:
+
 <pre><code>
  CMakeCache.txt  CMakeFiles  cmake_install.cmake  CTestTestfile.cmake  googlemock  Makefile
 </code></pre>
@@ -153,7 +195,8 @@ int getValue(int _value);
 
 int getValue( int _value ){
     return _value ;
-}</cstdio></code> </pre>
+}
+</cstdio></code> </pre>
 
 
 <ul>
@@ -178,6 +221,7 @@ int main( void ){
 
   return 0;
 }
+
 </code></pre>
 
 <ul>
@@ -227,84 +271,83 @@ test_tester.o : $(USER_DIR)/test_tester.cpp $(USER_DIR)/test.hpp $(GTEST_HEADERS
 
 test_tester : test.o test_tester.o gtest_main.a
         $(CXX) $(CPPFLAGS) $(CXXFLAG) -pthread  $^ -o $@
-   </code></pre>
+</code></pre>
 
 <ul>
 <li>输入 make 命令生成可执行文件 test_tester</li>
-<li>运行 gTest 的测试文件，查看输出结果<pre> <code>.//test_tester.cpp:12: Failure
-Value of: false
-Actual: false
-Expected: true </code> </pre>
-
-</li>
+<li>运行 gTest 的测试文件，查看输出结果</li>
 </ul>
+<pre><code>
+ .//test_tester.cpp:12: Failure
+  Value of: false
+  Actual: false
+  Expected: true 
+</code> </pre>
+
 <h2 id="gTest__u4E2D_u65AD_u8A00_u4ECB_u7ECD"><a href="#gTest__u4E2D_u65AD_u8A00_u4ECB_u7ECD" class="headerlink" title="gTest 中断言介绍"></a>gTest 中断言介绍</h2><ul>
 <li><p><b>ASSERT_* 的断言函数如果判定最终结果不满足判定输出值，将会发出 断言失败 + 终止程序的结果</b></p>
 </li>
 <li><p><b>EXPECT_* 的断言函数如果判断最终结果不满足判定输出值，将仅会发出 断言失败 的提示信息</b>    </p>
 </li>
 </ul>
-<h3 id="u57FA_u672C_u65AD_u8A00_u8BF4_u660E"><a href="#u57FA_u672C_u65AD_u8A00_u8BF4_u660E" class="headerlink" title="基本断言说明"></a>基本断言说明</h3><ul>
-<li><p><pre><br>ASSERT_TRUE （condition）；<br>ASSERT_FALSE (condition) ；<br></pre><br>上述断言函数是这样的: 括号中的 condition 可以是一个返回结果为布尔值的函数，也可以是一个不二变量，同样也可以是一个逻辑表达式，只要最终返回的结果是布尔值就可以。而两个函数 ASSERT_TRUE 要求这个布尔值必须是 TRUE/真值，如果不是真便会输出’致命错误’并退出当前正在执行的函数。 ASSERT_FALSE 方法刚好相反，它期待的是一个 FALSE/假值，如果不满足同样输出’致命错误’信息，并退出当前正在执行的方法(程序)。</p>
-</li>
-<li><p><pre><br> EXPECT_TRUE(condition) ;<br> EXPECT_FALSE(condition) ;<br></pre><br>上述函数的断言是这样的: 如果括号中的 condition 变量返回的布尔值与断言期待的布尔值不同的话，不会退出当前正在执行的方法/程序。 它会继续允许程序的继续运行，但是会输出执行错误的提示信息（如果错误信息流定向是控制台显示器的话）</p>
-</li>
-</ul>
-<h3 id="u57FA_u4E8E_u4E24_u503C_u6BD4_u8F83_u7684_u65AD_u8A00_u51FD_u6570_u8BF4_u660E"><a href="#u57FA_u4E8E_u4E24_u503C_u6BD4_u8F83_u7684_u65AD_u8A00_u51FD_u6570_u8BF4_u660E" class="headerlink" title="基于两值比较的断言函数说明"></a>基于两值比较的断言函数说明</h3><ul>
-<li><p>在基于而知比较的断言函数中，传入的参数必须要满足下面两种条件中的一种</p>
-<ul>
-<li><p>是基本类型，可以直接进行逻辑比较</p>
-</li>
-<li><p>如果是符合类似(class ,struct)是需要重载比较运算符的</p>
-</li>
-<li><p>需要注意的是，如果传入的是指针类型的话，判定的并不是指针指向的数值内容是否相同，而是会判定指针是否指向同一块内存空间</p>
-</li>
-<li><b>如果需要判定指针指向字符串的逻辑关系，不要使用这一系列的断言函数</b> <br></li>
-</ul>
-</li>
-</ul>
-<ul>
-<li><pre><code>
-  ASSERT_EQ(expected, actual) ；  expected==actual
-  ASSERT_NE(expected, actual) ；  expected!=actual
-  ASSERT_LT(expected, actual) ；  expected 小于 actual, LT(less than)
-  ASSERT_LE(expected, actual) ；  expected 小于等于 actual, LE(less equal)
-  ASSERT_GT(expected, actual) ；  expected 大于 actual, GT(greater than)
-  ASSERT_GE(expected, actual) ；  expected 大于等于 actual, GE(greater equal)
+<h3 id="u57FA_u672C_u65AD_u8A00_u8BF4_u660E"><a href="#u57FA_u672C_u65AD_u8A00_u8BF4_u660E" class="headerlink" title="基本断言说明"></a>基本断言说明</h3><pre><code>
+ASSERT_TRUE （condition）； 
+ASSERT_FALSE (condition) ；
 </code></pre>
-</li>
-<li><pre><code>
-EXPECT_EQ(expected, actual) ；
-EXPECT_NE(expected, actual) ；
-EXPECT_LT(expected, actual) ；
-EXPECT_LE(expected, actual) ；
-EXPECT_GT(expected, actual) ；
-EXPECT_GE(expected, actual) ；
+上述断言函数是这样的: 括号中的 condition 可以是一个返回结果为布尔值的函数，也可以是一个不二变量，同样也可以是一个逻辑表达式，只要最终返回的结果是布尔值就可以。而两个函数 ASSERT_TRUE 要求这个布尔值必须是 TRUE/真值，如果不是真便会输出'致命错误'并退出当前正在执行的函数。 ASSERT_FALSE 方法刚好相反，它期待的是一个 FALSE/假值，如果不满足同样输出'致命错误'信息，并退出当前正在执行的方法(程序)。
+
+<pre><code>
+   EXPECT_TRUE(condition) ;
+   EXPECT_FALSE(condition) ;
+</code></pre>
+上述函数的断言是这样的: 如果括号中的 condition 变量返回的布尔值与断言期待的布尔值不同的话，不会退出当前正在执行的方法/程序。 它会继续允许程序的继续运行，但是会输出执行错误的提示信息（如果错误信息流定向是控制台显示器的话）
+
+### 基于两值比较的断言函数说明
++ 在基于而知比较的断言函数中，传入的参数必须要满足下面两种条件中的一种
+  + 是基本类型，可以直接进行逻辑比较
+
+  + 如果是符合类似(class ,struct)是需要重载比较运算符的
+
+  + 需要注意的是，如果传入的是指针类型的话，判定的并不是指针指向的数值内容是否相同，而是会判定指针是否指向同一块内存空间
+  + <b>如果需要判定指针指向字符串的逻辑关系，不要使用这一系列的断言函数</b> <br>
+
+
+<pre><code>
+    ASSERT_EQ(expected, actual) ；  expected==actual
+    ASSERT_NE(expected, actual) ；  expected!=actual
+    ASSERT_LT(expected, actual) ；  expected 小于 actual, LT(less than)
+    ASSERT_LE(expected, actual) ；  expected 小于等于 actual, LE(less equal)
+    ASSERT_GT(expected, actual) ；  expected 大于 actual, GT(greater than)
+    ASSERT_GE(expected, actual) ；  expected 大于等于 actual, GE(greater equal)
 </code></pre>
 
-
-
-</li>
-</ul>
-<h3 id="u57FA_u4E8E_u5B57_u7B26_u4E32_u7684_u6BD4_u8F83_u65AD_u8A00_u8BF4_u660E"><a href="#u57FA_u4E8E_u5B57_u7B26_u4E32_u7684_u6BD4_u8F83_u65AD_u8A00_u8BF4_u660E" class="headerlink" title="基于字符串的比较断言说明"></a>基于字符串的比较断言说明</h3><ul>
-<li><pre><code>
-ASSERT_STREQ(str1,str2); str1's content = str2's content
-ASSERT_STRNE(str1,str2); str1's content != str2's content
-ASSERT_STRCASEEQ(str1,str2); str1's content = str2's content ,ignoring characters case
-ASSERT_STRCASENE(str1,str2); ignoring string characters' case, str1's content != str2's content 
+<pre><code>
+  EXPECT_EQ(expected, actual) ；
+  EXPECT_NE(expected, actual) ；
+  EXPECT_LT(expected, actual) ；
+  EXPECT_LE(expected, actual) ；
+  EXPECT_GT(expected, actual) ；
+  EXPECT_GE(expected, actual) ；
 </code></pre>
 
 
-</li>
-</ul>
+
+<h3 id="u57FA_u4E8E_u5B57_u7B26_u4E32_u7684_u6BD4_u8F83_u65AD_u8A00_u8BF4_u660E"><a href="#u57FA_u4E8E_u5B57_u7B26_u4E32_u7684_u6BD4_u8F83_u65AD_u8A00_u8BF4_u660E" class="headerlink" title="基于字符串的比较断言说明"></a>基于字符串的比较断言说明</h3><pre><code>
+  ASSERT_STREQ(str1,str2); str1's content = str2's content
+  ASSERT_STRNE(str1,str2); str1's content != str2's content
+ ASSERT_STRCASEEQ(str1,str2); str1's content = str2's content ,ignoring characters case
+ ASSERT_STRCASENE(str1,str2); ignoring string characters' case, str1's content != str2's content 
+</code></pre>
+
+
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cil0ehu08000zwoimtgny02u2" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cil0ekvuq000ztcim4ntpsy3z" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gtest/">Gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gtest/">gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/manual/">manual</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tutorial/">tutorial</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/使用手册/">使用手册</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试/">测试</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gtest/">Gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gtest/">gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/manual/">manual</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tutorial/">tutorial</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试/">测试</a></li></ul>
 
     </footer>
   </div>
@@ -333,7 +376,7 @@ ASSERT_STRCASENE(str1,str2); ignoring string characters' case, str1's content !=
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/使用手册/">使用手册</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -342,7 +385,7 @@ ASSERT_STRCASENE(str1,str2); ignoring string characters' case, str1's content !=
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 20px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/docker/" style="font-size: 20px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 20px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 20px;">hexo</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 20px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 10px;">spark</a> <a href="/tags/theory/" style="font-size: 20px;">theory</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/使用手册/" style="font-size: 10px;">使用手册</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 20px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/docker/" style="font-size: 20px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 20px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 20px;">hexo</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 20px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 10px;">spark</a> <a href="/tags/theory/" style="font-size: 20px;">theory</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a>
     </div>
   </div>
 
