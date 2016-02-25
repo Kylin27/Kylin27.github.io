@@ -3,21 +3,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>How to use log4j in your project ? | Kylin&#39;s Blog</title>
+  <title>Archives: 2016 | Kylin&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Description: This blog introduces two log4j log file patterns we often use in our java project
-Log4j Pattern NotePattern1You can use this log pattern when you want log info be written into multi-log f">
-<meta property="og:type" content="article">
-<meta property="og:title" content="How to use log4j in your project ?">
-<meta property="og:url" content="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/index.html">
+  <meta name="description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Kylin's Blog">
+<meta property="og:url" content="http://kylin27.github.io/archives/2016/page/2/index.html">
 <meta property="og:site_name" content="Kylin's Blog">
-<meta property="og:description" content="Description: This blog introduces two log4j log file patterns we often use in our java project
-Log4j Pattern NotePattern1You can use this log pattern when you want log info be written into multi-log f">
-<meta property="og:updated_time" content="2016-02-05T13:45:51.022Z">
+<meta property="og:description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="How to use log4j in your project ?">
-<meta name="twitter:description" content="Description: This blog introduces two log4j log file patterns we often use in our java project
-Log4j Pattern NotePattern1You can use this log pattern when you want log info be written into multi-log f">
+<meta name="twitter:title" content="Kylin's Blog">
+<meta name="twitter:description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
   
     <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
   
@@ -67,144 +63,39 @@ Log4j Pattern NotePattern1You can use this log pattern when you want log info be
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-blog_2_5_2016_log4j_usage_note" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/05/blog_2_5_2016_log4j_usage_note/" class="article-date">
-  <time datetime="2016-02-04T16:00:00.000Z" itemprop="datePublished">2016-02-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
+        <section id="main">
   
-    <h1 class="article-title" itemprop="name">
-      How to use log4j in your project ?
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2016" class="archive-year">2016</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/2016/02/05/blog_2_5_2016_log4j_usage_note/" class="archive-article-date">
+  <time datetime="2016-02-04T16:00:00.000Z" itemprop="datePublished">Feb 5</time>
+</a>
+      
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2016/02/05/blog_2_5_2016_log4j_usage_note/">How to use log4j in your project ?</a>
     </h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description: This blog introduces two log4j log file patterns we often use in our java project</p>
-<h1 id="Log4j_Pattern_Note"><a href="#Log4j_Pattern_Note" class="headerlink" title="Log4j Pattern Note"></a>Log4j Pattern Note</h1><h2 id="Pattern1"><a href="#Pattern1" class="headerlink" title="Pattern1"></a>Pattern1</h2><h3 id="You_can_use_this_log_pattern_when_you_want_log_info_be_written_into_multi-log_files_instead_of_a_single_large_file"><a href="#You_can_use_this_log_pattern_when_you_want_log_info_be_written_into_multi-log_files_instead_of_a_single_large_file" class="headerlink" title="You can use this log pattern when you want log info be written into multi-log files instead of a single large file ."></a>You can use this log pattern when you want log info be written into multi-log files instead of a single large file .</h3><pre>
-#file name : log4j.properties
-log4j.rootLogger = appendername
-
-log4j.appender.appendername=org.apache.log4j.RollingFileAppender    
-# which file appender pattern your choose 
-
-log4j.appender.appendername.File=log/rlog.log                        
-# name of the log file in which the program going to write 
-
-log4j.appender.appendername.MaxFileSize = 100KB                        
-# threshold of the log file , if current log file size >= 100 KB 
-# log4j will create a new log file to write in
-
-log4j.appender.appendername.MaxBackupIndex = 2                        
-# limit the maximum number of log file log4j will create
-# here we set max log file number equals to 2 , if log4j create 2 files
-# next time , if the rlog.log.2's size is >= 100KB ,
-# log4j will clean the rlog.log.1's content and continue writing new log info into rlog.log.1
-
-log4j.appender.appendername.layout = org.apache.log4j.PatternLayout
-log4j.appender.appendername.layout.ConversionPattern = %p %t %c - %m %n  # output log info pattern                                                                
-</pre>
-
-<h2 id="Pattern2"><a href="#Pattern2" class="headerlink" title="Pattern2"></a>Pattern2</h2><h3 id="You_can_use_this_log_pattern_if_you_would_like_your_log_info_output_to_both_console_and_file"><a href="#You_can_use_this_log_pattern_if_you_would_like_your_log_info_output_to_both_console_and_file" class="headerlink" title="You can use this log pattern if you would like your log info output to both console and file"></a>You can use this log pattern if you would like your log info output to both console and file</h3><h3 id="This_pattern_also_supports_separating_error_log_info_into_a_single_error_log_file"><a href="#This_pattern_also_supports_separating_error_log_info_into_a_single_error_log_file" class="headerlink" title="This pattern also supports separating error log info into a single error log file"></a>This pattern also supports separating error log info into a single error log file</h3><pre>
-# file name : log4j.properties
-log4j.rootLogger = debug,FILE,CONSOLE,ERRORFILE
-
-# output log info to console
-log4j.appender.CONSOLE = org.apache.log4j.ConsoleAppender
-log4j.appender.CONSOLE.Target = System.out
-log4j.appender.CONSOLE.layout = org.apache.log4j.PatternLayout
-log4j.appender.CONSOLE.layout.ConversionPattern = [%p] %t %c %l - %m %n
-
-# %p log info level : {DEBUG,INFO,WARN,ERROR,FATAL}
-# %t name of the thread that generates log info
-# %c log info is generated by which class 
-# %l which class , which thread , on which line 's event produce the log info
-# %m output code's info
-
-# output log info to log files
-log4j.appender.FILE = org.apache.log4j.DailyRollingFileAppender
-log4j.appender.FILE.File = logs/rlog.log
-log4j.appender.FILE.Threshold = DEBUG  
-# this is used to limit the log level , 
-#if the log's level is higher than DEBUG ( like INFO, ERROR) output log info
-
-log4j.appender.FILE.MaxFileSize=50KB
-log4j.appender.FILE.MaxBackupIndex = 2
-log4j.appender.FILE.layout = org.apache.log4j.PatternLayout
-log4j.appender.FILE.layout.ConversionPattern = [%p] %t %c %l - %m %n
-
-# output error (log level >= ERROR) into a single file
-log4j.appender.ERRORFILE = org.apache.log4j.DailyRollingFileAppender
-log4j.appender.ERRORFILE = logs/error.log
-log4j.appender.ERRORFILE.Threshold = ERROR
-log4j.appender.ERRORFILE.layout = org.apache.log4j.PatternLayout
-log4j.appender.ERRORFILE.layout.ConversionPattern =  [%p] %t %c %l - %m %n
-
-</pre>
-
-<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><p>Here is a simple example to use log4j to output log info</p>
-<pre><code>
-// log4j.properties is under 'resources' folder
-
-public class TestLog4j{
-    public static void main (String [] args ){
-        URL url = new URL("/log4j.properties") ;
-        PropertyConfigurator.configure(url.getPath()) ;
-        Logger logger = Logger.getLogger(TestLog4j.class) ;
-
-        logger.debug("this is a debug message") ;
-        logger.error("error info will output to two files") ;
-    }
-
-}
-
-</code></pre>
-
-<p>end </p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cil1qquxv000898imd9mbswpz" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a></li></ul>
-
-    </footer>
+    </header>
   </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2016/02/05/blog_2_3_2016/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          2 Build Blog on Windows by Node.js and Hexo
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2015/10/25/my_cv/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">谢慧</div>
-    </a>
-  
-</nav>
-
-  
 </article>
-
+  
+  
+    </div></section>
+  
 </section>
         
           <aside id="sidebar">
