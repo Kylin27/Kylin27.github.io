@@ -6,26 +6,26 @@
   <title>DHT Chord 理论学习笔记 1 | Kylin&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Description:
-本篇博客记录的是P2P 对等计算中基于 DHT 拓扑结构中的 Chord 算法理论信息，目的是为基于Chord算法的P2P 自感应系统代码做理论支撑
+本篇博客记录的是P2P 对等计算中基于 DHT 拓扑结构中的 Chord 算法理论信息，目的是为基于Chord算法的 P2P 自感应系统代码做理论支撑
 
-名词概念DHT 是什么 ?DHT 是对等计算(Peer-to-Peer,P2P) 技术中拓扑结构中的一种，叫做全分布式结构化结构(decentralized structured topology),简称为 DHT，又称作">
+名词概念DHT 是什么 ?DHT 是对等计算(Peer-to-Peer,P2P) 技术中拓扑结构中的一种，叫做全分布式结构化结构(decentralized structured topology),简称为 DHT，又称">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DHT Chord 理论学习笔记 1">
 <meta property="og:url" content="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/index.html">
 <meta property="og:site_name" content="Kylin's Blog">
 <meta property="og:description" content="Description:
-本篇博客记录的是P2P 对等计算中基于 DHT 拓扑结构中的 Chord 算法理论信息，目的是为基于Chord算法的P2P 自感应系统代码做理论支撑
+本篇博客记录的是P2P 对等计算中基于 DHT 拓扑结构中的 Chord 算法理论信息，目的是为基于Chord算法的 P2P 自感应系统代码做理论支撑
 
-名词概念DHT 是什么 ?DHT 是对等计算(Peer-to-Peer,P2P) 技术中拓扑结构中的一种，叫做全分布式结构化结构(decentralized structured topology),简称为 DHT，又称作">
-<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/2016.2.17.dht.1.png">
-<meta property="og:image" content="http://cdn3.infoqstatic.com/statics_s1_20160216-0153/resource/news/2014/12/Chord-p2p-network-dht/zh/resources/1202000.png">
-<meta property="og:updated_time" content="2016-02-18T23:44:28.688Z">
+名词概念DHT 是什么 ?DHT 是对等计算(Peer-to-Peer,P2P) 技术中拓扑结构中的一种，叫做全分布式结构化结构(decentralized structured topology),简称为 DHT，又称">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/2016.2.17.dht.1dht.1.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/2016.2.17.dht.1dht.2.png">
+<meta property="og:updated_time" content="2016-02-26T13:53:07.616Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DHT Chord 理论学习笔记 1">
 <meta name="twitter:description" content="Description:
-本篇博客记录的是P2P 对等计算中基于 DHT 拓扑结构中的 Chord 算法理论信息，目的是为基于Chord算法的P2P 自感应系统代码做理论支撑
+本篇博客记录的是P2P 对等计算中基于 DHT 拓扑结构中的 Chord 算法理论信息，目的是为基于Chord算法的 P2P 自感应系统代码做理论支撑
 
-名词概念DHT 是什么 ?DHT 是对等计算(Peer-to-Peer,P2P) 技术中拓扑结构中的一种，叫做全分布式结构化结构(decentralized structured topology),简称为 DHT，又称作">
+名词概念DHT 是什么 ?DHT 是对等计算(Peer-to-Peer,P2P) 技术中拓扑结构中的一种，叫做全分布式结构化结构(decentralized structured topology),简称为 DHT，又称">
   
     <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
   
@@ -98,7 +98,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>Description:</p>
-<p>本篇博客记录的是P2P 对等计算中基于 DHT 拓扑结构中的 Chord 算法理论信息，目的是为<a href="/">基于Chord算法的P2P 自感应系统</a>代码做理论支撑</p>
+<p>本篇博客记录的是P2P 对等计算中基于 DHT 拓扑结构中的 Chord 算法理论信息，目的是为<a href="/">基于Chord算法的 P2P 自感应系统</a>代码做理论支撑</p>
 <hr>
 <h1 id="u540D_u8BCD_u6982_u5FF5"><a href="#u540D_u8BCD_u6982_u5FF5" class="headerlink" title="名词概念"></a>名词概念</h1><h2 id="DHT__u662F_u4EC0_u4E48__3F"><a href="#DHT__u662F_u4EC0_u4E48__3F" class="headerlink" title="DHT 是什么 ?"></a>DHT 是什么 ?</h2><p>DHT 是对等计算(Peer-to-Peer,P2P) 技术中拓扑结构中的一种，叫做<b>全分布式结构化结构</b>(decentralized structured topology),简称为 DHT，又称作<b>分布式哈希表</b>(distributed hash table)。<br></p>
 <p>另外几种拓扑结构分别是<b>中心化拓扑结构</b>(centralized topology),<b>全分布式非结构化结构</b>(decentralized unstructured topology),<b>半分布式结构</b>(partially decentralized topology)。</p>
@@ -108,7 +108,7 @@
 <p> 更加详细的说明在介绍 Chord 算法之后再来补充。</p>
 <h2 id="Chord__u662F_u4EC0_u4E48__3F"><a href="#Chord__u662F_u4EC0_u4E48__3F" class="headerlink" title="Chord 是什么 ?"></a>Chord 是什么 ?</h2><p> Chord 是基于 DHT 数据结构的分布式算法，如果说 DHT 为分布式系统查询提供 Put , Get 接口封装的话，那么 Chord 便为 DHT 中为 Get,Put 两种两种方法提供底层实现的算法。 </p>
 <p> 二者的关系如下图所示</p>
-<p> <img src="http://7xqz39.com1.z0.glb.clouddn.com/2016.2.17.dht.1.png" alt=""></p>
+<p> <img src="http://7xqz39.com1.z0.glb.clouddn.com/2016.2.17.dht.1dht.1.png" alt=""></p>
 <ul>
 <li><p>在 Chord 算法将每台主机抽象成结点(Node)，同时为了保证结点在网络中的唯一性， 使用 Node-ID 数字序列来作为结点的唯一标识。</p>
 </li>
@@ -121,7 +121,7 @@
 </ul>
 <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Node</span><span class="identifier"></span><span class="title">-ID</span> 二进制位数 = m</span><br><span class="line"></span><br><span class="line">逻辑环中最大容纳主机(结点)个数 = <span class="number">2</span>^m 个</span><br><span class="line"></span><br><span class="line"><span class="keyword">Node</span><span class="identifier"></span><span class="title">-ID</span> 取值范围 = [<span class="number">0</span>,<span class="number">2</span>^m -<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">Node</span><span class="identifier"> </span><span class="title">上面的 finger-table</span>(路由表) 维护的表项个数为 m 个</span><br><span class="line"></span><br><span class="line">Finger-table 的表项中记录其他 <span class="keyword">Node</span><span class="identifier"></span><span class="title">-ID</span> 的ID间隔为 <span class="number">2</span>^i (<span class="number">0</span> <span class="tag">&lt;=i &lt;= m-1)</span></span><br></pre></td></tr></table></figure>
 <p> P2P 网络中 Chord 环状结构图示：下图便是一个 m 为 6 的Chord 拓扑环和环中Node-ID = 8 结点上所维护的 finger table 图示</p>
-<p> <img src="http://cdn3.infoqstatic.com/statics_s1_20160216-0153/resource/news/2014/12/Chord-p2p-network-dht/zh/resources/1202000.png" alt=""></p>
+<p> <img src="http://7xqz39.com1.z0.glb.clouddn.com/2016.2.17.dht.1dht.2.png" alt=""></p>
 <h2 id="Chord__u6784_u6210_u6570_u636E_u7ED3_u6784_u4ECB_u7ECD"><a href="#Chord__u6784_u6210_u6570_u636E_u7ED3_u6784_u4ECB_u7ECD" class="headerlink" title="Chord 构成数据结构介绍"></a>Chord 构成数据结构介绍</h2><h3 id="u540E_u7EE7_u7ED3_u70B9_u5217_u8868_-_sucessor_node_list"><a href="#u540E_u7EE7_u7ED3_u70B9_u5217_u8868_-_sucessor_node_list" class="headerlink" title="后继结点列表 - sucessor node list"></a>后继结点列表 - sucessor node list</h3><ul>
 <li><p>何谓后继结点? </p>
 <ul>
@@ -187,7 +187,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cil3ik2u4001vh4imsi093ja9" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cil3rhs3h001vh8imwcvaj4mb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chord/">Chord</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DHT/">DHT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/P2P/">P2P</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/note/">note</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
