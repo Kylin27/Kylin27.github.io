@@ -36,7 +36,7 @@
 <meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/final_ssh.png">
 <meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/end_ide.png">
 <meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/count.png">
-<meta property="og:updated_time" content="2016-02-26T13:59:53.416Z">
+<meta property="og:updated_time" content="2016-02-26T14:21:10.347Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于单节点的 Spark & IDEA 远程调试">
 <meta name="twitter:description" content="Description:本篇博文主要介绍一下，如何使用 intellij IDEA 这款可视化集成编程工具来远程调试运行在 Spark 集群上面的 jar 文件。在这里采用伪分布式单节点来部署 Spark 的运行环境，目的是为了防止分布式集群环境中(创建多个虚拟机在每台虚拟机上面部署 Spark 环境)一些不可控错误的发生。
@@ -631,7 +631,7 @@ drwxr-xr-x   - root supergroup          0 2016-01-01 23:53 /user
 <li>在输入文件上传，输出数据文件路径分别在 hdfs 上创建好之后便可以输入如下命令</li>
 </ul>
 <pre><code>
-$  ./spark-submit --master spark://aimer-v:7077 --name SparkWordCount --class SparkWordCount --driver-java-options "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8888" --executor-memory 1G /home/aimer/spark_remote/spark_learning.jar hdfs://aimer-v:9000/wordcount/README.md --driver-java-options "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8888"
+$  ./spark-submit --master spark://aimer-v:7077 --name SparkWordCount --class SparkWordCount --driver-java-options "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8888" --executor-memory 1G /home/aimer/spark_remote/spark_learning.jar hdfs://aimer-v:9000/README.md --driver-java-options "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8888"
 </code></pre>
 
 <ul>
@@ -658,12 +658,47 @@ Listening for transport dt_socket at address: 8888
 <li>step 3 继续调试，直到程序结束，最终结果既不会显示在 IDE 的控制台输出信息中，而是会显示在 linux 的命令提示行中</li>
 </ul>
 <p><img src="http://7xqz39.com1.z0.glb.clouddn.com/end_ide.png" alt=""><br><img src="http://7xqz39.com1.z0.glb.clouddn.com/count.png" alt=""> </p>
+<h2 id="u5173_u4E8E_u7ED3_u675F_u6536_u5C3E_u5DE5_u4F5C"><a href="#u5173_u4E8E_u7ED3_u675F_u6536_u5C3E_u5DE5_u4F5C" class="headerlink" title="关于结束收尾工作"></a>关于结束收尾工作</h2><h3 id="u9996_u5148_u7ED3_u675F_spark"><a href="#u9996_u5148_u7ED3_u675F_spark" class="headerlink" title="首先结束 spark"></a>首先结束 spark</h3><ul>
+<li>将路径切换到 ${SPARK_HOME}/sbin</li>
+<li>然后运行如下命令停止 spark 相关进程</li>
+</ul>
+<pre><code>
+root@aimer-v:/spark/sbin# ./stop-all.sh 
+localhost: stopping org.apache.spark.deploy.worker.Worker
+stopping org.apache.spark.deploy.master.Master
+</code></pre>
+
+<h3 id="u7136_u540E_u7ED3_u675F_hadoop"><a href="#u7136_u540E_u7ED3_u675F_hadoop" class="headerlink" title="然后结束 hadoop"></a>然后结束 hadoop</h3><ul>
+<li>将路径切换到 ${HADOOP_HOME}/sbin 下面</li>
+<li>然后运行如下的命令来停止 hadoop 相关的进程</li>
+</ul>
+<pre><code>
+root@aimer-v:/hadoop/sbin# ./stop-all.sh 
+This script is Deprecated. Instead use stop-dfs.sh and stop-yarn.sh
+Stopping namenodes on [localhost]
+localhost: stopping namenode
+localhost: stopping datanode
+Stopping secondary namenodes [0.0.0.0]
+0.0.0.0: stopping secondarynamenode
+stopping yarn daemons
+stopping resourcemanager
+localhost: stopping nodemanager
+no proxyserver to stop
+</code></pre>
+
+<h3 id="u6700_u540E_u8F93_u5165_jps__u547D_u4EE4_u6765_u68C0_u67E5_u662F_u5426_u76F8_u5173_u8FDB_u7A0B_u5747_u505C_u6B62"><a href="#u6700_u540E_u8F93_u5165_jps__u547D_u4EE4_u6765_u68C0_u67E5_u662F_u5426_u76F8_u5173_u8FDB_u7A0B_u5747_u505C_u6B62" class="headerlink" title="最后输入 jps 命令来检查是否相关进程均停止"></a>最后输入 jps 命令来检查是否相关进程均停止</h3><pre><code>
+root@aimer-v:/spark/bin# jps
+7305 SparkSubmit
+10003 Jps
+</code></pre>
+
+<p>是的，本篇博客最大的败笔除了截图截得参差不齐之外，就是最后这个运行的 SparkSubmit 进程我不知道如何停止它；<br>直接 kill 没有生效，就当做是挖个坑好了，解决之后再来写上 （= . =）||</p>
 <p>end</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil3rmy7g000zqkim06kum2l9" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil3seauv000z18imgwn8inqc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDEA/">IDEA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Intellij/">Intellij</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/debug/">debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
