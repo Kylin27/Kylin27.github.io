@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>基于单节点的 Spark &amp; IDEA 远程调试 | Kylin&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Description:本篇博文主要介绍一下，如何使用 intellij IDEA 这款可视化集成编程工具来远程调试运行在 Spark 集群上面的 jar 文件。在这里采用伪分布式单节点来部署 Spark 的运行环境，目的是为了防止分布式集群环境中(创建多个虚拟机在每台虚拟机上面部署 Spark 环境)一些不可控错误的发生。
+
+环境搭建实验环境准备
+虚拟机 Oracle Virtual Box 版">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于单节点的 Spark & IDEA 远程调试">
+<meta property="og:url" content="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/index.html">
+<meta property="og:site_name" content="Kylin's Blog">
+<meta property="og:description" content="Description:本篇博文主要介绍一下，如何使用 intellij IDEA 这款可视化集成编程工具来远程调试运行在 Spark 集群上面的 jar 文件。在这里采用伪分布式单节点来部署 Spark 的运行环境，目的是为了防止分布式集群环境中(创建多个虚拟机在每台虚拟机上面部署 Spark 环境)一些不可控错误的发生。
+
+环境搭建实验环境准备
+虚拟机 Oracle Virtual Box 版">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/tutorial-core-xml.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/tutorial-hdfs-xml.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/tutorial-yarn-xml.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/tutorial-spark_run.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/1_.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/2_.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/3_.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/4_.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/7_final_jar.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/6_.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/build.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/result_8.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/upload_9.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/tutorial-%E5%90%AF%E5%8A%A8%E8%B0%83%E8%AF%95%E5%91%BD%E4%BB%A4.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/final_result.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/final_ssh.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/end_ide.png">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/count.png">
+<meta property="og:updated_time" content="2016-02-26T13:46:23.989Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于单节点的 Spark & IDEA 远程调试">
+<meta name="twitter:description" content="Description:本篇博文主要介绍一下，如何使用 intellij IDEA 这款可视化集成编程工具来远程调试运行在 Spark 集群上面的 jar 文件。在这里采用伪分布式单节点来部署 Spark 的运行环境，目的是为了防止分布式集群环境中(创建多个虚拟机在每台虚拟机上面部署 Spark 环境)一些不可控错误的发生。
+
+环境搭建实验环境准备
+虚拟机 Oracle Virtual Box 版">
+  
+    <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kylin&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Kylin27@outlook.com</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://kylin27.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2016.2.26.remote_debug_spark_intellij" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/" class="article-date">
+  <time datetime="2016-02-25T16:00:00.000Z" itemprop="datePublished">2016-02-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      基于单节点的 Spark &amp; IDEA 远程调试
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description:<br>本篇博文主要介绍一下，如何使用 intellij IDEA 这款可视化集成编程工具来远程调试运行在 Spark 集群上面的 jar 文件。<br>在这里采用伪分布式单节点来部署 Spark 的运行环境，目的是为了防止分布式集群环境中(创建多个虚拟机在每台虚拟机上面部署 Spark 环境)一些不可控错误的发生。</p>
+<hr>
+<h1 id="u73AF_u5883_u642D_u5EFA"><a href="#u73AF_u5883_u642D_u5EFA" class="headerlink" title="环境搭建"></a>环境搭建</h1><h2 id="u5B9E_u9A8C_u73AF_u5883_u51C6_u5907"><a href="#u5B9E_u9A8C_u73AF_u5883_u51C6_u5907" class="headerlink" title="实验环境准备"></a>实验环境准备</h2><ul>
+<li>虚拟机 Oracle Virtual Box 版本：5.0.10</li>
+<li>虚拟机中的 Linux 版本： 15.0.4</li>
+<li>Linux 中安装的 spark 版本: <a href="http://pan.baidu.com/s/1o6P3TVk" target="_blank" rel="external">spark-1.5.2-bin-hadoop2.6.tgz</a></li>
+<li>Linux 中安装的 hadoop 版本: <a href="http://pan.baidu.com/s/1o6P3TVk" target="_blank" rel="external">hadoop-2.6.3.tar.gz</a></li>
+<li>Linux 中安装的 JDK 版本: 1.7.0</li>
+<li>Linux 中安装的 scala 版本: 2.11.7</li>
+<li>主机参数: <ul>
+<li>CPU: i5-4460  </li>
+<li>RAM: 8.00 GB</li>
+</ul>
+</li>
+<li>主机 Intellij 版本: Intellij-14.14 (正版破解版… =。=) </li>
+<li>主机 JDK 版本: 1.8.0 </li>
+<li>主机 spark 软件发布包:<a href="http://pan.baidu.com/s/1o6P3TVk" target="_blank" rel="external">spark-1.5.2-bin-hadoop2.6.tgz</a></li>
+<li><h2 id="u5728_u865A_u62DF_u673A_u4E0A_u90E8_u7F72_u73AF_u5883"><a href="#u5728_u865A_u62DF_u673A_u4E0A_u90E8_u7F72_u73AF_u5883" class="headerlink" title="在虚拟机上部署环境"></a>在虚拟机上部署环境</h2></li>
+<li>首先更新 Ubuntu 的源，然后安装 Oracle 版本的 java7 </li>
+<li>安装过 spark 的同学告诉我，说是用 java8 来安装 spark 会抛出莫名异常，所以在 Linux 的上用的是就是 java7 版本，而在主机上 Intellij 的编译器使用的是 java8</li>
+</ul>
+<h3 id="u5355_u70B9_u90E8_u7F72_u5B89_u88C5_hadoop"><a href="#u5355_u70B9_u90E8_u7F72_u5B89_u88C5_hadoop" class="headerlink" title="单点部署安装 hadoop"></a>单点部署安装 hadoop</h3><ul>
+<li>将 hadoop 压缩包解压到指定目录下面</li>
+</ul>
+<pre><code>
+$ tar -xzf hadoop-2.6.3.tar.gz 
+$ mkdir /hadoop
+$ mv hadoop-2.6.3 /hadoop/
+</code></pre>
+
+<ul>
+<li>为当前结点配置 ssh 的密钥对(即便是单点部署也需要实现 ssh 无密码登陆)</li>
+</ul>
+<pre><code>
+$ apt-get install openssh-server            # 如果系统中没有安装 ssh 软件的话使用 apt-get install 命令安装
+$ apt-get install openssh-client        # 安装 ssh 的客户端
+$ ssh-keygen -t rsa -P ""                 # 生成无密码的公私密钥对    
+$ cd ~/.ssh/                            # 生成的密钥对文件存放在 ~/.ssh/ 文件夹的下面
+$ cat id_rsa.pub >> authorized_keys     # 将刚刚生成的公钥文件中的内容以追加的方式写入到 authorized_keys 文件中
+$ chmod 600 authorized_keys             # 修改存放公钥文件的权限
+$ ssh localhost                            # 使用 ssh 来远程登录自身所在的主机
+$ hostname                               # 查看主机名称，我的是 aimer-v，存放主机名的配置文件(Ubuntu)是 /etc/hostname
+$ ssh aimer-v                             # 使用 ssh 登录名为 aimer-v 的主机，如果能够成功登录说明 ssh 正常工作，
+
+* 如果出现无法 ssh 正常访问登录的情况的话，首先使用 ping 命令来检查数据包是否可以正常收发
+* 如果 ping 没有问题的话同时修改 ssh 对应路径下面的配置文件，并通过重启 ssh 服务来是配置文件生效
+* 我的 ssh 配置文件所在路径是
+
+$ /etc/ssh/ssh_config
+
+* 修改过(注销注释)的字段是
+   PasswordAuthentication yes
+   CheckHostIP yes
+   IdentityFile ~/.ssh/id_rsa
+   Port 22
+   SendEnv LANG LC_*
+   HashKnownHosts yes
+   GSSAPIAuthentication yes
+   GSSAPIDelegateCredentials no
+
+</code></pre>
+
+<ul>
+<li>修改系统环境配置文件将 Hadoop 相关路径写入存放到其中,也就是将 Hadoop 安装包所在的文件夹路径添加到系统的搜索路径中，<br>以便于用户无论在那个路径下面输入 Hadoop 相关命令都可以启动运行 Hadoop 文件夹下面的可执行脚本</li>
+</ul>
+<pre><code>
+$　vi /etc/profile            
+ 在文件的末尾追加
+
+#set for hadoop
+export HADOOP_HOME=/hadoop
+export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH
+export HADOOP_MAPRED_HOME=$HADOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib:$HADOOP_HOME/lib/native"
+
+$ source /etc/profile       # 让修改过的系统变量立即生效
+</code></pre>
+
+<ul>
+<li>修改 Hadoop 的相关配置文件<br>Hadoop 的一系列配置文件所在路径为 ${HADOOP_HOME}/etc/hadoop/ 的下面 </li>
+</ul>
+<ul>
+<li>首先修改的是名为 hadoop-env.sh 的配置文件</li>
+</ul>
+<pre><code>
+  # hadoop-env.sh 文件中记录的是 hadoop 在启动的时候，到哪里去找 java 的编译器
+  # 和启动时内存空间大小的分配等，我只修改了下面这一个选项 
+  export JAVA_HOME=/usr/lib/jvm/java-7-oracle    
+</code></pre>  
+
+<ul>
+<li>然后修改的是名为 core-site.xml 的配置文件</li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/tutorial-core-xml.png" alt=""></p>
+<ul>
+<li>接下来修改的是 hdfs-site.xml </li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/tutorial-hdfs-xml.png" alt=""> </p>
+<ul>
+<li>最后修改的是 yarn-site.xml<br>yarn 是 apache 的资源管理调度框架，和 yarn 等价的还有 mesos ，我没有在这里做过深入研究，感兴趣的同学可以进一步查阅相关资料。</li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/tutorial-yarn-xml.png" alt=""></p>
+<ul>
+<li>根据配置文件中设置的文件夹和文件，并在当前系统中的对应路径下创建对应的文件夹和文件</li>
+</ul>
+<pre><code>
+$ mkdir /hadoop/tmp
+$ mkdir /hadoop/dfs
+$ mkdir /hadoop/dfs/name
+$ mkdir /hadoop/dfs/data
+</code></pre>
+
+<ul>
+<li>格式化 hdfs </li>
+</ul>
+<pre><code>
+// 首先将路径切换到 ${HADOOP_HOME}/bin 的下面，然后执行下面的命令
+$ ./hdfs namenode -format                  # 将 namenode 进行格式化操作
+
+//  如果配置信息无误且正确运行的话，将会显示如下的输出信息 
+
+
+STARTUP_MSG:   java = 1.7.0_80
+************************************************************/
+16/02/26 14:33:49 INFO namenode.NameNode: registered UNIX signal handlers for [TERM, HUP, INT]
+16/02/26 14:33:49 INFO namenode.NameNode: createNameNode [-format]
+Formatting using clusterid: CID-88b14724-7d23-46fd-a623-83029ad20c44
+16/02/26 14:33:51 INFO namenode.FSNamesystem: No KeyProvider found.
+16/02/26 14:33:51 INFO namenode.FSNamesystem: fsLock is fair:true
+16/02/26 14:33:51 INFO blockmanagement.DatanodeManager: dfs.block.invalidate.limit=1000
+16/02/26 14:33:51 INFO blockmanagement.DatanodeManager: dfs.namenode.datanode.registration.ip-hostname-check=true
+16/02/26 14:33:51 INFO blockmanagement.BlockManager: dfs.namenode.startup.delay.block.deletion.sec is set to 000:00:00:00.000
+16/02/26 14:33:51 INFO blockmanagement.BlockManager: The block deletion will start around 2016 Feb 26 14:33:51
+16/02/26 14:33:51 INFO util.GSet: Computing capacity for map BlocksMap
+16/02/26 14:33:51 INFO util.GSet: VM type       = 64-bit
+16/02/26 14:33:51 INFO util.GSet: 2.0% max memory 966.7 MB = 19.3 MB
+16/02/26 14:33:51 INFO util.GSet: capacity      = 2^21 = 2097152 entries
+16/02/26 14:33:51 INFO blockmanagement.BlockManager: dfs.block.access.token.enable=false
+16/02/26 14:33:51 INFO blockmanagement.BlockManager: defaultReplication         = 1
+16/02/26 14:33:51 INFO blockmanagement.BlockManager: maxReplication             = 512
+16/02/26 14:33:51 INFO blockmanagement.BlockManager: minReplication             = 1
+16/02/26 14:33:51 INFO blockmanagement.BlockManager: maxReplicationStreams      = 2
+16/02/26 14:33:51 INFO blockmanagement.BlockManager: replicationRecheckInterval = 3000
+16/02/26 14:33:51 INFO blockmanagement.BlockManager: encryptDataTransfer        = false
+16/02/26 14:33:51 INFO blockmanagement.BlockManager: maxNumBlocksToLog          = 1000
+16/02/26 14:33:51 INFO namenode.FSNamesystem: fsOwner             = root (auth:SIMPLE)
+16/02/26 14:33:51 INFO namenode.FSNamesystem: supergroup          = supergroup
+16/02/26 14:33:51 INFO namenode.FSNamesystem: isPermissionEnabled = false
+16/02/26 14:33:51 INFO namenode.FSNamesystem: HA Enabled: false
+16/02/26 14:33:51 INFO namenode.FSNamesystem: Append Enabled: true
+16/02/26 14:33:52 INFO util.GSet: Computing capacity for map INodeMap
+16/02/26 14:33:52 INFO util.GSet: VM type       = 64-bit
+16/02/26 14:33:52 INFO util.GSet: 1.0% max memory 966.7 MB = 9.7 MB
+16/02/26 14:33:52 INFO util.GSet: capacity      = 2^20 = 1048576 entries
+16/02/26 14:33:52 INFO namenode.NameNode: Caching file names occuring more than 10 times
+16/02/26 14:33:52 INFO util.GSet: Computing capacity for map cachedBlocks
+16/02/26 14:33:52 INFO util.GSet: VM type       = 64-bit
+16/02/26 14:33:52 INFO util.GSet: 0.25% max memory 966.7 MB = 2.4 MB
+16/02/26 14:33:52 INFO util.GSet: capacity      = 2^18 = 262144 entries
+16/02/26 14:33:52 INFO namenode.FSNamesystem: dfs.namenode.safemode.threshold-pct = 0.9990000128746033
+16/02/26 14:33:52 INFO namenode.FSNamesystem: dfs.namenode.safemode.min.datanodes = 0
+16/02/26 14:33:52 INFO namenode.FSNamesystem: dfs.namenode.safemode.extension     = 30000
+16/02/26 14:33:52 INFO namenode.FSNamesystem: Retry cache on namenode is enabled
+16/02/26 14:33:52 INFO namenode.FSNamesystem: Retry cache will use 0.03 of total heap and retry cache entry expiry time is 600000 millis
+16/02/26 14:33:52 INFO util.GSet: Computing capacity for map NameNodeRetryCache
+16/02/26 14:33:52 INFO util.GSet: VM type       = 64-bit
+16/02/26 14:33:52 INFO util.GSet: 0.029999999329447746% max memory 966.7 MB = 297.0 KB
+16/02/26 14:33:52 INFO util.GSet: capacity      = 2^15 = 32768 entries
+16/02/26 14:33:52 INFO namenode.NNConf: ACLs enabled? false
+16/02/26 14:33:52 INFO namenode.NNConf: XAttrs enabled? true
+16/02/26 14:33:52 INFO namenode.NNConf: Maximum size of an xattr: 16384
+Re-format filesystem in Storage Directory /hadoop/dfs/name ? (Y or N) 
+
+//  输入 'Y' 表示同意格式化 namenode 
+//  如果成功初始化的话，将会显示如下的信息 
+
+16/02/26 14:34:55 INFO namenode.FSImage: Allocated new BlockPoolId: BP-1525144641-127.0.0.1-1456468495698
+16/02/26 14:34:56 INFO common.Storage: Storage directory /hadoop/dfs/name has been successfully formatted.
+16/02/26 14:34:56 INFO namenode.NNStorageRetentionManager: Going to retain 1 images with txid >= 0
+16/02/26 14:34:56 INFO util.ExitUtil: Exiting with status 0
+16/02/26 14:34:56 INFO namenode.NameNode: SHUTDOWN_MSG: 
+/************************************************************
+SHUTDOWN_MSG: Shutting down NameNode at aimer-v/127.0.0.1
+************************************************************/
+
+显示如上信息便说明 namenode 格式化成功 
+</code></pre>
+
+
+<ul>
+<li>然后再将路径切换到 ${HADOOP_HOME}/sbin 的下面</li>
+</ul>
+<pre><code>
+$ ./start-dfs.sh                           # 启动 hdfs 
+</code></pre>
+
+<ul>
+<li>如若成功启动显示日志信息如下 </li>
+</ul>
+<pre><code>
+root@aimer-v:/hadoop/sbin# ./start-dfs.sh 
+Starting namenodes on [localhost]
+localhost: starting namenode, logging to /hadoop/logs/hadoop-root-namenode-aimer-v.out
+localhost: starting datanode, logging to /hadoop/logs/hadoop-root-datanode-aimer-v.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /hadoop/logs/hadoop-root-secondarynamenode-aimer-v.out
+</code></pre>
+
+<ul>
+<li>启动 yarn </li>
+</ul>
+<pre><code>
+$ ./start-yarn.sh                          
+</code></pre>
+
+<ul>
+<li>若 yarn 成功运行显示如下日志信息 </li>
+</ul>
+<pre><code>
+root@aimer-v:/hadoop/sbin# ./start-yarn.sh  &
+[1] 5993
+root@aimer-v:/hadoop/sbin# starting yarn daemons
+starting resourcemanager, logging to /hadoop/logs/yarn-root-resourcemanager-aimer-v.out
+localhost: starting nodemanager, logging to /hadoop/logs/yarn-root-nodemanager-aimer-v.out
+
+[1]+  Done                    ./start-yarn.sh
+</code></pre>
+
+<ul>
+<li>通过输入 jps 命令来查看 Hadoop 相关进程是否处于正常工作的状态</li>
+</ul>
+<pre><code>
+$ jps 
+5602 NameNode
+6137 NodeManager
+5866 SecondaryNameNode
+6031 ResourceManager
+6445 Jps
+</code></pre>
+
+<h3 id="u5B89_u88C5_spark__u4E4B_u524D_u5148_u5B89_u88C5_u597D_u548C_u5B89_u88C5_spark__u7248_u672C_u76F8_u5339_u914D_u7684_scala"><a href="#u5B89_u88C5_spark__u4E4B_u524D_u5148_u5B89_u88C5_u597D_u548C_u5B89_u88C5_spark__u7248_u672C_u76F8_u5339_u914D_u7684_scala" class="headerlink" title="安装 spark 之前先安装好和安装 spark 版本相匹配的 scala"></a>安装 spark 之前先安装好和安装 spark 版本相匹配的 scala</h3><ul>
+<li>首先写在系统中默认安装的 scala</li>
+</ul>
+<pre><code>
+$ apt-get remove scala 
+</code></pre>
+
+<ul>
+<li>将下载到本地的 <a href="http://pan.baidu.com/s/1o6P3TVk" target="_blank" rel="external">scala</a> 压缩包进行解压</li>
+</ul>
+<pre><code>
+$ tar -xvf scala-2.11.7.tgz
+</code></pre>
+
+<ul>
+<li>修改系统配置文件，将 scala 所在路径追加到系统搜索路径中</li>
+</ul>
+<pre><code>
+$ vi /etc/profile
+</code></pre>
+
+<ul>
+<li>向文件中追加如下的信息 </li>
+</ul>
+<pre><code>
+export SCALA_HOME=/scala
+export PATH=$SCALA_HOME/bin:$PATH
+</code></pre>
+
+<h3 id="u5728_hadoop__u7684_u57FA_u7840_u4E0A_u7EE7_u7EED_u5B89_u88C5_spark"><a href="#u5728_hadoop__u7684_u57FA_u7840_u4E0A_u7EE7_u7EED_u5B89_u88C5_spark" class="headerlink" title="在 hadoop 的基础上继续安装 spark"></a>在 hadoop 的基础上继续安装 spark</h3><ul>
+<li>解压软件包</li>
+</ul>
+<pre><code>
+tar -xvf spark-1.5.2-bin-hadoop2.6.tgz
+</code></pre>
+
+<ul>
+<li>修改系统配置文件，将 spark 所在路径添加到系统搜索路径中</li>
+</ul>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ vi /etc/profile </span><br><span class="line">export HADOOP_CONF_DIR=/hadoop/etc/hadoop</span><br><span class="line">export SPARK_MASTER=localhost</span><br><span class="line">export SPARK_LOCAL_IP=localhost</span><br><span class="line">export SPARK_HOME=/spark</span><br><span class="line">export SPARK_LIBRARY_PATH=.:<span class="variable">$JAVA</span>_HOME/lib:<span class="variable">$JAVA</span>_HOME/jre/lib:<span class="variable">$HADOOP</span>_HOME/lib/native</span><br><span class="line">export YARN_CONF_DIR=/hadoop/etc/hadoop</span><br><span class="line">export PATH=<span class="variable">$PATH</span>:<span class="variable">$SPARK</span>_HOME/bin</span><br><span class="line">export SCALA_HOME=/opt/scala</span><br><span class="line">export PATH=<span class="variable">$SCALA</span>_HOME/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>最后通过该命令让修改的系统配置信息立即生效</li>
+</ul>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">source</span> <span class="regexp">/etc/</span>profile</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修改 spark 的配置文件</li>
+</ul>
+<pre><code>
+$ cd ${SPARK_HOME}/conf
+$ cp spark-env.sh.template spark-env.sh      # 在这里建议将配置文件的文件模板进行保留，通过创建它的备份的方式来在备份文件上面进行修改
+</code></pre>
+
+<ul>
+<li>打开 spark-env.sh 文件，然后添加如下的信息</li>
+</ul>
+<pre><code>
+$ vi spark-env.sh                    
+
+export JAVA_HOME=/usr/lib/jvm/java-7-oracle
+export SCALA_HOME=/opt/scala
+export HADOOP_CONF_DIR=/hadoop/etc/hadoop
+</code></pre>
+
+
+* 通过脚本来启动 spark 相关的服务
+
+<pre><code>
+$ cd ${SPARK_HOME}/sbin
+$ ./start-all.sh
+</code></pre>
+
+<ul>
+<li>如果启动成功的话，将会显示出如下的信息 </li>
+</ul>
+<pre><code>
+root@aimer-v:/spark/sbin# ./start-all.sh 
+rsync from localhost
+rsync: change_dir "/spark/sbin//localhost" failed: No such file or directory (2)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1183) [sender=3.1.1]
+starting org.apache.spark.deploy.master.Master, logging to /spark/sbin/../logs/spark-root-org.apache.spark.deploy.master.Master-1-aimer-v.out
+localhost: starting org.apache.spark.deploy.worker.Worker, logging to /spark/sbin/../logs/spark-root-org.apache.spark.deploy.worker.Worker-1-aimer-v.out
+
+</code></pre>
+
+
+<ul>
+<li>通过输入 jps 命令来查看系统中各个进程的运行状态信息</li>
+</ul>
+<pre><code>
+$ jps
+
+root@aimer-v:/spark/sbin# jps
+5470 SecondaryNameNode
+5332 DataNode
+6911 Worker
+6690 Master
+5776 NodeManager
+5224 NameNode
+5669 ResourceManager
+6955 Jps
+</code></pre>
+
+<ul>
+<li>其中的 Master 和 Worker 便是我们刚才启动 Spark 所运行的相关进程</li>
+</ul>
+<ul>
+<li>通过脚本来运行 spark-shell 通过脚本的方式来访问 spark </li>
+</ul>
+<pre><code>
+$ cd  ${SPARK_HOME}/bin
+$ ./spark-shell
+//  如果正常启动的话，将会显示如下日志信息 
+</code></pre>
+
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/tutorial-spark_run.png" alt=""></p>
+<p>自此，虚拟机上面 hadoop &amp; spark 的单节点运行环境部署结束 </p>
+<hr>
+<h2 id="u5728_u4E3B_u673A_u4E0A_u90E8_u7F72_u73AF_u5883"><a href="#u5728_u4E3B_u673A_u4E0A_u90E8_u7F72_u73AF_u5883" class="headerlink" title="在主机上部署环境"></a>在主机上部署环境</h2><h3 id="u642D_u5EFA_WordCounter__u7684_u7F16_u7A0B_u73AF_u5883"><a href="#u642D_u5EFA_WordCounter__u7684_u7F16_u7A0B_u73AF_u5883" class="headerlink" title="搭建 WordCounter 的编程环境"></a>搭建 WordCounter 的编程环境</h3><ul>
+<li><p>在这里我们使用的是 scala 编程语言来进行编写 wordcounter 程序  </p>
+</li>
+<li><p>step 1. 在 Intellij 中创建一个新的 scala 项目</p>
+</li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/1_.png" alt=""><br><img src="http://7xqz39.com1.z0.glb.clouddn.com/2_.png" alt=""></p>
+<ul>
+<li><p>step 2. 打开 File -&gt; Project Structure -&gt; 点击最左栏中的 Libraries 选项 –&gt; 绿色的 ‘+’ 按钮</p>
+</li>
+<li><p>step 3. 将刚刚下载的 spark-1.5.2-bin-hadoop2.6 文件下 spark-1.5.2-bin-hadoop2.6\spark-1.5.2-bin-hadoop2.6\lib\spark-assembly-1.5.2-hadoop2.6.0.jar 文件加载到当前编程环境中</p>
+</li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/3_.png" alt=""></p>
+<ul>
+<li>step 4. 设置编译代码生成的 .jar 文件所在的路径， 打开 File -&gt; Project Structure -&gt; 点击最左栏中的 Artifacts 选项 –&gt; 绿色的 ‘+’ 按钮 Jar -&gt; From modules with dependencies ，然后在弹出的 ‘Create JAR from Modules’ 中的 ‘Main Class’ 选中对应的函数入口类文件，在这里我们选的是 SparkWordCount 这个文件</li>
+<li></li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/4_.png" alt=""></p>
+<ul>
+<li>step 5. 为 META-INF/MAINFEST.MF 这个将要生成的配置文件设置路径</li>
+<li>step 6. 在 Name 栏中设置将要生成的 .jar 文件的名称， 在 Output directory 一栏中设置 .jar 文件将会输出的路径</li>
+<li>step 7. 同时不要忘了将 Build on make 设置有效，最后点击 ok 按钮</li>
+<li></li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/7_final_jar.png" alt=""></p>
+<ul>
+<li>step 8. 编写代码 SparkWordCount.scala 代码如下所示</li>
+</ul>
+<pre><code>
+import org.apache.spark.{SparkConf, SparkContext}
+
+object SparkWordCount {
+  def main(args: Array[String]) {
+    val conf = new SparkConf().setAppName("SparkWordCount").setMaster("localhost")
+    val sc = new SparkContext(conf)
+    val count=sc.textFile(args(0)).filter(line => line.contains("Spark")).count()
+    println("count="+count)
+    sc.stop()
+  }
+}
+</code></pre>
+
+<ul>
+<li>在再次运行代码的过程中出了一点问题: IDE 报错了显示缺少 scala （SDK） 相关的 jar 文件</li>
+<li>引发报错的原因是: 之前引用到当前系统中的 SDK 索引没有更新，重新导入一次即可，如下图所示, IDE 重新创建一下索引即可征程编译</li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/6_.png" alt=""></p>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/build.png" alt=""></p>
+<ul>
+<li>step 9. 编译刚刚编写的代码 Build -&gt; Make Project ， 然后到对应的路径下面找 jar 文件</li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/result_8.png" alt=""></p>
+<h3 id="u5C06_u751F_u6210_u7684_jar__u6587_u4EF6_u4E0A_u4F20_u81F3_u5B89_u88C5_u6709_spark__u7684_u865A_u62DF_u673A_u4E0A"><a href="#u5C06_u751F_u6210_u7684_jar__u6587_u4EF6_u4E0A_u4F20_u81F3_u5B89_u88C5_u6709_spark__u7684_u865A_u62DF_u673A_u4E0A" class="headerlink" title="将生成的 jar 文件上传至安装有 spark 的虚拟机上"></a>将生成的 jar 文件上传至安装有 spark 的虚拟机上</h3><ul>
+<li>在对应的路径下创建文件夹，然后将生成的 .jar 文件上传到该文件夹下面</li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/upload_9.png" alt=""></p>
+<h2 id="u5F00_u59CB_u8FDC_u7A0B_u8C03_u8BD5"><a href="#u5F00_u59CB_u8FDC_u7A0B_u8C03_u8BD5" class="headerlink" title="开始远程调试"></a>开始远程调试</h2><h3 id="u9996_u5148_u5728_u865A_u62DF_u673A_28Linux_29_u7684_u547D_u4EE4_u884C_u4E2D_u8F93_u5165_u547D_u4EE4_u8BA9_spark__u6765_u4EE5_u8C03_u8BD5_u7684_u65B9_u5F0F_u6267_u884C_u4E0A_u4F20_jar__u6587_u4EF6"><a href="#u9996_u5148_u5728_u865A_u62DF_u673A_28Linux_29_u7684_u547D_u4EE4_u884C_u4E2D_u8F93_u5165_u547D_u4EE4_u8BA9_spark__u6765_u4EE5_u8C03_u8BD5_u7684_u65B9_u5F0F_u6267_u884C_u4E0A_u4F20_jar__u6587_u4EF6" class="headerlink" title="首先在虚拟机(Linux)的命令行中输入命令让 spark 来以调试的方式执行上传 jar 文件"></a>首先在虚拟机(Linux)的命令行中输入命令让 spark 来以调试的方式执行上传 jar 文件</h3><pre><code>
+$ cd ${SPARK_HOME}/bin
+</code></pre> 
+
+<ul>
+<li>然后查看虚拟机的 IP 地址信息，我的是 </li>
+</ul>
+<pre><code>
+root@aimer-v:/home/aimer/spark_remote# ifconfig
+eth0      Link encap:Ethernet  HWaddr 08:00:27:f5:3e:29  
+          inet addr:10.0.2.15  Bcast:10.0.2.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fef5:3e29/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:169490 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:50036 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:208071948 (208.0 MB)  TX bytes:3995229 (3.9 MB)
+
+eth1      Link encap:Ethernet  HWaddr 08:00:27:e5:6b:20  
+          inet addr:192.168.56.113  Bcast:192.168.56.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fee5:6b20/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:934783 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:458868 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:987944856 (987.9 MB)  TX bytes:42138914 (42.1 MB)
+
+eth2      Link encap:Ethernet  HWaddr 08:00:27:15:4d:1b  
+          inet addr:192.168.56.112  Bcast:192.168.56.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe15:4d1b/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:390 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:840 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:45543 (45.5 KB)  TX bytes:103389 (103.3 KB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:965869 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:965869 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:497637820 (497.6 MB)  TX bytes:497637820 (497.6 MB)
+</code></pre>
+
+<h3 id="u5728_u4E0A_u8FF0_u7684_IP__u5730_u5740_u4E2D"><a href="#u5728_u4E0A_u8FF0_u7684_IP__u5730_u5740_u4E2D" class="headerlink" title="在上述的 IP 地址中"></a>在上述的 IP 地址中</h3><ul>
+<li>第一个是我用来在虚拟机上面以 NAT 的方式登录互联网的 IP </li>
+<li>第二个 IP 地址是多结点分布式部署 spark 集群设定的 IP</li>
+<li>第三个 IP 地址是用来进行主机到虚拟机二者之间进行 ssh 远程连接的 IP 地址</li>
+<li><p>第四个 主机自循环 IP 地址</p>
+</li>
+<li><p>因为我们在进行远程调试的时候，是想把虚拟机中的调试信息数据通过端口号传到主机(windows)的上面，</p>
+</li>
+<li><p>所以选用的输出调试信息的 IP 地址与 ssh 所使用的相同,只不过端口号不同一个是 8888 另一个是 22 罢了</p>
+</li>
+<li><p>接下来，不要着急运行 jar ，在这里由于 word-counter 这个程序是从 hdfs 上面来读取文本文件的，</p>
+</li>
+<li><p>所以还需要将输入文本文件上传到 hdfs 的上</p>
+</li>
+<li><p>首先将本地的文本文件 README.md(我用的是 spark 的 README 文件，随便什么 ASCII 编码的文本文件都可以) 上传到 hdfs 的上面</p>
+</li>
+</ul>
+<pre><code>
+$ hdfs dfs -put REAEME.md /
+</code></pre>
+
+<ul>
+<li>查看文件是否被正确的上传，以及对应的结果路径是否正确的被创建 (在此期间，发现 datanode 没有启动，所以 README.md 这个本地文件并没有正确上传，所以先停掉了 spark ,hadoop , 然后重启 hadoop ，在 hadoop 启动之后又将 spark 进行启动)</li>
+</ul>
+<pre><code>
+$ hdfs dfs -ls /
+root@aimer-v:/home/aimer/spark_remote# hdfs dfs -ls /
+Found 5 items
+-rw-r--r--   1 root supergroup       3593 2016-02-26 16:34 /README.md
+drwx-wx-wx   - root supergroup          0 2016-01-01 23:31 /tmp
+drwxr-xr-x   - root supergroup          0 2016-01-01 23:53 /user
+</code></pre>
+
+<ul>
+<li>在输入文件上传，输出数据文件路径分别在 hdfs 上创建好之后便可以输入如下命令</li>
+</ul>
+<pre><code>
+$  ./spark-submit --master spark://aimer-v:7077 --name SparkWordCount --class SparkWordCount --driver-java-options "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8888" --executor-memory 1G /home/aimer/spark_remote/spark_learning.jar hdfs://aimer-v:9000/wordcount/README.md --driver-java-options "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8888"
+</code></pre>
+
+<ul>
+<li>如果正确运行的话，命令行中会显示如下的信息 </li>
+</ul>
+<pre><code>
+Listening for transport dt_socket at address: 8888
+</code></pre>
+
+<h3 id="u7136_u540E_u5728_u672C_u5730_u7684_Intellij__u4E2D_u901A_u8FC7_u5982_u4E0B_u7684_u914D_u7F6E_u6765_u63A5_u6536_u8FDC_u7A0B_u53D1_u6765_u7684_u8C03_u8BD5_u4FE1_u606F_uFF0C_u5B9E_u73B0_u8FDC_u7A0B_u8C03_u8BD5_u529F_u80FD"><a href="#u7136_u540E_u5728_u672C_u5730_u7684_Intellij__u4E2D_u901A_u8FC7_u5982_u4E0B_u7684_u914D_u7F6E_u6765_u63A5_u6536_u8FDC_u7A0B_u53D1_u6765_u7684_u8C03_u8BD5_u4FE1_u606F_uFF0C_u5B9E_u73B0_u8FDC_u7A0B_u8C03_u8BD5_u529F_u80FD" class="headerlink" title="然后在本地的 Intellij 中通过如下的配置来接收远程发来的调试信息，实现远程调试功能"></a>然后在本地的 Intellij 中通过如下的配置来接收远程发来的调试信息，实现远程调试功能</h3><ul>
+<li>step 1 Run -&gt; Edit Configurations 配置如下图所示的远程调试配置信息,为这个创建的远程调试设定一个名称 “remote-spark”</li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF.png" alt=""></p>
+<ul>
+<li>step 2 Run -&gt; Debug ‘remote-spark’<br>如果成功连接的话，将会在下面显示如下的信息(不要忘了在本地的代码上打上端点)</li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/tutorial-%E5%90%AF%E5%8A%A8%E8%B0%83%E8%AF%95%E5%91%BD%E4%BB%A4.png" alt=""></p>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/final_result.png" alt=""> </p>
+<ul>
+<li>同时如果将窗口切换到远程访问界面的话，也会看到对应输出的日志信息(直接截图)</li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/final_ssh.png" alt=""></p>
+<ul>
+<li>step 3 继续调试，直到程序结束，最终结果既不会显示在 IDE 的控制台输出信息中，而是会显示在 linux 的命令提示行中</li>
+</ul>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/end_ide.png" alt=""><br><img src="http://7xqz39.com1.z0.glb.clouddn.com/count.png" alt=""> </p>
+<p>end</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil3ik2sz000zh4imrbqmnuim" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDEA/">IDEA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Intellij/">Intellij</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/debug/">debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/02/25/2016.2.25.spark.manual.translate1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Spark 文档翻译1</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 15px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 15px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 20px;">spark</a> <a href="/tags/theory/" style="font-size: 15px;">theory</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/">基于单节点的 Spark &amp; IDEA 远程调试</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/25/2016.2.25.spark.manual.translate1/">Spark 文档翻译1</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/19/2016.2.19.Google-Test 使用教程/">Google 测试框架 g-Test 使用教程</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/18/2016.2.18.dht.note/">DHT Chord 理论学习笔记 1</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/17/2016.2.17.upload_picture/">如何使用七牛存储来为你的 gihub 博客中添加图片</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Kylin<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>

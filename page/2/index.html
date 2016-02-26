@@ -65,6 +65,99 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-blog_2_3_2016" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/05/blog_2_3_2016/" class="article-date">
+  <time datetime="2016-02-04T16:00:00.000Z" itemprop="datePublished">2016-02-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/05/blog_2_3_2016/">2 Build Blog on Windows by Node.js and Hexo</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description: This blog introduces how to build your own blog on windows OS. with the help of Node.js and Hexo <br></p>
+<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git<br></h3><p>Download Git  and register an account in <a href="https://github.com/" target="_blank" rel="external">GitHub</a> ,<br><br>Make sure SSH is installed on your windows OS. Create DSA or RSA keys by running commands below</p>
+<pre> 
+$ cd ~/.ssh * 
+$ ssh-keygen -t rsa -C youremail@email.com  
+ </pre>
+
+<p>Add the generated key rsa*.pub content to your <a href="https://github.com/settings/profile" target="_blank" rel="external">GitHub</a> <br><br><a href="https://github.com/settings/ssh" target="_blank" rel="external">SSH keys</a>  <a href="https://github.com/settings/ssh#" target="_blank" rel="external">New SSH key</a> <br><br>Paste your ssh rsa.pub key to it<br><br>Setup your cmd/git hub bash ,tab</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<p>Your will receive a message like this “Hi , welcome to git hub blabla “. <br><br>But now ,remember you have not got your token string yet which means you couldn’t ‘deploy’ your hexo blog to github.<br><br>Go to the <a href="https://github.com/settings/profile" target="_blank" rel="external">GitHub Setting Page</a> and press the <a href="https://github.com/settings/tokens" target="_blank" rel="external">Personal access tokens</a> then <a href="https://github.com/settings/tokens/new" target="_blank" rel="external">Generate new token</a> and confirm your password again .<br>  Write in the token name (Token description) in order your can distinguish this token to other tokens , select scopes (just like setting functions of the token) , and the last step is press the green ‘Generate token’ button.  Like this you’ll get your ‘Personal access tokens’<br><br>Open your git bash again , and tab in commands </p>
+<pre> 
+$ git config --global user.name "your name" 
+$ git config --global user.email "your email"
+$ git config --global usr.token "paste the personal access tokens your just got here"
+ </pre>
+
+<hr>
+<h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js <br></h3><p>Download <a href="https://nodejs.org/en/download/stable/" target="_blank" rel="external">Node.js for Windows</a><br><br>Install Node.js and add both Node.js and npm’s path to environment’s PATH<br><br><b>Create two folders with the name of ‘node_cache’ and ‘node_global’under node.js’s folder </b><br><br>Open git bash under current folder(by clicking right mouse -&gt; git bash), and tab </p>
+<pre> 
+$ npm config ls
+$ npm config set cache 'the absolute path you created folder node_cache'
+$ npm config set prefix 'the absolute path you created folder node_global'  
+ </pre>
+
+<hr>
+<h3 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo  <br></h3><p> Open your git bash again,change your current to one folder your want your hexo installed in, tab in</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo</span><br></pre></td></tr></table></figure>
+<h2 id="Local_Blog_Server"><a href="#Local_Blog_Server" class="headerlink" title="Local Blog Server"></a>Local Blog Server</h2><p> After hexo installed , do not forget add the hexo(the executable binary file)’s location into env’s PATH too<br><br> Make a new folder which you want to store blog’s file and change current path to it<br><br> Tab in </p>
+<pre> 
+$ hexo init         # this command like git init , initialize the blog workspace and generate files
+$ npm install    # wait for a while
+$ hexo g         # hexo g is the command which short for hexo generate
+$ hexo s         # deploy your hexo template on localhost's server(0.0.0.0:4000)
+</pre>
+
+<h2 id="Deploy_Blog_to_Git_28like_this_blog_29"><a href="#Deploy_Blog_to_Git_28like_this_blog_29" class="headerlink" title="Deploy Blog to Git(like this blog)"></a>Deploy Blog to Git(like this blog)</h2><p> Create a new respo. on your github with the name <b>‘your github account name’.github.io</b><br><br> Deploy Blog to Git ‘s step is a little different from deploying it on local server<br><br> Open git bash on hexo blog’s path and tab in the commands below</p>
+<pre> 
+$ hexo init 
+$ npm install
+$ npm install hexo-deployer-git --save # download git corresponding plugins
+</pre>
+
+<p> Open your _config.yml file , update the #Deployment’s part content like this</p>
+<pre> 
+# Deployment
+## Docs: http://hexo.io/docs/deployment.html
+deploy:
+  type: git
+  repository: git@github.com:'your github account name'.github.io.git  #--> do not forget replace it
+  branch: master
+</pre> 
+
+<p> After update _config.yml file , tab in commands</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo d    <span class="comment"># short command for hexo deploy</span></span><br></pre></td></tr></table></figure>
+<p>Open your browser, and tab in <a href="https://&#39;your" target="_blank" rel="external">https://&#39;your</a> github account name’.github.io you will see the blog your just create<br><br>If your want to add new blogs just add a new .md file (mark down edit style) under your blog’s source/_post/ folder<br><br>You can change your blog’s name by changing _config.yml’s ‘title’ content<br><br>Good luck !</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cil3ik2ro000bh4im3r8fibvk" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows/">windows</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-blog_2_5_2016_log4j_usage_note" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/02/05/blog_2_5_2016_log4j_usage_note/" class="article-date">
@@ -172,7 +265,7 @@ public class TestLog4j{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cil1qquxv000898imd9mbswpz" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cil3ik2rh0008h4imxpy9ef3d" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a></li></ul>
@@ -324,7 +417,7 @@ public class TestLog4j{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cil1qquxs000598imcr5lsnk7" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cil3ik2qt0005h4im1x530yw2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/个人简历/">个人简历</a></li></ul>
@@ -351,7 +444,7 @@ public class TestLog4j{
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -360,7 +453,7 @@ public class TestLog4j{
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 20px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 20px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 20px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 20px;">hexo</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 20px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 20px;">spark</a> <a href="/tags/theory/" style="font-size: 20px;">theory</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 15px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 15px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 20px;">spark</a> <a href="/tags/theory/" style="font-size: 15px;">theory</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
     </div>
   </div>
 
@@ -369,7 +462,7 @@ public class TestLog4j{
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -379,6 +472,10 @@ public class TestLog4j{
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/">基于单节点的 Spark &amp; IDEA 远程调试</a>
+          </li>
         
           <li>
             <a href="/2016/02/25/2016.2.25.spark.manual.translate1/">Spark 文档翻译1</a>
@@ -394,10 +491,6 @@ public class TestLog4j{
         
           <li>
             <a href="/2016/02/17/2016.2.17.upload_picture/">如何使用七牛存储来为你的 gihub 博客中添加图片</a>
-          </li>
-        
-          <li>
-            <a href="/2016/02/14/2016.2.14.docker_spark/">使用 docker 来构建 spark 集群</a>
           </li>
         
       </ul>
