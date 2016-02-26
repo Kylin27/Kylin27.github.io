@@ -121,15 +121,32 @@ $ mv hadoop-2.6.3 /hadoop/
 <li>为当前结点配置 ssh 的密钥对(即便是单点部署也需要实现 ssh 无密码登陆)</li>
 </ul>
 <pre><code>
-$ apt-get install openssh-server            # 如果系统中没有安装 ssh 软件的话使用 apt-get install 命令安装
-$ apt-get install openssh-client        # 安装 ssh 的客户端
-$ ssh-keygen -t rsa -P ""                 # 生成无密码的公私密钥对    
-$ cd ~/.ssh/                            # 生成的密钥对文件存放在 ~/.ssh/ 文件夹的下面
-$ cat id_rsa.pub >> authorized_keys     # 将刚刚生成的公钥文件中的内容以追加的方式写入到 authorized_keys 文件中
-$ chmod 600 authorized_keys             # 修改存放公钥文件的权限
-$ ssh localhost                            # 使用 ssh 来远程登录自身所在的主机
-$ hostname                               # 查看主机名称，我的是 aimer-v，存放主机名的配置文件(Ubuntu)是 /etc/hostname
-$ ssh aimer-v                             # 使用 ssh 登录名为 aimer-v 的主机，如果能够成功登录说明 ssh 正常工作，
+$ apt-get install openssh-server            
+* 如果系统中没有安装 ssh 软件的话使用 apt-get install 命令安装
+
+$ apt-get install openssh-client        
+* 安装 ssh 的客户端
+
+$ ssh-keygen -t rsa -P ""                 
+* 生成无密码的公私密钥对    
+
+$ cd ~/.ssh/                            
+* 生成的密钥对文件存放在 ~/.ssh/ 文件夹的下面
+
+$ cat id_rsa.pub >> authorized_keys     
+* 将刚刚生成的公钥文件中的内容以追加的方式写入到 authorized_keys 文件中
+
+$ chmod 600 authorized_keys             
+* 修改存放公钥文件的权限
+
+$ ssh localhost                            
+* 使用 ssh 来远程登录自身所在的主机
+
+$ hostname                               
+* 查看主机名称，我的是 aimer-v，存放主机名的配置文件(Ubuntu)是 /etc/hostname
+
+$ ssh aimer-v                             
+* 使用 ssh 登录名为 aimer-v 的主机，如果能够成功登录说明 ssh 正常工作
 
 * 如果出现无法 ssh 正常访问登录的情况的话，首先使用 ping 命令来检查数据包是否可以正常收发
 * 如果 ping 没有问题的话同时修改 ssh 对应路径下面的配置文件，并通过重启 ssh 服务来是配置文件生效
@@ -619,7 +636,7 @@ Listening for transport dt_socket at address: 8888
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil3rhs2x000zh8imgx3y0xgw" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil3rmy7g000zqkim06kum2l9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDEA/">IDEA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Intellij/">Intellij</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/debug/">debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -667,7 +684,7 @@ Listening for transport dt_socket at address: 8888
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cil3rhs37001ah8ims6dvbxfr" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cil3rmy7p001aqkim8ic4jq7r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official/">official</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
@@ -941,7 +958,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cil3rhs3b001ih8imrj8tf5j1" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cil3rmy7t001iqkim0wzv19ed" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gtest/">Gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gtest/">gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/manual/">manual</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tutorial/">tutorial</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试/">测试</a></li></ul>
@@ -1065,7 +1082,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cil3rhs3h001vh8imwcvaj4mb" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cil3rmy80001vqkimzw247lqk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chord/">Chord</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DHT/">DHT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/P2P/">P2P</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/note/">note</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -1114,7 +1131,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cil3rhs3l0025h8imo242b48l" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cil3rmy860025qkimfuwec4hm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/picture/">picture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/七牛/">七牛</a></li></ul>
@@ -1330,7 +1347,7 @@ res0: Long = 1000
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cil3rhs3p002dh8im285e236l" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cil3rmy89002dqkimi6726ada" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dockerfile/">dockerfile</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -1584,7 +1601,7 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cil3rhs3u002lh8im36xjtcp9" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cil3rmy8d002lqkimuh9o5qe9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
@@ -1676,7 +1693,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cil3rhs090000h8im1v2wdtl1" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cil3rmy680000qkim6vu8u14b" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/datastructure/">datastructure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
@@ -1778,7 +1795,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cil3rhs2u000vh8imgnrw3ofu" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cil3rmy7c000vqkimmz00c7k2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming-theory/">programming-theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
@@ -1912,7 +1929,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cil3rhs2o000kh8im00s4qncs" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cil3rmy76000kqkimxug97cs6" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/search-engine/">search-engine</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>

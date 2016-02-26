@@ -36,7 +36,7 @@
 <meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/final_ssh.png">
 <meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/end_ide.png">
 <meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/count.png">
-<meta property="og:updated_time" content="2016-02-26T13:50:03.113Z">
+<meta property="og:updated_time" content="2016-02-26T13:59:53.416Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于单节点的 Spark & IDEA 远程调试">
 <meta name="twitter:description" content="Description:本篇博文主要介绍一下，如何使用 intellij IDEA 这款可视化集成编程工具来远程调试运行在 Spark 集群上面的 jar 文件。在这里采用伪分布式单节点来部署 Spark 的运行环境，目的是为了防止分布式集群环境中(创建多个虚拟机在每台虚拟机上面部署 Spark 环境)一些不可控错误的发生。
@@ -148,15 +148,32 @@ $ mv hadoop-2.6.3 /hadoop/
 <li>为当前结点配置 ssh 的密钥对(即便是单点部署也需要实现 ssh 无密码登陆)</li>
 </ul>
 <pre><code>
-$ apt-get install openssh-server            # 如果系统中没有安装 ssh 软件的话使用 apt-get install 命令安装
-$ apt-get install openssh-client        # 安装 ssh 的客户端
-$ ssh-keygen -t rsa -P ""                 # 生成无密码的公私密钥对    
-$ cd ~/.ssh/                            # 生成的密钥对文件存放在 ~/.ssh/ 文件夹的下面
-$ cat id_rsa.pub >> authorized_keys     # 将刚刚生成的公钥文件中的内容以追加的方式写入到 authorized_keys 文件中
-$ chmod 600 authorized_keys             # 修改存放公钥文件的权限
-$ ssh localhost                            # 使用 ssh 来远程登录自身所在的主机
-$ hostname                               # 查看主机名称，我的是 aimer-v，存放主机名的配置文件(Ubuntu)是 /etc/hostname
-$ ssh aimer-v                             # 使用 ssh 登录名为 aimer-v 的主机，如果能够成功登录说明 ssh 正常工作，
+$ apt-get install openssh-server            
+* 如果系统中没有安装 ssh 软件的话使用 apt-get install 命令安装
+
+$ apt-get install openssh-client        
+* 安装 ssh 的客户端
+
+$ ssh-keygen -t rsa -P ""                 
+* 生成无密码的公私密钥对    
+
+$ cd ~/.ssh/                            
+* 生成的密钥对文件存放在 ~/.ssh/ 文件夹的下面
+
+$ cat id_rsa.pub >> authorized_keys     
+* 将刚刚生成的公钥文件中的内容以追加的方式写入到 authorized_keys 文件中
+
+$ chmod 600 authorized_keys             
+* 修改存放公钥文件的权限
+
+$ ssh localhost                            
+* 使用 ssh 来远程登录自身所在的主机
+
+$ hostname                               
+* 查看主机名称，我的是 aimer-v，存放主机名的配置文件(Ubuntu)是 /etc/hostname
+
+$ ssh aimer-v                             
+* 使用 ssh 登录名为 aimer-v 的主机，如果能够成功登录说明 ssh 正常工作
 
 * 如果出现无法 ssh 正常访问登录的情况的话，首先使用 ping 命令来检查数据包是否可以正常收发
 * 如果 ping 没有问题的话同时修改 ssh 对应路径下面的配置文件，并通过重启 ssh 服务来是配置文件生效
@@ -646,7 +663,7 @@ Listening for transport dt_socket at address: 8888
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil3rhs2x000zh8imgx3y0xgw" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil3rmy7g000zqkim06kum2l9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDEA/">IDEA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Intellij/">Intellij</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/debug/">debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
