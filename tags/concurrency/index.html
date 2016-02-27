@@ -3,27 +3,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Spark 文档翻译1 | Kylin&#39;s Blog</title>
+  <title>Tag: concurrency | Kylin&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Description: 最近参加了一个翻译 spark 文档的小组 打算利用业余时间来补习一下英文，以及通过阅读 spark 文档来系统学习一下 spark 的相关知识，翻译难免有不恰当之处，敬请指正。
-
-Spark SQL,DataFrames and Datasets Guide
-概述Spark SQL 是 Spark 中用来处理结构化数据的模块。基本抽象数据类型 RDD 所提供的接口不同的">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Spark 文档翻译1">
-<meta property="og:url" content="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/index.html">
+  <meta name="description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Kylin's Blog">
+<meta property="og:url" content="http://kylin27.github.io/tags/concurrency/index.html">
 <meta property="og:site_name" content="Kylin's Blog">
-<meta property="og:description" content="Description: 最近参加了一个翻译 spark 文档的小组 打算利用业余时间来补习一下英文，以及通过阅读 spark 文档来系统学习一下 spark 的相关知识，翻译难免有不恰当之处，敬请指正。
-
-Spark SQL,DataFrames and Datasets Guide
-概述Spark SQL 是 Spark 中用来处理结构化数据的模块。基本抽象数据类型 RDD 所提供的接口不同的">
-<meta property="og:updated_time" content="2016-02-25T04:02:59.202Z">
+<meta property="og:description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spark 文档翻译1">
-<meta name="twitter:description" content="Description: 最近参加了一个翻译 spark 文档的小组 打算利用业余时间来补习一下英文，以及通过阅读 spark 文档来系统学习一下 spark 的相关知识，翻译难免有不恰当之处，敬请指正。
-
-Spark SQL,DataFrames and Datasets Guide
-概述Spark SQL 是 Spark 中用来处理结构化数据的模块。基本抽象数据类型 RDD 所提供的接口不同的">
+<meta name="twitter:title" content="Kylin's Blog">
+<meta name="twitter:description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
   
     <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
   
@@ -73,73 +63,39 @@ Spark SQL,DataFrames and Datasets Guide
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-2016.2.25.spark.manual.translate1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/25/2016.2.25.spark.manual.translate1/" class="article-date">
-  <time datetime="2016-02-24T16:00:00.000Z" itemprop="datePublished">2016-02-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
+        <section id="main">
   
-    <h1 class="article-title" itemprop="name">
-      Spark 文档翻译1
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2016" class="archive-year">2016</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" class="archive-article-date">
+  <time datetime="2016-02-26T16:00:00.000Z" itemprop="datePublished">Feb 27</time>
+</a>
+      
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial</a>
     </h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description: 最近参加了一个<a href="http://ifeve.com/apache-spark/comment-page-1/#comment-26703" target="_blank" rel="external">翻译 spark 文档的小组</a> 打算利用业余时间来补习一下英文，以及通过阅读 spark 文档来系统学习一下 spark 的相关知识，翻译难免有不恰当之处，敬请指正。</p>
-<hr>
-<p><a href="http://spark.apache.org/docs/latest/sql-programming-guide.html#spark-sql-dataframes-and-datasets-guide" target="_blank" rel="external">Spark SQL,DataFrames and Datasets Guide</a></p>
-<h1 id="u6982_u8FF0"><a href="#u6982_u8FF0" class="headerlink" title="概述"></a>概述</h1><p>Spark SQL 是 Spark 中用来处理结构化数据的模块。基本抽象数据类型 RDD 所提供的接口不同的是， Spark SQL 的接口则会向 Spark 提供更多关于数据结构和正在进行的计算结构方面额外的信息。事实上， Spark SQL 就是利用这些附带的信息来执行额外的优化操作的。与 Spark SQL相交互的方式有这几种: 通过 SQL 语句，DataFrames 的接口函数和 Dataset 提供的应用程序接口函数。<br>计算数据的时所调用的是同一个引擎，该引擎不会因为你使用编程语言或是调用函数接口的不同而有所变动。这种(引擎调用的)统一化意味着开发者可以轻易地在 Spark 为不同语言提供的函数接口之间进行频繁地切换目的是可以用不同语言中最为地道的的方式来执行数据的转换操作。</p>
-<p>在当前页面中所呈现的所有示例和简单的测试数据在 Spark 发布的软件包中均能找到，且可以使用 spark-shell,pyspark shell 或是 sparkR shell 来运行。</p>
-<h3 id="SQL-_u7ED3_u6784_u5316_u67E5_u8BE2_u8BED_u8A00"><a href="#SQL-_u7ED3_u6784_u5316_u67E5_u8BE2_u8BED_u8A00" class="headerlink" title="SQL-结构化查询语言"></a>SQL-结构化查询语言</h3><p>Spark SQL 的其中一种使用方式便是用来执行执行最基本 SQL 语法格式或是 HiveQL 语法格式的 SQL 语句的查询。 Spark SQL 同样也具有从已经安装部署好的 Hive (数据仓库)中读取数据这样一种功能。如果想要了解更多关于如何配置 Spark SQL 的这种特性，可以参照 Hive Tables 这一段的文档。当使用另外一种编程语言来运行 SQL 的时候最终的执行结果将会以 DataFrame 的数据结构被返回使用者也可以通过命令行或是 JDBC/ODBC 的方式来与 SQL 接口来进行交互。</p>
-<h3 id="DataFrames-_u6570_u636E_u6846"><a href="#DataFrames-_u6570_u636E_u6846" class="headerlink" title="DataFrames-数据框"></a>DataFrames-数据框</h3><p>DataFrame 所指的是由以’列’组织的这样的数据所构成的分布式集合。从理论角度分析，可以把存放于关系型数据库中的数据表比作是 R/Python 语言中的数据框，但是后者在底层表述方面有着更加丰富的优化策略。DataFrames 有着丰富的生成数据来源，像是: 结构化数据文件， Hive 中的数据表，外部数据库或是已经存在于内存中的 RDDs 结构。</p>
-<p>(Spark 也为)DataFrame 提供了由 Scala，Java,Python，和R语言编写好的 API 接口。</p>
-<h3 id="Datasets-_u6570_u636E_u96C6"><a href="#Datasets-_u6570_u636E_u96C6" class="headerlink" title="Datasets-数据集"></a>Datasets-数据集</h3><p>Dataset 是在 Spark 1.6 版本之后实验性新增的一个接口，目的是为了让基于 RDDs(支持强写入,并能够使用强大的 lambda 表达式) 可以在执行计算时具备和 Spark SQL 一样的引擎优化的能力。一个 Dataset(对象) 可以从 JVM 的对象生成，(生成之后)便可以调用相关的操作方法(像是,map, flatMap,filter,诸如此类的方法)。</p>
-<p>Dataset 有一套统一的可被应用于 Scala 和 Java 开发语言中的API接口函数。Python 语言目前还不支持 Dataset 的 API 接口函数，但是由于 Python 本身具备动态编程语言的特性这一优势使使用 Dataset 的 API变为了可能(比如说，你可以通过 Python 的原声语言特sing row.columnName 来直接访问行对象中的属性字段)。Dataset 将会在未来的发行版本中来实现对 Python 语言的完全支持。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cil4jxrwg001gc8imuzsk11qi" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official/">official</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
-
-    </footer>
+    </header>
   </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          基于单节点的 Spark &amp; IDEA 远程调试
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2016/02/19/2016.2.19.Google-Test 使用教程/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Google 测试框架 g-Test 使用教程</div>
-    </a>
-  
-</nav>
-
-  
 </article>
-
+  
+  
+    </div></section>
+  
 </section>
         
           <aside id="sidebar">

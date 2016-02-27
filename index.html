@@ -65,6 +65,72 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016.2.27.java_concurrency.Multithreading Tutorial_1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" class="article-date">
+  <time datetime="2016-02-26T16:00:00.000Z" itemprop="datePublished">2016-02-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description:<br>java 并发文档翻译，文章链接地址<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
+<hr>
+<p><br>Back in the old days a computer had a single CPU, and was only capable of executing a single program at a time.<br><br>回退到旧时光，那时的计算机只有单核并且每次只能够运行一段程序。<br><br><br>Later came multitasking which meant that computers could execute multiple programs(AKA tasks or processes) at the same time.<br><br>不久之后多任务计算机登场，多任务计算机指的是那些可以同时运行多段程序(也可以叫做多任务或多进程)的计算机。<br><br><br>It wasn’t really “at the same time” though.<br><br>事实上这些任务并非是在同一时间段”并发的”。<br><br><br>The single CPU was shared between the programs.<br><br>计算机单核的处理器资源是以共享的方式在多个程序之间被调用。<br><br><br>The operating system would switch between the programs running, executing each of them for a little while before switching.<br><br>操作系统也是在多个”同时”执行的程序间来回进行切换，在从一个程序切换到另一个程序的过程中依次执行每段程序中的一小段。<br><br></p>
+
+<p><br>Along with multitasking came new challenges for software developers.<br><br>随着多任务计算机时代的来临，软件开发人员也面临着新的跳帧。<br><br><br>Programers can no longer assume to have all the CPU time available, nor all memory or any other computer resources.<br><br>程序员再也不能确保随时都能够访问计算机的 CPU ，内存乃至其他计算机的资源了。<br><br><br>A “good citizen” program should release all resources it is no longer using, so other programs can use them.<br><br>对于一段”模范”程序来说，应该将对它无用的资源全部释放掉，以确保这些资源可被其他程序所调用。<br><br></p>
+
+<p><br>Later yet came multithread which mean that you could have multiple thread of execution inside the same program.<br>接下来到来的便是多线程的时代，就是在同一段程序中允许你能同时运行多个线程。<br><br><br>A thread of execution can be thought of as a CPU executing the program. <br><br>由一个线程所运行的程序可被等价地看做是由一个 CPU 所执行的程序。<br><br><br>When you have multiple threads executing the same program, it is like having multiple CPUs execute within the same program.<br><br>多个线程运行同一段程序，便可以将其比作是多个 CPU 在同一段程序中运行。<br><br></p>
+
+<p><br>Multithreading can be a great way to increase the performance of some types of programs.<br><br>多线程这种技术可以极大程度上来提高某种类型程序的效率。<br><br><br>However, multithreading is even more challenging than multitasking. <br><br>然而，多线程编程要远比多任务编程面临更多的挑战。<br><br><br>The threads are executing within the same program and are hence reading and writing the same memory simultanously.<br><br>由于程序允许多个线程运行在其中，因此这些线程便有可能在同一时间点上的读写相同的内存空间。<br><br><br>This can result in errors not seen in a singlethread program.<br><br>上述的这种操作可能引发在单线程运行的程序中遇不到的错误的发生。<br><br><br>Some of these errors may not be seen on single CPU machines, because two threads never really execute “simultanously”.<br><br>在引发的错误中有些错误在单核计算机上可能不会遇到，因为运行于单核计算机上的两个线程并不是真正意义上的并发。<br><br><br>Modern computers, though, come with multicore CPUs, and even with multiple CPUs too. This means that separate threads can be executed by separate cores or CPUs simultaneously.<br><br>如今的现代计算机都是多核甚至多 CPU 的。 这就意味着可以将线程以 CPU 的核或是 CPU 为单位来实现并发计算。<br><br><br></p>
+
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/thread1_2345%E6%88%AA%E5%9B%BE20160227111114.png" alt=""></p>
+<p><br>If a thread reads a memory location while another thread writes to it, what value will the first thread end up reading ? <br><br>(设想一下这个场景)如果一个线程在读取一个内存单元空间的时候恰好另一个线程在对这块内存空间执行写入操作的话，第一个线程在执行读操作之后它将获得的数值是什么？ <br><br><br>The old value ? <br><br>是内存空间中原先的那个数值？<br><br><br>The value written by the second thread ? <br><br>还是另一个线程刚刚写入的数值？<br><br><br>Or a value that is mix between the two ? <br><br>还是新旧混合的数值？<br><br><br>Or, if two threads are writing to be the same memory location simultanously, what value will be left when they are done ? <br><br>又或是，如果两个线程同时向同一块内存空间中执行写入操作的话，当这两个线程执行写操作结束的时候，所写入的内存空间中将会是那个数值？<br><br><br>The value written by the first thread ?<br><br>是第一个线程写入的数值？<br><br><br>The value written by the second thread ? <br><br>还是第二个线程刚刚写入的数值？<br><br><br>Or a mix of the two values written?<br><br>亦或是两个线程写入数值的混合值？<br><br></p>
+
+
+<p><br>Without proper precautions any of these outcomes are possible.<br><br>如果没有适当的提前声明(约定)的话上述的任何一种情况都是有可能发生的。<br><br><br>The behavior would not even be predicable.<br><br>执行操作的方式甚至都有可能是不可预知的。<br><br><br>The outcome could change from time to time.<br><br>也有可能每次运行都会得到不同的结果。<br><br><br>Therefore it is important as a developer to know how to take the right precautions - meaning learning to control how threads access shared resources like memory, files, databases etc.<br><br>因此对于一个开发人员来说认识到如何(根据不同的情景/场合)来做出正确的预防措施 - 也就是说他应该清楚如何控制线程来(安全地)访问一些像是内存，文件，数据库等等诸如此类的共享资源 是十分重要的。<br><br><br>That is one of the topics this java concurrency tutorial addresses.<br><br>而(如何在多线程并发的情况下安全地访问共享资源)这便是这篇’java 并发教程’所要向您重点讲述的内容。<br><br></p>
+
+<h2 id="Multithreading_and_Concurrency_in_Java"><a href="#Multithreading_and_Concurrency_in_Java" class="headerlink" title="Multithreading and Concurrency in Java"></a>Multithreading and Concurrency in Java</h2><h2 id="Java__u4E2D_u7684_u591A_u7EBF_u7A0B_u4E0E_u5E76_u53D1"><a href="#Java__u4E2D_u7684_u591A_u7EBF_u7A0B_u4E0E_u5E76_u53D1" class="headerlink" title="Java 中的多线程与并发"></a>Java 中的多线程与并发</h2><p><br>Java was one of the first languages to make multithreading easily available to developers. <br><br>Java 是第一批实现将多线程功能对开发者而言简单易用的开发语言中的一种。<br><br><br>Java had multithreading capabilities from the very beginging. <br><br>Java 这种开发语言在被创造之处就支持多线程编程这种技术。<br><br><br>Therefore, Java developers often face the problems described above. <br><br>这也是为何 Java 的开发人员经常会在开发中遇到上描述的众多问题。<br><br><br>That is the reason I am writing this trail on Java concurrency.<br><br>而这也正是为何我要编写以 Java 并行技术为主题的这一系列文档。<br><br><br>As notes to myself, and any fellow Java developer whom may benifit from it.<br><br>而这一系列文章也将作为我自己的学习笔记，同时希望可以让其他的 Java 开发人员从中受益。<br><br></p>
+
+<p><br>The trail will primarily be concerned with multithreading in Java, but some of the problems occuring in multithreading are similar to problems occuring in multitasking and in distributed systems. <br><br><br>这篇专栏主要关注 Java 开发中的多线程技术，除此之外其实在多任务系统和分布式系统中也会遇到与多线程相似的问题这也是我们讨论的重点。<br><br><br>References to multitasking and distributed systems may therefore occur in this trail too.<br><br>考虑到多任务和分布式系统中的相关知识也会在本文中有所提及。 <br><br><br>Hence the word “concurrency” rather “multithreading”.<br><br>所以在这里我们将这一系列的文章以’并发’而不是’多线程’来进行命名。<br><br></p>
+
+
+<h2 id="2015__u5E74_u4E4B_u540E_u548C_2015__u5E74_u4E4B_u524D_u7684_Java__u5E76_u53D1_u6280_u672F"><a href="#2015__u5E74_u4E4B_u540E_u548C_2015__u5E74_u4E4B_u524D_u7684_Java__u5E76_u53D1_u6280_u672F" class="headerlink" title="2015 年之后和 2015 年之前的 Java 并发技术"></a>2015 年之后和 2015 年之前的 Java 并发技术</h2><p><br>A lot has happened in the world of concurrent architecture and design since the first Java concurrency books were written, and even since the Java 5 concurrency utilities were released.<br><br>自从第一版关于 Java 并发的书籍问世以及 Java 5 中的并发包被发布之后，并发架构的世界中已经发生了很大的变动。<br><br></p>
+
+<p><br>New, asynchronous “shared-nothing” platforms and APIs like Vert.x and Play/Akka and Qbit have emerged.<br><br>新的一种，异步的 “无需共享任何资源” 的平台和API 像是 Vert.x , Play/Akka 和 Qbit 这样的框架相继涌现。<br><br><br>These platforms use a different concurrency model than the standard Java/JEE concurrency model of threading, shared memory and locking. <br><br>这种平台相比于标准的 Java/JEE 使用共享内存和所的线程并发模式，采用了完全不同的并发模式。<br><br><br>New non-blocking concurrency algorithms have been published, and new non-blocking tools like the LMax Disrupter have been added to our toolkits. <br><br>新式的无阻塞并发算法被推出，同时新型的无阻塞开发工具显示 LMax Disrupter 被键入到我们的开发平台工具中。<br><br><br>New functional programming parallelism has been introduced with the Fork and Join framework in Java7, and the collection streams API in Java8.<br><br>基于函数式并发新的编程方法被引入到 Java7 中，同时在 Java8 中对集合流的相关 API 予以支持。<br><br></p>
+
+<p><br>With all these new developments it is about time that I updated this Java Concurrency tutorial. <br><br>Java 开发中发生了如此之多的变化，所以这也是我该更新 Java 并发教程手册的时候了。<br><br><br>Therefore, this tutorial is once again work in progress. <br><br>这篇 Java 并发教程会一如既往地以不断更新的方式来发布。<br><br><br>New tutorials will be published whenever time is available to write them.<br><br>只要我一有时间便会向文章集中添加新的教程文章。<br><br></p>
+
+<p>end</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="cil4jxrw7000zc8im9ojcpowp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translate/">translate</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2016.2.26.remote_debug_spark_intellij" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/" class="article-date">
@@ -604,9 +670,30 @@ drwxr-xr-x   - root supergroup          0 2016-01-01 23:53 /user
 <li>在输入文件上传，输出数据文件路径分别在 hdfs 上创建好之后便可以输入如下命令</li>
 </ul>
 <pre><code>
-$  ./spark-submit --master spark://aimer-v:7077 --name SparkWordCount --class SparkWordCount --driver-java-options "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8888" --executor-memory 1G /home/aimer/spark_remote/spark_learning.jar hdfs://aimer-v:9000/README.md --driver-java-options "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8888"
+$ ./spark-submit --master spark://aimer-v:7077 --name SparkWordCount --class SparkWordCount --driver-java-options "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8888" --executor-memory 1G /home/aimer/spark_remote/spark_learning.jar hdfs://aimer-v:9000/README.md
 </code></pre>
 
+<ul>
+<li><p>上述的 –driver-java-options 后面所跟随的命令参数是是这样的: </p>
+<ul>
+<li>-Xdebug </li>
+<li><p>这个参数是通知 JVM 工作在 DEBUG 的模式下面</p>
+</li>
+<li><p>-Xrunjdwp 这个参数是用来通知 JVM 使用 (java debug wire protocol) 来运行调试环境</p>
+</li>
+<li><p>-Xrunjdwp:transport=dt_socket 这个参数用来指定的是调试期间生成的数据传输的方式，</p>
+</li>
+<li><p>如果后跟 dt_shmem 这个参数的话表示的是以共享内存的方式来传递调试产生的数据，不过 <code>dt_shmem</code> 仅在 Windows 平台下适用。</p>
+</li>
+<li><p>server 该参数指的是是否支持在 server 模式的 VM 中</p>
+</li>
+<li><p>suspend 参数是用来设定是否等到用于调试的客户端成功创建连接之后，再来执行 JVM</p>
+</li>
+<li><p>address 参数用来指定的是调试信息发送的端口号</p>
+</li>
+</ul>
+</li>
+</ul>
 <ul>
 <li>如果正确运行的话，命令行中会显示如下的信息 </li>
 </ul>
@@ -671,7 +758,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil3seauv000z18imgwn8inqc" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil4jxrwb0016c8imgrzgut8t" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDEA/">IDEA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Intellij/">Intellij</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/debug/">debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -719,7 +806,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cil3seav1001a18im2uw4j95s" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cil4jxrwg001gc8imuzsk11qi" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official/">official</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
@@ -993,7 +1080,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cil3seav5001i18ime42idspf" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cil4jxrwl001oc8im21yv143f" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gtest/">Gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gtest/">gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/manual/">manual</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tutorial/">tutorial</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试/">测试</a></li></ul>
@@ -1117,7 +1204,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cil3seavb001v18imvalh7c8c" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cil4jxrwr0021c8im40up5eog" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chord/">Chord</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DHT/">DHT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/P2P/">P2P</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/note/">note</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -1166,7 +1253,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cil3seavg002518imxerkvwjs" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cil4jxrwv002bc8imro5eiwk2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/picture/">picture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/七牛/">七牛</a></li></ul>
@@ -1382,7 +1469,7 @@ res0: Long = 1000
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cil3seavk002d18im52nu86g4" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cil4jxrxc002jc8imhj50cnor" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dockerfile/">dockerfile</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -1636,7 +1723,7 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cil3seavp002l18imkvye25gr" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cil4jxryg002rc8imvwmdp86n" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
@@ -1728,7 +1815,7 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cil3seatr000018im8oy0p43s" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cil4jxrv30000c8imt58h0m0b" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/datastructure/">datastructure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
@@ -1830,144 +1917,10 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cil3seaus000v18im6krlqcux" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cil4jxrw3000vc8im2c418bpq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming-theory/">programming-theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016.2.5.search_engine_theory" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/06/2016.2.5.search_engine_theory/" class="article-date">
-  <time datetime="2016-02-05T16:00:00.000Z" itemprop="datePublished">2016-02-06</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/06/2016.2.5.search_engine_theory/">搜索引擎知识点整理</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。<br><br>由于在开发 github 上的 <a href="https://github.com/Kylin27/StackExchangeRecommener/" target="_blank" rel="external">StackExchangeRecommenderSystem</a> 时候会用到 lucene，<br>所以在这里先来复习一下搜索引擎中的基础知识和算法。</p>
-<hr>
-<h1 id="u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6"><a href="#u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6" class="headerlink" title="索引的基础知识"></a>索引的基础知识</h1><p>索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及<br>对网页所创建索引，来提高程序的查询效率。<br>索引在日常生活中也很常见:字典目录中某个词语后面标识了出现该词的页码。<br>下面我们来一起学习一下，关于索引常见的词汇:</p>
-<ul>
-<li>文档(Document): 索引所标定的’目标对象’: 是数据库索引，那么文档便是数据表中的某条记录;<br>如果是对网页创建的’倒排索引’(索引的一种类型)，那么文档便是网页的页面； 这个’目标对象’<br>还可以是某种具体的文件，例如 word，PDF文档</li>
-<li>文档集合 (Document Collection): 就是上述’文档’构成的集合</li>
-<li>文档编号(Document ID): 在搜索引擎内部为每个文档赋予的唯一标识，可以在文档集合中唯一标识一个文档</li>
-<li>单词编号(Word ID): 用来唯一标识某个单词</li>
-<li>倒排索引(Inverted Index): 普通的索引是为某个文档创建索引出在该文档中某个单词，<br>而倒排索引则是以单词为主题，通过单词来索引出出现该单词出现的文件； 倒排索引由两部分组成<br>{单词词典,和出现该单词的文档集合}</li>
-<li>单词词典(Lexicon): 搜索引擎通中的索引单位是单词，单词词典是在所有文档集合中出现过的单词所构成的集合；<br>而在单词词典中的每条索引项中记录的信息有{单词信息，单词所指向出现该单词的文章集合-倒排列表} </li>
-<li>倒排列表(PostingList): 倒排列表指的是，出现过某个单词的所有文档所构成的列表和该单词在该文档中出现的<br> 位置信息； 倒排列表中的每条记录我们可以将其称作是倒排项(Posting).</li>
-<li><p>倒排文件(Inverted File): 倒排文件是存储倒排索引的物理文件。我们都已经知道了倒排索引由两部分组成，<br>分别是，单词词典和倒排列表. 在此基础上，存放倒排列表的文件就叫做倒排文件。   </p>
-<hr>
-<h2 id="u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50"><a href="#u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50" class="headerlink" title="倒排索引小例子"></a>倒排索引小例子</h2><p>比如那今天的知乎日报新闻来举例</p>
-<pre>
-文章编号            文章标题
-1                    如何自己制定健身训练计划？
-2                    女生怎么健身锻炼好身材？
-3                    减肥对外貌的改变有多大？
-4                    健身教练有哪些内幕？
-5                   女生如何锻炼减肥既简单有健康？
-</pre>
-<pre>
-单词 ID         单词        倒排列表
-  1.            自己          {1}
-  2.            女生          {2,5}
-  3.            减肥            {3,5}
-  4.            健身          {1,2}
-  5.            教练          {4}
-  6.            简单          {5}
-  7.            训练          {1}
-  8.            外貌          {3}
-  9.            改变          {3}
-  10.            哪些          {4}    
-  11.         内幕          {5}
-  12.            锻造          {2,5}
-  13.            身材          {2}    
-  14.            训练          {1}
-  15.            计划          {1}
- </pre>
-
-</li>
-</ul>
-<p>当然，我们也为了让索引列表更细致的记录索引文件的信息来添加上某个词语出现的频率信息，TF 便是用来描述词语在某个文章中出现的次数的. 例如 ‘女生’ 这个词语在文章 2，5 均出现过，并且出现 1 次<br>便可以记成 女生 {2;1,5;1} 这样子。更加细致的记录方式是，将这个单词出现的位置也记录下来：<br><br>例如 ‘女生’这个单词在文章2,5中出现的位置分别是第 1 个位置，就写成如下的格式<br>女生 { (2;1;<1>),(5;1;<1>) }</1></1></p>
-<hr>
-<h1 id="u5355_u8BCD_u8BCD_u5178__28Lexicon_29"><a href="#u5355_u8BCD_u8BCD_u5178__28Lexicon_29" class="headerlink" title="单词词典 (Lexicon)"></a>单词词典 (Lexicon)</h1><p>单词词典存放了在文档集合中出现过的所有单词的相关信息的同时也记录了该单词集合中的每个单词<br>所映射到的倒排列表在倒排文件中的位置信息。</p>
-<p>可以试想一下，如果需要创建索引的文档集合十分的巨大，那么随之提出出来的单词词典中所存放的单词数量<br>也是十分庞大的。在数据结构课程中我们已经学习过，如果要快速的定位某个单词(键值)的话可以借助于<br>哈希链表或是树形词典这类的数据结构。 </p>
-<h2 id="u54C8_u5E0C_u52A0_u94FE_u8868_-__u5355_u8BCD_u8BCD_u5178"><a href="#u54C8_u5E0C_u52A0_u94FE_u8868_-__u5355_u8BCD_u8BCD_u5178" class="headerlink" title="哈希加链表 - 单词词典"></a>哈希加链表 - 单词词典</h2><p>   哈希加链表是处理哈希表冲突的一种解决方法，哈希表有随之配套的 hash 散列函数，会为每个输入的<br>   key 键生成’唯一’标定该key 对应 value 的标识，但是如果 hash 散列函数选取的不当的话，便会造成<br>   不同的 key 生成了重复的标识； 这就是所谓的’冲突’的发生，处理’冲突’有着不同的方法，<br>   加链表就是在发生冲突的 key 的后面开辟一块空间存放后来的 key ; 待到查找的时候，通过 hash 散列函数<br>   找到该 hash 生成数值指定的链表头，沿着链表继续寻找就可以了。</p>
-<h2 id="u6811_u5F62_u7ED3_u6784_-__u5355_u8BCD_u8BCD_u5178"><a href="#u6811_u5F62_u7ED3_u6784_-__u5355_u8BCD_u8BCD_u5178" class="headerlink" title="树形结构 - 单词词典"></a>树形结构 - 单词词典</h2><p>   前缀树和后缀树都是可以做单词词典很好的数据结构</p>
-<hr>
-<h1 id="u5012_u6392_u5217_u8868"><a href="#u5012_u6392_u5217_u8868" class="headerlink" title="倒排列表"></a>倒排列表</h1><p>  在前面我们提到过了，倒排列表中的基本构成单元倒排索引项中包含字段有:<br>  {单词出现的文档的唯一编号,单词出现频率,&lt;单词在文档中的位置1,位置2,位置3…&gt;}<br>  但是在实际的应用中为了尽量节省内存，通常会使用文档编号的差值来取代文章的唯一编号。</p>
-<hr>
-<h1 id="u5EFA_u7ACB_u7D22_u5F15"><a href="#u5EFA_u7ACB_u7D22_u5F15" class="headerlink" title="建立索引"></a>建立索引</h1><p>建立索引有着不同的方法,同时索引也分为动态索引和静态索引，其中静态索引是生成索引之后在修改文档集合中的<br>文档之后，不能自动的更新之前索引文件 ； 而动态索引则是生成索引之后，修改文档集合中的文件内容之后<br>会随之自动的更新文档文件。</p>
-<h2 id="u9759_u6001_u7D22_u5F15"><a href="#u9759_u6001_u7D22_u5F15" class="headerlink" title="静态索引"></a>静态索引</h2><h3 id="u4E24_u904D_u6587_u6863_u904D_u5386_u6CD5"><a href="#u4E24_u904D_u6587_u6863_u904D_u5386_u6CD5" class="headerlink" title="两遍文档遍历法"></a>两遍文档遍历法</h3><p>两遍文档遍历法在创建索引的时候需要对文档集合执行两遍扫描，在创建索引的时候仅需要内存即可，整个过程无需磁盘参与。</p>
-<ul>
-<li>首次扫描:<br>算出为该文档集合创建的索引所需的内存容量大小:搜集文档集合包含文档个数 N ，文档集合中不重复单词总数 M, 每个单词在多少个文档中出现 DF. 将所有单词的 DF 数值进行加和便是建立最终索引所需要的内存大小。</li>
-<li><p>第二次扫描:</p>
-<pre><code>首次扫描已经确定了文档集合中的每个单词的 DF信息，在第二次扫描的时候，为每个单词的 DF 信息
-</code></pre><p>分配内存空间，并使用指针将单词集合与单词的 DF 信息将连接即可，也就是简历每个单词的倒排列表信息；<br>但是通过上面的陈述可知，在单词倒排列表中的倒排索引项仅仅包含单词 DF信息还是不够的；对文档 ID 或是文档 ID 偏移量的计算以及单词在文档中出现位移和出现次数等这些信息都可以在第二次扫描的时候来完成。<br>  等到两遍扫描结束之后，将内存中创建的倒排列表和单词词典信息写入到磁盘中就完成了索引的创建了。</p>
-</li>
-<li><p>对两遍文档遍历法的评估: 因为全程使用的是内存无需磁盘的参与，所以连通文档集合和生成的倒排列表等数据信息均需要存放到内存中，这需要内存足够大，或者是仅仅适用于创建文档集合规模较小的索引。同时，需要对文档进行两次扫描，比较耗时在速度上并不占优势。      </p>
-<h3 id="u6392_u5E8F_u6CD5"><a href="#u6392_u5E8F_u6CD5" class="headerlink" title="排序法"></a>排序法</h3><p>排序法为文档集合创建索引是为了弥补两遍遍历法建立索引过程中，对内存消耗大这一缺点提出的。两边遍历索引生成方法使用内存的大小是不固定的，如果文档集合大内存开辟就会大一些，相反便会小一些。而排序法无论文档集合如何，其所需要的内存大小均是固定分配的。开辟的内存空间主要用来存放词典信息和索引的中间结果。<br>每当中间结果将内存吃空的时候，便会统一将内存中的中间数据写入到磁盘中。遵循上述倒排索引中所介绍的两部分的结构-单词词典,倒排列表(倒排列表的组成单元是倒排索引项)，在整个的排序法创建文件集合索引的过程中，单词词典始终是作为常驻内存的数据结构的。</p>
-</li>
-<li>读取文档，对文档进行编号，每个文档为其创建唯一的标识 ID 号码</li>
-<li><p>解析文档，每当在文档中遇到新单词，</p>
-<pre>
-{ 
-查看该单词在单词词典中是否有记录 
-1. 有记录，获取该单词在词典中的 ID 号码
-2. 单词词典中没有记录该单词，为该单词创建全词典唯一的 ID 号码，然后将其收录到单词词典中
-}
-</pre>
-</li>
-<li><p>在对当前文档完成了读取和解析之后，便能够为当前文档中出现的每个单词均创建包含着如下信息</p>
-</li>
-</ul>
-<pre>
- (单词ID,文档ID,单词频率)
-</pre>
-
-<p>上述三元组便可以作为倒排索引列表中的索引项了，将该三元组索引项集合追加到用来存放中间处理结果的大小固定的内存缓冲区中。然后便可以开始处理下一个文档了。<br></p>
-<ul>
-<li>在内存缓冲区被占满之前需要将缓冲区中的数据写入到磁盘临时文件中去，不过在写入之前需要对内存中的三元组序列执行排序操作； 首先按照单词 ID 进行非递减，然后按照文档 ID 进行非递减排序。由于内存中存放的中间结果并不一定全都是同一个文件生成的中间信息，所以会有单词ID 相同但是文档ID不同的情况，这种情况按照文档ID非递减的规则进行排序。<b>PS: 在上述的全部过程中，单词词典是常驻内存的</b> </li>
-<li>每次执行向磁盘中写入中间缓存文件操作均是写入一个新的缓存文件，而不是在之前的缓存文件中执行追加。在对所文档集合中的每个文档均读取解析之后，剩下的工作便是合并临时写入磁盘的所有的中间文件了。由于写入磁盘之前在内存中执行了先按单词ID然后文章ID进行排序的操作，所以在合并的时候，只要首先将所有中间文件中单词ID相同的三元组合并为一个数组(由三元组元素构成的有序序列)，而所有的数组组合起来便是该文件的倒排列表了。接下来只要将倒排列表中的内容写入到文件中即可。而这个文件便是所谓的索引文件了。      </li>
-<li>对排序法的评估: 在排序法创建文档集合索引的过程中，单词词典作为常驻内存数据结构并不会被写入到磁盘的中间临时文件中且大小也随着解析文档个数的增多而变大，同时排序法中分配的内存大小是固定的，所以当单词词典大小变大之后，每次用来缓存三元组的个数也会随之减少，如果单词词典继续增大会无法缓存解析文件而生成的三元组，这样便会频繁的执行写入操作,从而导致程序整体性能的下降。</li>
-</ul>
-<h3 id="u5F52_u5E76_u6CD5"><a href="#u5F52_u5E76_u6CD5" class="headerlink" title="归并法"></a>归并法</h3><p>归并法是为了弥补排序法中，单词词典常驻内存耗空分配的固定内存这一缺陷而提出的。归并法的特点是在每次执行三元组数据信息写入的同时也会将单词词典信息写入到中间临时文件中。这样便可以保证为程序分配固定大小的内存会全部用于后续索引的创建。</p>
-<ul>
-<li>归并法的执行过程和排序法大部分相同，不同之处之一是在写入中间缓存文件中是将 {单词词典，三元组集合} 写入到中间缓存文件中<pre><code>之二是在文档集合中的全部文档完成解析之后，将所有生成的临时文件进行合并的时候，每个临时文件中存放的是最终倒排列表的一部分；
-而最后的合并操作便是将所有的部分倒排列表合并成一个完成的倒排列表。
-</code></pre></li>
-</ul>
-<h2 id="u5206_u5E03_u5F0F_u7D22_u5F15"><a href="#u5206_u5E03_u5F0F_u7D22_u5F15" class="headerlink" title="分布式索引"></a>分布式索引</h2><p>分布式索引和数据库中的’分片’ 技术有些类似，数据库的’分片’ 技术是通过将一张大数据库表中的信息按照表中的某个属性字段<br>中的不同值/或是范围分割成许多个来自于该大数据表的’子表’； 常用作’分片’的属性有地域和时间 ；<br>而分布式索引技术则是将文档集合按照文档或者是单词来对索引进行划分。</p>
-<h3 id="u6309_u7167_u6587_u6863_u6765_u5212_u5206_u7D22_u5F15"><a href="#u6309_u7167_u6587_u6863_u6765_u5212_u5206_u7D22_u5F15" class="headerlink" title="按照文档来划分索引"></a>按照文档来划分索引</h3><p>将大的文档集合划分成分布于不同机器上的文档子集，为每个文档自己创建各自的索引。<br>在执行查询的时候，会在每个机器上面执行查询，并把来自于每个子集的查询结果进行合并生成最终查询结果</p>
-<h3 id="u6309_u7167_u5355_u8BCD_u6765_u5212_u5206_u7D22_u5F15"><a href="#u6309_u7167_u5355_u8BCD_u6765_u5212_u5206_u7D22_u5F15" class="headerlink" title="按照单词来划分索引"></a>按照单词来划分索引</h3><p>在创建按照单词划分的倒排索引的时候，划分发生在合并中间缓存文件生成最终索引文件的时候。<br>每当将来自于所有中间缓存文件中的同一单词ID的三元组合并之后，将该三元组集合+单词发送到某台主机上面。<br>便完成了按照该单词对索引进行’分片’的操作。<br>在实际的应用场景中，按照文档来进行索引的划分这种方法比较常使用，而按照单词的划分仅仅在特定场合下使用。<br>因为按照单词来划分索引的可扩展性、均衡负载和容错性都不是很好。</p>
-<h1 id="u67E5_u8BE2_u5904_u7406"><a href="#u67E5_u8BE2_u5904_u7406" class="headerlink" title="查询处理"></a>查询处理</h1><h2 id="u4E00_u6B21_u4E00_u4E2A_u5355_u8BCD_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u4E00_u6B21_u4E00_u4E2A_u5355_u8BCD_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="一次一个单词的查询处理"></a>一次一个单词的查询处理</h2><p>将用户查询语句执行清洗(我通常把去掉语句中无用符号和去掉停用词的操作叫做’清洗’…好记),<br>然后执行分词操作将语句分成多个词语组成集合，获取每个词语的倒排列表，然后计算每个词语与倒排列表中的<br>每一个文件的相似度，计算相似度之后，如果有文档重复的(两个不同词语倒排索引到同一个文档)，那么将重复的文档<br>得分进行累加；最后将得出得分最高的 K 个文档(通过优先队列进行存放)作为查询结果进行返回即可</p>
-<h2 id="u4E00_u6B21_u4E00_u4E2A_u6587_u6863_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u4E00_u6B21_u4E00_u4E2A_u6587_u6863_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="一次一个文档的查询处理"></a>一次一个文档的查询处理</h2><h2 id="u8DF3_u8DC3_u6307_u9488_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u8DF3_u8DC3_u6307_u9488_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="跳跃指针的查询处理"></a>跳跃指针的查询处理</h2><h2 id="u77ED_u8BED_u67E5_u8BE2"><a href="#u77ED_u8BED_u67E5_u8BE2" class="headerlink" title="短语查询"></a>短语查询</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cil3seauk000k18imac55b3up" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/search-engine/">search-engine</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
 
     </footer>
   </div>
@@ -1991,7 +1944,7 @@ object MatchPatternTester extends App{
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -2000,7 +1953,7 @@ object MatchPatternTester extends App{
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 15px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 15px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 20px;">spark</a> <a href="/tags/theory/" style="font-size: 15px;">theory</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 15px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 10px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 15px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 20px;">spark</a> <a href="/tags/theory/" style="font-size: 15px;">theory</a> <a href="/tags/translate/" style="font-size: 10px;">translate</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
     </div>
   </div>
 
@@ -2009,7 +1962,7 @@ object MatchPatternTester extends App{
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -2019,6 +1972,10 @@ object MatchPatternTester extends App{
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial</a>
+          </li>
         
           <li>
             <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/">基于单节点的 Spark &amp; IDEA 远程调试</a>
@@ -2034,10 +1991,6 @@ object MatchPatternTester extends App{
         
           <li>
             <a href="/2016/02/18/2016.2.18.dht.note/">DHT Chord 理论学习笔记 1</a>
-          </li>
-        
-          <li>
-            <a href="/2016/02/17/2016.2.17.upload_picture/">如何使用七牛存储来为你的 gihub 博客中添加图片</a>
           </li>
         
       </ul>

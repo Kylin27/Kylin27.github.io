@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Java Concurrency / Multithreading Tutorial | Kylin&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Description:java 并发文档翻译，文章链接地址http://tutorials.jenkov.com/java-concurrency/index.html
+
+Back in the old days a computer had a single CPU, and was only capable of executing a single program at a time.回退">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Concurrency / Multithreading Tutorial">
+<meta property="og:url" content="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/index.html">
+<meta property="og:site_name" content="Kylin's Blog">
+<meta property="og:description" content="Description:java 并发文档翻译，文章链接地址http://tutorials.jenkov.com/java-concurrency/index.html
+
+Back in the old days a computer had a single CPU, and was only capable of executing a single program at a time.回退">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/thread1_2345%E6%88%AA%E5%9B%BE20160227111114.png">
+<meta property="og:updated_time" content="2016-02-27T03:15:04.700Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Concurrency / Multithreading Tutorial">
+<meta name="twitter:description" content="Description:java 并发文档翻译，文章链接地址http://tutorials.jenkov.com/java-concurrency/index.html
+
+Back in the old days a computer had a single CPU, and was only capable of executing a single program at a time.回退">
+  
+    <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kylin&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Kylin27@outlook.com</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://kylin27.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2016.2.27.java_concurrency.Multithreading Tutorial_1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" class="article-date">
+  <time datetime="2016-02-26T16:00:00.000Z" itemprop="datePublished">2016-02-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java Concurrency / Multithreading Tutorial
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description:<br>java 并发文档翻译，文章链接地址<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
+<hr>
+<p><br>Back in the old days a computer had a single CPU, and was only capable of executing a single program at a time.<br><br>回退到旧时光，那时的计算机只有单核并且每次只能够运行一段程序。<br><br><br>Later came multitasking which meant that computers could execute multiple programs(AKA tasks or processes) at the same time.<br><br>不久之后多任务计算机登场，多任务计算机指的是那些可以同时运行多段程序(也可以叫做多任务或多进程)的计算机。<br><br><br>It wasn’t really “at the same time” though.<br><br>事实上这些任务并非是在同一时间段”并发的”。<br><br><br>The single CPU was shared between the programs.<br><br>计算机单核的处理器资源是以共享的方式在多个程序之间被调用。<br><br><br>The operating system would switch between the programs running, executing each of them for a little while before switching.<br><br>操作系统也是在多个”同时”执行的程序间来回进行切换，在从一个程序切换到另一个程序的过程中依次执行每段程序中的一小段。<br><br></p>
+
+<p><br>Along with multitasking came new challenges for software developers.<br><br>随着多任务计算机时代的来临，软件开发人员也面临着新的跳帧。<br><br><br>Programers can no longer assume to have all the CPU time available, nor all memory or any other computer resources.<br><br>程序员再也不能确保随时都能够访问计算机的 CPU ，内存乃至其他计算机的资源了。<br><br><br>A “good citizen” program should release all resources it is no longer using, so other programs can use them.<br><br>对于一段”模范”程序来说，应该将对它无用的资源全部释放掉，以确保这些资源可被其他程序所调用。<br><br></p>
+
+<p><br>Later yet came multithread which mean that you could have multiple thread of execution inside the same program.<br>接下来到来的便是多线程的时代，就是在同一段程序中允许你能同时运行多个线程。<br><br><br>A thread of execution can be thought of as a CPU executing the program. <br><br>由一个线程所运行的程序可被等价地看做是由一个 CPU 所执行的程序。<br><br><br>When you have multiple threads executing the same program, it is like having multiple CPUs execute within the same program.<br><br>多个线程运行同一段程序，便可以将其比作是多个 CPU 在同一段程序中运行。<br><br></p>
+
+<p><br>Multithreading can be a great way to increase the performance of some types of programs.<br><br>多线程这种技术可以极大程度上来提高某种类型程序的效率。<br><br><br>However, multithreading is even more challenging than multitasking. <br><br>然而，多线程编程要远比多任务编程面临更多的挑战。<br><br><br>The threads are executing within the same program and are hence reading and writing the same memory simultanously.<br><br>由于程序允许多个线程运行在其中，因此这些线程便有可能在同一时间点上的读写相同的内存空间。<br><br><br>This can result in errors not seen in a singlethread program.<br><br>上述的这种操作可能引发在单线程运行的程序中遇不到的错误的发生。<br><br><br>Some of these errors may not be seen on single CPU machines, because two threads never really execute “simultanously”.<br><br>在引发的错误中有些错误在单核计算机上可能不会遇到，因为运行于单核计算机上的两个线程并不是真正意义上的并发。<br><br><br>Modern computers, though, come with multicore CPUs, and even with multiple CPUs too. This means that separate threads can be executed by separate cores or CPUs simultaneously.<br><br>如今的现代计算机都是多核甚至多 CPU 的。 这就意味着可以将线程以 CPU 的核或是 CPU 为单位来实现并发计算。<br><br><br></p>
+
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/thread1_2345%E6%88%AA%E5%9B%BE20160227111114.png" alt=""></p>
+<p><br>If a thread reads a memory location while another thread writes to it, what value will the first thread end up reading ? <br><br>(设想一下这个场景)如果一个线程在读取一个内存单元空间的时候恰好另一个线程在对这块内存空间执行写入操作的话，第一个线程在执行读操作之后它将获得的数值是什么？ <br><br><br>The old value ? <br><br>是内存空间中原先的那个数值？<br><br><br>The value written by the second thread ? <br><br>还是另一个线程刚刚写入的数值？<br><br><br>Or a value that is mix between the two ? <br><br>还是新旧混合的数值？<br><br><br>Or, if two threads are writing to be the same memory location simultanously, what value will be left when they are done ? <br><br>又或是，如果两个线程同时向同一块内存空间中执行写入操作的话，当这两个线程执行写操作结束的时候，所写入的内存空间中将会是那个数值？<br><br><br>The value written by the first thread ?<br><br>是第一个线程写入的数值？<br><br><br>The value written by the second thread ? <br><br>还是第二个线程刚刚写入的数值？<br><br><br>Or a mix of the two values written?<br><br>亦或是两个线程写入数值的混合值？<br><br></p>
+
+
+<p><br>Without proper precautions any of these outcomes are possible.<br><br>如果没有适当的提前声明(约定)的话上述的任何一种情况都是有可能发生的。<br><br><br>The behavior would not even be predicable.<br><br>执行操作的方式甚至都有可能是不可预知的。<br><br><br>The outcome could change from time to time.<br><br>也有可能每次运行都会得到不同的结果。<br><br><br>Therefore it is important as a developer to know how to take the right precautions - meaning learning to control how threads access shared resources like memory, files, databases etc.<br><br>因此对于一个开发人员来说认识到如何(根据不同的情景/场合)来做出正确的预防措施 - 也就是说他应该清楚如何控制线程来(安全地)访问一些像是内存，文件，数据库等等诸如此类的共享资源 是十分重要的。<br><br><br>That is one of the topics this java concurrency tutorial addresses.<br><br>而(如何在多线程并发的情况下安全地访问共享资源)这便是这篇’java 并发教程’所要向您重点讲述的内容。<br><br></p>
+
+<h2 id="Multithreading_and_Concurrency_in_Java"><a href="#Multithreading_and_Concurrency_in_Java" class="headerlink" title="Multithreading and Concurrency in Java"></a>Multithreading and Concurrency in Java</h2><h2 id="Java__u4E2D_u7684_u591A_u7EBF_u7A0B_u4E0E_u5E76_u53D1"><a href="#Java__u4E2D_u7684_u591A_u7EBF_u7A0B_u4E0E_u5E76_u53D1" class="headerlink" title="Java 中的多线程与并发"></a>Java 中的多线程与并发</h2><p><br>Java was one of the first languages to make multithreading easily available to developers. <br><br>Java 是第一批实现将多线程功能对开发者而言简单易用的开发语言中的一种。<br><br><br>Java had multithreading capabilities from the very beginging. <br><br>Java 这种开发语言在被创造之处就支持多线程编程这种技术。<br><br><br>Therefore, Java developers often face the problems described above. <br><br>这也是为何 Java 的开发人员经常会在开发中遇到上描述的众多问题。<br><br><br>That is the reason I am writing this trail on Java concurrency.<br><br>而这也正是为何我要编写以 Java 并行技术为主题的这一系列文档。<br><br><br>As notes to myself, and any fellow Java developer whom may benifit from it.<br><br>而这一系列文章也将作为我自己的学习笔记，同时希望可以让其他的 Java 开发人员从中受益。<br><br></p>
+
+<p><br>The trail will primarily be concerned with multithreading in Java, but some of the problems occuring in multithreading are similar to problems occuring in multitasking and in distributed systems. <br><br><br>这篇专栏主要关注 Java 开发中的多线程技术，除此之外其实在多任务系统和分布式系统中也会遇到与多线程相似的问题这也是我们讨论的重点。<br><br><br>References to multitasking and distributed systems may therefore occur in this trail too.<br><br>考虑到多任务和分布式系统中的相关知识也会在本文中有所提及。 <br><br><br>Hence the word “concurrency” rather “multithreading”.<br><br>所以在这里我们将这一系列的文章以’并发’而不是’多线程’来进行命名。<br><br></p>
+
+
+<h2 id="2015__u5E74_u4E4B_u540E_u548C_2015__u5E74_u4E4B_u524D_u7684_Java__u5E76_u53D1_u6280_u672F"><a href="#2015__u5E74_u4E4B_u540E_u548C_2015__u5E74_u4E4B_u524D_u7684_Java__u5E76_u53D1_u6280_u672F" class="headerlink" title="2015 年之后和 2015 年之前的 Java 并发技术"></a>2015 年之后和 2015 年之前的 Java 并发技术</h2><p><br>A lot has happened in the world of concurrent architecture and design since the first Java concurrency books were written, and even since the Java 5 concurrency utilities were released.<br><br>自从第一版关于 Java 并发的书籍问世以及 Java 5 中的并发包被发布之后，并发架构的世界中已经发生了很大的变动。<br><br></p>
+
+<p><br>New, asynchronous “shared-nothing” platforms and APIs like Vert.x and Play/Akka and Qbit have emerged.<br><br>新的一种，异步的 “无需共享任何资源” 的平台和API 像是 Vert.x , Play/Akka 和 Qbit 这样的框架相继涌现。<br><br><br>These platforms use a different concurrency model than the standard Java/JEE concurrency model of threading, shared memory and locking. <br><br>这种平台相比于标准的 Java/JEE 使用共享内存和所的线程并发模式，采用了完全不同的并发模式。<br><br><br>New non-blocking concurrency algorithms have been published, and new non-blocking tools like the LMax Disrupter have been added to our toolkits. <br><br>新式的无阻塞并发算法被推出，同时新型的无阻塞开发工具显示 LMax Disrupter 被键入到我们的开发平台工具中。<br><br><br>New functional programming parallelism has been introduced with the Fork and Join framework in Java7, and the collection streams API in Java8.<br><br>基于函数式并发新的编程方法被引入到 Java7 中，同时在 Java8 中对集合流的相关 API 予以支持。<br><br></p>
+
+<p><br>With all these new developments it is about time that I updated this Java Concurrency tutorial. <br><br>Java 开发中发生了如此之多的变化，所以这也是我该更新 Java 并发教程手册的时候了。<br><br><br>Therefore, this tutorial is once again work in progress. <br><br>这篇 Java 并发教程会一如既往地以不断更新的方式来发布。<br><br><br>New tutorials will be published whenever time is available to write them.<br><br>只要我一有时间便会向文章集中添加新的教程文章。<br><br></p>
+
+<p>end</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="cil4jxrw7000zc8im9ojcpowp" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translate/">translate</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">基于单节点的 Spark &amp; IDEA 远程调试</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 15px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 10px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 15px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 20px;">spark</a> <a href="/tags/theory/" style="font-size: 15px;">theory</a> <a href="/tags/translate/" style="font-size: 10px;">translate</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/">基于单节点的 Spark &amp; IDEA 远程调试</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/25/2016.2.25.spark.manual.translate1/">Spark 文档翻译1</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/19/2016.2.19.Google-Test 使用教程/">Google 测试框架 g-Test 使用教程</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/18/2016.2.18.dht.note/">DHT Chord 理论学习笔记 1</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Kylin<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>

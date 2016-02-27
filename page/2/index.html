@@ -65,6 +65,140 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016.2.5.search_engine_theory" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/06/2016.2.5.search_engine_theory/" class="article-date">
+  <time datetime="2016-02-05T16:00:00.000Z" itemprop="datePublished">2016-02-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/06/2016.2.5.search_engine_theory/">搜索引擎知识点整理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description: 这篇博客简单介绍一下搜索引擎中的基础知识和原理。<br><br>由于在开发 github 上的 <a href="https://github.com/Kylin27/StackExchangeRecommener/" target="_blank" rel="external">StackExchangeRecommenderSystem</a> 时候会用到 lucene，<br>所以在这里先来复习一下搜索引擎中的基础知识和算法。</p>
+<hr>
+<h1 id="u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6"><a href="#u7D22_u5F15_u7684_u57FA_u7840_u77E5_u8BC6" class="headerlink" title="索引的基础知识"></a>索引的基础知识</h1><p>索引是在程序员的世界是常常被提起的名词，例如，在数据库中，在编程的时候为高级复杂的数据结构以及<br>对网页所创建索引，来提高程序的查询效率。<br>索引在日常生活中也很常见:字典目录中某个词语后面标识了出现该词的页码。<br>下面我们来一起学习一下，关于索引常见的词汇:</p>
+<ul>
+<li>文档(Document): 索引所标定的’目标对象’: 是数据库索引，那么文档便是数据表中的某条记录;<br>如果是对网页创建的’倒排索引’(索引的一种类型)，那么文档便是网页的页面； 这个’目标对象’<br>还可以是某种具体的文件，例如 word，PDF文档</li>
+<li>文档集合 (Document Collection): 就是上述’文档’构成的集合</li>
+<li>文档编号(Document ID): 在搜索引擎内部为每个文档赋予的唯一标识，可以在文档集合中唯一标识一个文档</li>
+<li>单词编号(Word ID): 用来唯一标识某个单词</li>
+<li>倒排索引(Inverted Index): 普通的索引是为某个文档创建索引出在该文档中某个单词，<br>而倒排索引则是以单词为主题，通过单词来索引出出现该单词出现的文件； 倒排索引由两部分组成<br>{单词词典,和出现该单词的文档集合}</li>
+<li>单词词典(Lexicon): 搜索引擎通中的索引单位是单词，单词词典是在所有文档集合中出现过的单词所构成的集合；<br>而在单词词典中的每条索引项中记录的信息有{单词信息，单词所指向出现该单词的文章集合-倒排列表} </li>
+<li>倒排列表(PostingList): 倒排列表指的是，出现过某个单词的所有文档所构成的列表和该单词在该文档中出现的<br> 位置信息； 倒排列表中的每条记录我们可以将其称作是倒排项(Posting).</li>
+<li><p>倒排文件(Inverted File): 倒排文件是存储倒排索引的物理文件。我们都已经知道了倒排索引由两部分组成，<br>分别是，单词词典和倒排列表. 在此基础上，存放倒排列表的文件就叫做倒排文件。   </p>
+<hr>
+<h2 id="u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50"><a href="#u5012_u6392_u7D22_u5F15_u5C0F_u4F8B_u5B50" class="headerlink" title="倒排索引小例子"></a>倒排索引小例子</h2><p>比如那今天的知乎日报新闻来举例</p>
+<pre>
+文章编号            文章标题
+1                    如何自己制定健身训练计划？
+2                    女生怎么健身锻炼好身材？
+3                    减肥对外貌的改变有多大？
+4                    健身教练有哪些内幕？
+5                   女生如何锻炼减肥既简单有健康？
+</pre>
+<pre>
+单词 ID         单词        倒排列表
+  1.            自己          {1}
+  2.            女生          {2,5}
+  3.            减肥            {3,5}
+  4.            健身          {1,2}
+  5.            教练          {4}
+  6.            简单          {5}
+  7.            训练          {1}
+  8.            外貌          {3}
+  9.            改变          {3}
+  10.            哪些          {4}    
+  11.         内幕          {5}
+  12.            锻造          {2,5}
+  13.            身材          {2}    
+  14.            训练          {1}
+  15.            计划          {1}
+ </pre>
+
+</li>
+</ul>
+<p>当然，我们也为了让索引列表更细致的记录索引文件的信息来添加上某个词语出现的频率信息，TF 便是用来描述词语在某个文章中出现的次数的. 例如 ‘女生’ 这个词语在文章 2，5 均出现过，并且出现 1 次<br>便可以记成 女生 {2;1,5;1} 这样子。更加细致的记录方式是，将这个单词出现的位置也记录下来：<br><br>例如 ‘女生’这个单词在文章2,5中出现的位置分别是第 1 个位置，就写成如下的格式<br>女生 { (2;1;<1>),(5;1;<1>) }</1></1></p>
+<hr>
+<h1 id="u5355_u8BCD_u8BCD_u5178__28Lexicon_29"><a href="#u5355_u8BCD_u8BCD_u5178__28Lexicon_29" class="headerlink" title="单词词典 (Lexicon)"></a>单词词典 (Lexicon)</h1><p>单词词典存放了在文档集合中出现过的所有单词的相关信息的同时也记录了该单词集合中的每个单词<br>所映射到的倒排列表在倒排文件中的位置信息。</p>
+<p>可以试想一下，如果需要创建索引的文档集合十分的巨大，那么随之提出出来的单词词典中所存放的单词数量<br>也是十分庞大的。在数据结构课程中我们已经学习过，如果要快速的定位某个单词(键值)的话可以借助于<br>哈希链表或是树形词典这类的数据结构。 </p>
+<h2 id="u54C8_u5E0C_u52A0_u94FE_u8868_-__u5355_u8BCD_u8BCD_u5178"><a href="#u54C8_u5E0C_u52A0_u94FE_u8868_-__u5355_u8BCD_u8BCD_u5178" class="headerlink" title="哈希加链表 - 单词词典"></a>哈希加链表 - 单词词典</h2><p>   哈希加链表是处理哈希表冲突的一种解决方法，哈希表有随之配套的 hash 散列函数，会为每个输入的<br>   key 键生成’唯一’标定该key 对应 value 的标识，但是如果 hash 散列函数选取的不当的话，便会造成<br>   不同的 key 生成了重复的标识； 这就是所谓的’冲突’的发生，处理’冲突’有着不同的方法，<br>   加链表就是在发生冲突的 key 的后面开辟一块空间存放后来的 key ; 待到查找的时候，通过 hash 散列函数<br>   找到该 hash 生成数值指定的链表头，沿着链表继续寻找就可以了。</p>
+<h2 id="u6811_u5F62_u7ED3_u6784_-__u5355_u8BCD_u8BCD_u5178"><a href="#u6811_u5F62_u7ED3_u6784_-__u5355_u8BCD_u8BCD_u5178" class="headerlink" title="树形结构 - 单词词典"></a>树形结构 - 单词词典</h2><p>   前缀树和后缀树都是可以做单词词典很好的数据结构</p>
+<hr>
+<h1 id="u5012_u6392_u5217_u8868"><a href="#u5012_u6392_u5217_u8868" class="headerlink" title="倒排列表"></a>倒排列表</h1><p>  在前面我们提到过了，倒排列表中的基本构成单元倒排索引项中包含字段有:<br>  {单词出现的文档的唯一编号,单词出现频率,&lt;单词在文档中的位置1,位置2,位置3…&gt;}<br>  但是在实际的应用中为了尽量节省内存，通常会使用文档编号的差值来取代文章的唯一编号。</p>
+<hr>
+<h1 id="u5EFA_u7ACB_u7D22_u5F15"><a href="#u5EFA_u7ACB_u7D22_u5F15" class="headerlink" title="建立索引"></a>建立索引</h1><p>建立索引有着不同的方法,同时索引也分为动态索引和静态索引，其中静态索引是生成索引之后在修改文档集合中的<br>文档之后，不能自动的更新之前索引文件 ； 而动态索引则是生成索引之后，修改文档集合中的文件内容之后<br>会随之自动的更新文档文件。</p>
+<h2 id="u9759_u6001_u7D22_u5F15"><a href="#u9759_u6001_u7D22_u5F15" class="headerlink" title="静态索引"></a>静态索引</h2><h3 id="u4E24_u904D_u6587_u6863_u904D_u5386_u6CD5"><a href="#u4E24_u904D_u6587_u6863_u904D_u5386_u6CD5" class="headerlink" title="两遍文档遍历法"></a>两遍文档遍历法</h3><p>两遍文档遍历法在创建索引的时候需要对文档集合执行两遍扫描，在创建索引的时候仅需要内存即可，整个过程无需磁盘参与。</p>
+<ul>
+<li>首次扫描:<br>算出为该文档集合创建的索引所需的内存容量大小:搜集文档集合包含文档个数 N ，文档集合中不重复单词总数 M, 每个单词在多少个文档中出现 DF. 将所有单词的 DF 数值进行加和便是建立最终索引所需要的内存大小。</li>
+<li><p>第二次扫描:</p>
+<pre><code>首次扫描已经确定了文档集合中的每个单词的 DF信息，在第二次扫描的时候，为每个单词的 DF 信息
+</code></pre><p>分配内存空间，并使用指针将单词集合与单词的 DF 信息将连接即可，也就是简历每个单词的倒排列表信息；<br>但是通过上面的陈述可知，在单词倒排列表中的倒排索引项仅仅包含单词 DF信息还是不够的；对文档 ID 或是文档 ID 偏移量的计算以及单词在文档中出现位移和出现次数等这些信息都可以在第二次扫描的时候来完成。<br>  等到两遍扫描结束之后，将内存中创建的倒排列表和单词词典信息写入到磁盘中就完成了索引的创建了。</p>
+</li>
+<li><p>对两遍文档遍历法的评估: 因为全程使用的是内存无需磁盘的参与，所以连通文档集合和生成的倒排列表等数据信息均需要存放到内存中，这需要内存足够大，或者是仅仅适用于创建文档集合规模较小的索引。同时，需要对文档进行两次扫描，比较耗时在速度上并不占优势。      </p>
+<h3 id="u6392_u5E8F_u6CD5"><a href="#u6392_u5E8F_u6CD5" class="headerlink" title="排序法"></a>排序法</h3><p>排序法为文档集合创建索引是为了弥补两遍遍历法建立索引过程中，对内存消耗大这一缺点提出的。两边遍历索引生成方法使用内存的大小是不固定的，如果文档集合大内存开辟就会大一些，相反便会小一些。而排序法无论文档集合如何，其所需要的内存大小均是固定分配的。开辟的内存空间主要用来存放词典信息和索引的中间结果。<br>每当中间结果将内存吃空的时候，便会统一将内存中的中间数据写入到磁盘中。遵循上述倒排索引中所介绍的两部分的结构-单词词典,倒排列表(倒排列表的组成单元是倒排索引项)，在整个的排序法创建文件集合索引的过程中，单词词典始终是作为常驻内存的数据结构的。</p>
+</li>
+<li>读取文档，对文档进行编号，每个文档为其创建唯一的标识 ID 号码</li>
+<li><p>解析文档，每当在文档中遇到新单词，</p>
+<pre>
+{ 
+查看该单词在单词词典中是否有记录 
+1. 有记录，获取该单词在词典中的 ID 号码
+2. 单词词典中没有记录该单词，为该单词创建全词典唯一的 ID 号码，然后将其收录到单词词典中
+}
+</pre>
+</li>
+<li><p>在对当前文档完成了读取和解析之后，便能够为当前文档中出现的每个单词均创建包含着如下信息</p>
+</li>
+</ul>
+<pre>
+ (单词ID,文档ID,单词频率)
+</pre>
+
+<p>上述三元组便可以作为倒排索引列表中的索引项了，将该三元组索引项集合追加到用来存放中间处理结果的大小固定的内存缓冲区中。然后便可以开始处理下一个文档了。<br></p>
+<ul>
+<li>在内存缓冲区被占满之前需要将缓冲区中的数据写入到磁盘临时文件中去，不过在写入之前需要对内存中的三元组序列执行排序操作； 首先按照单词 ID 进行非递减，然后按照文档 ID 进行非递减排序。由于内存中存放的中间结果并不一定全都是同一个文件生成的中间信息，所以会有单词ID 相同但是文档ID不同的情况，这种情况按照文档ID非递减的规则进行排序。<b>PS: 在上述的全部过程中，单词词典是常驻内存的</b> </li>
+<li>每次执行向磁盘中写入中间缓存文件操作均是写入一个新的缓存文件，而不是在之前的缓存文件中执行追加。在对所文档集合中的每个文档均读取解析之后，剩下的工作便是合并临时写入磁盘的所有的中间文件了。由于写入磁盘之前在内存中执行了先按单词ID然后文章ID进行排序的操作，所以在合并的时候，只要首先将所有中间文件中单词ID相同的三元组合并为一个数组(由三元组元素构成的有序序列)，而所有的数组组合起来便是该文件的倒排列表了。接下来只要将倒排列表中的内容写入到文件中即可。而这个文件便是所谓的索引文件了。      </li>
+<li>对排序法的评估: 在排序法创建文档集合索引的过程中，单词词典作为常驻内存数据结构并不会被写入到磁盘的中间临时文件中且大小也随着解析文档个数的增多而变大，同时排序法中分配的内存大小是固定的，所以当单词词典大小变大之后，每次用来缓存三元组的个数也会随之减少，如果单词词典继续增大会无法缓存解析文件而生成的三元组，这样便会频繁的执行写入操作,从而导致程序整体性能的下降。</li>
+</ul>
+<h3 id="u5F52_u5E76_u6CD5"><a href="#u5F52_u5E76_u6CD5" class="headerlink" title="归并法"></a>归并法</h3><p>归并法是为了弥补排序法中，单词词典常驻内存耗空分配的固定内存这一缺陷而提出的。归并法的特点是在每次执行三元组数据信息写入的同时也会将单词词典信息写入到中间临时文件中。这样便可以保证为程序分配固定大小的内存会全部用于后续索引的创建。</p>
+<ul>
+<li>归并法的执行过程和排序法大部分相同，不同之处之一是在写入中间缓存文件中是将 {单词词典，三元组集合} 写入到中间缓存文件中<pre><code>之二是在文档集合中的全部文档完成解析之后，将所有生成的临时文件进行合并的时候，每个临时文件中存放的是最终倒排列表的一部分；
+而最后的合并操作便是将所有的部分倒排列表合并成一个完成的倒排列表。
+</code></pre></li>
+</ul>
+<h2 id="u5206_u5E03_u5F0F_u7D22_u5F15"><a href="#u5206_u5E03_u5F0F_u7D22_u5F15" class="headerlink" title="分布式索引"></a>分布式索引</h2><p>分布式索引和数据库中的’分片’ 技术有些类似，数据库的’分片’ 技术是通过将一张大数据库表中的信息按照表中的某个属性字段<br>中的不同值/或是范围分割成许多个来自于该大数据表的’子表’； 常用作’分片’的属性有地域和时间 ；<br>而分布式索引技术则是将文档集合按照文档或者是单词来对索引进行划分。</p>
+<h3 id="u6309_u7167_u6587_u6863_u6765_u5212_u5206_u7D22_u5F15"><a href="#u6309_u7167_u6587_u6863_u6765_u5212_u5206_u7D22_u5F15" class="headerlink" title="按照文档来划分索引"></a>按照文档来划分索引</h3><p>将大的文档集合划分成分布于不同机器上的文档子集，为每个文档自己创建各自的索引。<br>在执行查询的时候，会在每个机器上面执行查询，并把来自于每个子集的查询结果进行合并生成最终查询结果</p>
+<h3 id="u6309_u7167_u5355_u8BCD_u6765_u5212_u5206_u7D22_u5F15"><a href="#u6309_u7167_u5355_u8BCD_u6765_u5212_u5206_u7D22_u5F15" class="headerlink" title="按照单词来划分索引"></a>按照单词来划分索引</h3><p>在创建按照单词划分的倒排索引的时候，划分发生在合并中间缓存文件生成最终索引文件的时候。<br>每当将来自于所有中间缓存文件中的同一单词ID的三元组合并之后，将该三元组集合+单词发送到某台主机上面。<br>便完成了按照该单词对索引进行’分片’的操作。<br>在实际的应用场景中，按照文档来进行索引的划分这种方法比较常使用，而按照单词的划分仅仅在特定场合下使用。<br>因为按照单词来划分索引的可扩展性、均衡负载和容错性都不是很好。</p>
+<h1 id="u67E5_u8BE2_u5904_u7406"><a href="#u67E5_u8BE2_u5904_u7406" class="headerlink" title="查询处理"></a>查询处理</h1><h2 id="u4E00_u6B21_u4E00_u4E2A_u5355_u8BCD_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u4E00_u6B21_u4E00_u4E2A_u5355_u8BCD_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="一次一个单词的查询处理"></a>一次一个单词的查询处理</h2><p>将用户查询语句执行清洗(我通常把去掉语句中无用符号和去掉停用词的操作叫做’清洗’…好记),<br>然后执行分词操作将语句分成多个词语组成集合，获取每个词语的倒排列表，然后计算每个词语与倒排列表中的<br>每一个文件的相似度，计算相似度之后，如果有文档重复的(两个不同词语倒排索引到同一个文档)，那么将重复的文档<br>得分进行累加；最后将得出得分最高的 K 个文档(通过优先队列进行存放)作为查询结果进行返回即可</p>
+<h2 id="u4E00_u6B21_u4E00_u4E2A_u6587_u6863_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u4E00_u6B21_u4E00_u4E2A_u6587_u6863_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="一次一个文档的查询处理"></a>一次一个文档的查询处理</h2><h2 id="u8DF3_u8DC3_u6307_u9488_u7684_u67E5_u8BE2_u5904_u7406"><a href="#u8DF3_u8DC3_u6307_u9488_u7684_u67E5_u8BE2_u5904_u7406" class="headerlink" title="跳跃指针的查询处理"></a>跳跃指针的查询处理</h2><h2 id="u77ED_u8BED_u67E5_u8BE2"><a href="#u77ED_u8BED_u67E5_u8BE2" class="headerlink" title="短语查询"></a>短语查询</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/06/2016.2.5.search_engine_theory/" data-id="cil4jxrvw000kc8im38e252tl" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/search-engine/">search-engine</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-blog_2_3_2016" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/02/05/blog_2_3_2016/" class="article-date">
@@ -146,7 +280,7 @@ deploy:
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cil3seaug000b18iml81sfqaj" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_3_2016/" data-id="cil4jxrvs000bc8im65we4f6m" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/windows/">windows</a></li></ul>
@@ -265,7 +399,7 @@ public class TestLog4j{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cil3seaue000818imobjfnu8i" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/05/blog_2_5_2016_log4j_usage_note/" data-id="cil4jxrvp0008c8imkqttzmjh" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a></li></ul>
@@ -417,7 +551,7 @@ public class TestLog4j{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cil3seaub000518imw3pg4jbz" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2015/10/25/my_cv/" data-id="cil4jxrvl0005c8img3x2wuhp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/个人简历/">个人简历</a></li></ul>
@@ -444,7 +578,7 @@ public class TestLog4j{
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -453,7 +587,7 @@ public class TestLog4j{
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 15px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 15px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 20px;">spark</a> <a href="/tags/theory/" style="font-size: 15px;">theory</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 15px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 10px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 15px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 20px;">spark</a> <a href="/tags/theory/" style="font-size: 15px;">theory</a> <a href="/tags/translate/" style="font-size: 10px;">translate</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
     </div>
   </div>
 
@@ -462,7 +596,7 @@ public class TestLog4j{
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -472,6 +606,10 @@ public class TestLog4j{
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial</a>
+          </li>
         
           <li>
             <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/">基于单节点的 Spark &amp; IDEA 远程调试</a>
@@ -487,10 +625,6 @@ public class TestLog4j{
         
           <li>
             <a href="/2016/02/18/2016.2.18.dht.note/">DHT Chord 理论学习笔记 1</a>
-          </li>
-        
-          <li>
-            <a href="/2016/02/17/2016.2.17.upload_picture/">如何使用七牛存储来为你的 gihub 博客中添加图片</a>
           </li>
         
       </ul>
