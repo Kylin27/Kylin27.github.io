@@ -3,17 +3,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: IDEA | Kylin&#39;s Blog</title>
+  <title>Multithreading Costs | Kylin&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Kylin's Blog">
-<meta property="og:url" content="http://kylin27.github.io/tags/IDEA/index.html">
+  <meta name="description" content="Descriptions:java 并发文档翻译，文章链接地址 http://tutorials.jenkov.com/java-concurrency/costs.html
+
+Going from a singlethreaded to a multithreaded application doesn’t just provide benifits.将单线程程序修改成多线程好处是有的，但同时也">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Multithreading Costs">
+<meta property="og:url" content="http://kylin27.github.io/2016/02/27/2016.2.27.java_multithreading_costs3/index.html">
 <meta property="og:site_name" content="Kylin's Blog">
-<meta property="og:description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
+<meta property="og:description" content="Descriptions:java 并发文档翻译，文章链接地址 http://tutorials.jenkov.com/java-concurrency/costs.html
+
+Going from a singlethreaded to a multithreaded application doesn’t just provide benifits.将单线程程序修改成多线程好处是有的，但同时也">
+<meta property="og:updated_time" content="2016-02-27T12:02:12.361Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kylin's Blog">
-<meta name="twitter:description" content="Write.Rewrite.When not writing or rewriting, read.I know of no shortcuts.">
+<meta name="twitter:title" content="Multithreading Costs">
+<meta name="twitter:description" content="Descriptions:java 并发文档翻译，文章链接地址 http://tutorials.jenkov.com/java-concurrency/costs.html
+
+Going from a singlethreaded to a multithreaded application doesn’t just provide benifits.将单线程程序修改成多线程好处是有的，但同时也">
   
     <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
   
@@ -63,39 +70,75 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/" class="archive-article-date">
-  <time datetime="2016-02-25T16:00:00.000Z" itemprop="datePublished">Feb 26</time>
+        <section id="main"><article id="post-2016.2.27.java_multithreading_costs3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/" class="article-date">
+  <time datetime="2016-02-26T16:00:00.000Z" itemprop="datePublished">2016-02-27</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/">基于单节点的 Spark &amp; IDEA 远程调试</a>
+    <h1 class="article-title" itemprop="name">
+      Multithreading Costs
     </h1>
   
 
-    </header>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Descriptions:<br>java 并发文档翻译，文章链接地址 <a href="http://tutorials.jenkov.com/java-concurrency/costs.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/costs.html</a></p>
+<hr>
+<p>Going from a singlethreaded to a multithreaded application doesn’t just provide benifits.<br>将单线程程序修改成多线程好处是有的，但同时也会带来其他方面的损失。</p>
+<p>It also has some costs. Don’t just multithread-enable an application just because you can.<br>使用多线程需要为之付出相应的代价。 不要仅仅因为你会多线程便去在编程中使用这种技术。</p>
+<p>You should have a good idea that the benefits gained by doing so, are larger than the cost.<br>在使用之前你应该明确的知道相比于应用多线程所花费的代价，你能够获得更大的收益(的时候再来决定将多线程加入到你的程序中)。</p>
+<p>When in doubt, try measuring the performance or responsiveness of the application, instead of just guessing.<br>如果你不能很好的做出决断，那么试着权衡一下程序的性能或是响应能力在使用多线程技术前后有何变化，而不是仅仅通过猜测的方式来决定是否使用(多线程)。</p>
+<h2 id="More_complex_design"><a href="#More_complex_design" class="headerlink" title="More complex design"></a>More complex design</h2><h2 id="u8BBE_u8BA1_u66F4_u52A0_u590D_u6742"><a href="#u8BBE_u8BA1_u66F4_u52A0_u590D_u6742" class="headerlink" title="设计更加复杂"></a>设计更加复杂</h2><p>Though some parts of a multithreaded applications is simpler than a singlethreaded application, other parts are more complex.<br>虽然多线程应用程序在某些地方的实现要比单线程应用程序要简单的多，但是其他地方的设计要远比单线程设计复杂得多。</p>
+<p>Code executed by multiple threads accessing shared data need special attention.<br>被多线程执行的访问共享数据的代码端需要给予高度重视。</p>
+<p>Thread interaction is far from always simple.<br>线程之间的交互要远比想象的复杂。</p>
+<p>Errors arising from incorrect thread synchronization can be very hard to detect, reproduce and fix.<br>线程同步操作所引发的错误很难被探知，重现或是修复。</p>
+<h2 id="Context_Switching_Overhead"><a href="#Context_Switching_Overhead" class="headerlink" title="Context Switching Overhead"></a>Context Switching Overhead</h2><h2 id="u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362"><a href="#u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362" class="headerlink" title="过渡上下文切换"></a>过渡上下文切换</h2><p>When a CPU switches from executing one thread to executing another, the CPU needs to save the local data, program pointer etc. of the current thread, and load the local data, program pointer etc. of the next thread to execute.<br>当 CPU 从一个正在执行的线程切换去执行另一个线程的时候，这个 CPU 需要存放当前线程的本地数据,程序指针等信息; 然后加载另一个将要执行的线程中的本地数据，程序指针等信息。</p>
+<p>This switch is called a “context switch”.<br>上面所描述的切换就叫做 “上下文切换”。</p>
+<p>The CPU switches from executing in the context of one thread to executing in the context of another.<br>对于 CPU 来说，它从正在运行线程的上下文中切换到另一个即将运行的线程的上下文中。</p>
+<p>Context switching isn’t cheap.<br>上下文切换的花费高昂。</p>
+<p>You don’t want to switch between threads more than necessary.<br>所以不到万不得已，我认为你是不会在两个线程之间进行上下文切换的。</p>
+<p>You can read more about context switching on Wikipedia:<br>你可以通过查阅维基百科来获取更多关于上下文切换相关的知识:</p>
+<p><a href="http://en.wikipedia.org/wiki/Context_switch" target="_blank" rel="external">http://en.wikipedia.org/wiki/Context_switch</a></p>
+<h2 id="Increased_Resource_Consumption"><a href="#Increased_Resource_Consumption" class="headerlink" title="Increased Resource Consumption"></a>Increased Resource Consumption</h2><h2 id="u589E_u52A0_u8D44_u6E90_u6D88_u8017"><a href="#u589E_u52A0_u8D44_u6E90_u6D88_u8017" class="headerlink" title="增加资源消耗"></a>增加资源消耗</h2><p>A thread needs some resources from computer in order to run.<br>一个线程需要从计算机中获取相应资源以便于能够运行起来。</p>
+<p>Besides CPU time a thread needs some memory to keep its local stack.<br>除此之外，线程在获取到 CPU 资源之后需要额外的内存空间来存放它的本地栈。</p>
+<p>It may also take up some resources inside the operating system needed to manage the thread.<br>线程或许也会在用来管理线程的操作系统内部占据一些资源。</p>
+<p>Try creating a program that creates 100 thread that does nothing but wait, and see how much memory the application takes when running.<br>(你可以)试着创建一个包含100个不做任何事情且仅处于等待状态的线程的程序，然后观察一下该程序运行起来的时候它总共消耗多少内存。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_multithreading_costs3/" data-id="cil52w88y000098imryjd0lqj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/multithrading/">multithrading</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
+
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Java Concurrency / Multithreading Tutorial [Java 并发/多线程教程]</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
+
 </section>
         
           <aside id="sidebar">
