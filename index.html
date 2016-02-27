@@ -79,7 +79,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial</a>
+      <a class="article-title" href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial[Java 并发/多线程教程]</a>
     </h1>
   
 
@@ -114,12 +114,139 @@
 
 <p><br>With all these new developments it is about time that I updated this Java Concurrency tutorial. <br><br>Java 开发中发生了如此之多的变化，所以这也是我该更新 Java 并发教程手册的时候了。<br><br><br>Therefore, this tutorial is once again work in progress. <br><br>这篇 Java 并发教程会一如既往地以不断更新的方式来发布。<br><br><br>New tutorials will be published whenever time is available to write them.<br><br>只要我一有时间便会向文章集中添加新的教程文章。<br><br></p>
 
+<p><a href="/">下一篇文章</a></p>
 <p>end</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="cil4jxrw7000zc8im9ojcpowp" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="cil516e890016e8im3rzu05fc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translate/">translate</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016.27.java_concurrency.Multithreading_benifits2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/" class="article-date">
+  <time datetime="2016-02-26T16:00:00.000Z" itemprop="datePublished">2016-02-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/">Multithreading Benefits [多线程带来的福利]</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Description:<br>java 并发文档翻译，文章链接地址<a href="http://tutorials.jenkov.com/java-concurrency/benefits.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/benefits.html</a></p>
+<hr>
+<p>The reason multithreading is still used in spite of its challenges is that multithreading can have several benifits.<br>虽然使用多线程编程有着诸多挑战，但是它却仍被广泛使用的原因是因为多线程本身具有着许多优势。</p>
+<p>Some of these benefits are:<br>优势如下:</p>
+<ul>
+<li>Better resource utilization.</li>
+<li><p>(多线程)对资源的利用率更高。</p>
+</li>
+<li><p>Simpler program design in some situations.</p>
+</li>
+<li><p>在某些特定场合可以简化程序的设计。</p>
+</li>
+<li><p>More responsive programs.</p>
+</li>
+<li>可以写出响应性更好的程序。 </li>
+</ul>
+<hr>
+<h2 id="Better_resource_utilization"><a href="#Better_resource_utilization" class="headerlink" title="Better resource utilization"></a>Better resource utilization</h2><h2 id="u66F4_u597D_u7684_u8D44_u6E90_u5229_u7528_u7387"><a href="#u66F4_u597D_u7684_u8D44_u6E90_u5229_u7528_u7387" class="headerlink" title="更好的资源利用率"></a>更好的资源利用率</h2><p>Imagine an applicaton that reads and processes files from the local file system.<br>设想一下有从本地文件系统读入并执行文件这样一段程序。</p>
+<p>Lets say that reading a file from disk takes 5 seconds and processing it takes 2 seconds. Processing two files then takes<br>假设如果从磁盘上面将文件加载到当前程序中需要 5s ，然后执行该文件需要 2s.<br>那么代码处理 2 份文件的所需要的时间统计如下所示:</p>
+<pre><code>
+  5 seconds reading file A
+  2 seconds processing file A
+  5 seconds reading file B
+  2 seconds processing file B
+  ************************
+  14 seconds total
+</code></pre>
+
+<p>When reading the file from disk most of the CPU time is spent waiting for the disk to read the data.<br>当程序在执行从磁盘上读入文件的这段期间内 CPU 将大部分的时间花费在等待上。</p>
+<p>The CPU is pretty much idle druing that time.<br>在等待的那段期间内，CPU 很有可能处于一种空闲状态。</p>
+<p>It could be doing something else.<br>而在那段时间内 CPU 完全是可以做点其他的事情的。</p>
+<p>By changing the order of the operations, the CPU could be better utilized. Look at this ordering:<br>通过修改执行操作的顺序，能够提升 CPU 的利用率。<br>可以参照如下的顺序:</p>
+<pre><code>
+  5 seconds reading file A
+  5 seconds reading file B + 2 seconds processing file A
+  2 seconds processing file B
+  ********************
+  12 seconds total
+</code></pre>
+
+<p>The CPU waits for the first file to be read.<br>CPU 在首次从磁盘读入文件的时候处于等待状态。</p>
+<p>Then it starts the read of the second file.<br>然后，开始第二份文件的加载操作。</p>
+<p>While the second file is being read, the CPU processes the first file.<br>当等待第二份文件从硬盘加载的期间内， CPU 会运行程序来处理读入第一份文件。</p>
+<p>Remember, while waiting for the file to be read from disk, the CPU is mostly idel.<br>记住这一点，当 CPU 处于等待文件从磁盘加载文件的这段期间时， CPU 十有八九是处于空闲状态的。</p>
+<p>In general, the CPU can be doing other things while waiting for IO.<br>就通常情况来说，当 CPU 等待 IO 操作的这段期间内完全可以做一些其他事情。</p>
+<p>It doesn’t have to be disk IO.<br>也不一定非要是基于磁盘的 IO 操作。</p>
+<p>It can be network IO as well, or input from a user at the machine.<br>还可以是基于网络的 IO 操作，或是来自于另外一台主机用户的输入数据。</p>
+<p>Network and disk IO is often a lot slower than CPU’s and memory IO.<br>网络和磁盘上数据的读入写出速度通常要远远比 CPU 直接读写内存的速度要慢。</p>
+<h2 id="Simpler_program_desgin_in_some_situations"><a href="#Simpler_program_desgin_in_some_situations" class="headerlink" title="Simpler program desgin in some situations"></a>Simpler program desgin in some situations</h2><h2 id="u5728_u7279_u5B9A_u573A_u5408_u66F4_u7B80_u6D01_u7684_u7A0B_u5E8F_u8BBE_u8BA1"><a href="#u5728_u7279_u5B9A_u573A_u5408_u66F4_u7B80_u6D01_u7684_u7A0B_u5E8F_u8BBE_u8BA1" class="headerlink" title="在特定场合更简洁的程序设计"></a>在特定场合更简洁的程序设计</h2><p>If you were to program the above ordering of reading and processing by hand in a singlethread applicaton, you would have to keep track of both the read and procesisng state of each file.<br>如果你曾试图将上述的代码按照读、执行的顺序来用单线程编写实现的话，你将不得不在每个线程中保存为每个文件的读取和执行的相关状态信息。</p>
+<p>Instead you can start two threads that each just reads and processes a single file.<br>同样你也可以创建两个线程，让每个线程仅做读文件或是处理文件中的一种。</p>
+<p>Each of these threads will be blocked while waiting for the disk to read its file.<br>每当线程等待从文件从磁盘中读取的时间段内都会陷入阻塞状态。</p>
+<p>While waiting, other threads can use the CPU to process the parts of the file they have already read.<br>在该线程处于等待的过程中，其他的线程便会使用 CPU 资源来操作它已经从磁盘加载到内存的文件。</p>
+<p>The result is, that the disk is kept busy at all times, reading from various files into memory. This results in a better utilization of both the disk and the CPU.<br>这样操作的结果便是可以保证磁盘一直处于忙碌状态，将不同的文件加载到内存中。 这种处理方法也可以提高使磁盘和 CPU 的资源利用率。</p>
+<p>It is also easier to program, since each thread only has to keep track of a single file.<br>另一个好处便是是程序的代码编写起来更加的容易，因为每个线程仅仅需要保存单个文件的信息即可。</p>
+<h2 id="More_responsive_programs"><a href="#More_responsive_programs" class="headerlink" title="More responsive programs"></a>More responsive programs</h2><h2 id="u5199_u51FA_u54CD_u5E94_u6027_u66F4_u597D_u7684_u7A0B_u5E8F"><a href="#u5199_u51FA_u54CD_u5E94_u6027_u66F4_u597D_u7684_u7A0B_u5E8F" class="headerlink" title="写出响应性更好的程序"></a>写出响应性更好的程序</h2><p>Another common goal for turning a singlethreaded application into a multithreaded application is to achieve a more responsive application.<br>将单线程应用程序改写成多线程应用程序的另一个目的便是获得应用程序更好的响应能力。</p>
+<p>Imagine a server application that listens on some port for incoming requests, when a request is received, it handles the request and then goes back to listening.<br>假设在某个端口上监听是否有请求到来的服务器应用程序， 如果接到了一个请求的话，这个服务器应用程序首先会处理这个请求，然后等到处理请求之后才会返回去继续监听操作。</p>
+<p>The server loop is sketched below.<br>关于上述服务器的程序概况描述如下.</p>
+<pre><code>
+while (server is active){
+    listen for request
+    process request
+}
+</code></pre>
+
+<p>If the request takes a long time to process, no new client can send requests to the server for that duration.<br>如果服务器端执行的请求需要很长的一端时间，那么在那段时间内没有任何客户端能够成功的将自己的请求发送至服务器端。</p>
+<p>An alternate design would be for the listening thread to pass the request to a worker thread, and return to listening immediately.<br>可以在设计上进行这样的变动: 创建一个用来将请求信息转发给处理请求的工作者线程这样的请求转发线程，每当转发执行结束便会立即恢复到监听的状态。</p>
+<p>The worker thread will process the request and send a reply to the client.<br>而上述设计变动中所描述的工作者线程将会执行具体的请求，然后将执行结果回复给客户端。</p>
+<p>This design is sketched below:<br>上述的设计概况可以描述如下:</p>
+<pre><code>
+while ( server is active){
+    listen for request
+    hand request to worker thread
+}
+
+</code></pre>
+
+<p>This way the server thread will be back at listening sooner.<br>在这种设计模式下，服务器线程能够在响应请求连接之后很短的时间内回复到监听状态。</p>
+<p>Thus more clients can send requests to the server.<br>因此能够满足让更多的客户端将请求发送给服务器端。</p>
+<p>The server has become more responsive.<br>这样的服务器的响应性更好。</p>
+<p>The same is true for desktop applications.<br>上述的道理对于桌面应用程序来说也说得通。</p>
+<p>If you click a button that starts a long task, and the thread executing the task is the thread updating the windows, button etc., then the application will appear unresponsive while the task executes.<br>如果你通过点击一个按钮来启动一个长任务的话，并且该线程所执行任务是更新 windows 系统，不过在更新任务执行的时间段内该程序对于所有的操作都不会有任何响应操作。</p>
+<p>Instead the task can be handed off to a worker thread.<br>如果我们将’更新’任务交给一个工作者线程来完成的话。</p>
+<p>While the worker thread is busy with the task, the window thread is free to respond to other user requests.<br>那么即便是工作者线程处于繁忙的执行任务状态，窗口线程仍是处于空闲状态且能够立即响应来自其他用户的请求。</p>
+<p>When the worker thread is done it signals the window thread.<br>当工作者线程完成了它的工作的话，它便会向窗口线程发送信号。</p>
+<p>The window thread can then update the application windows with the result of the task.<br>(接收到信号的)窗口线程随后便可以根据工作线程执行的结果来更新窗口应用程序。</p>
+<p>The program with the worker thread design will appear more responsive to the user.<br>如果在设计程序的时候为其增设工作者线程的话将会让程序对于用户而言更具有响应性。</p>
+<p><a href="/">下一篇文章</a></p>
+<p>end</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/" data-id="cil516e7w000ke8imil2p3jk5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translate/">translate</a></li></ul>
@@ -758,7 +885,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil4jxrwb0016c8imgrzgut8t" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil516e8c001ae8imqyljzbaa" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDEA/">IDEA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Intellij/">Intellij</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/debug/">debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -806,7 +933,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cil4jxrwg001gc8imuzsk11qi" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cil516e8g001ke8imf8rslz5a" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official/">official</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
@@ -1080,7 +1207,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cil4jxrwl001oc8im21yv143f" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cil516e8j001se8immuod5usl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gtest/">Gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gtest/">gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/manual/">manual</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tutorial/">tutorial</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试/">测试</a></li></ul>
@@ -1204,7 +1331,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cil4jxrwr0021c8im40up5eog" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cil516e8o0025e8imfdeez1du" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chord/">Chord</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DHT/">DHT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/P2P/">P2P</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/note/">note</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -1253,7 +1380,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cil4jxrwv002bc8imro5eiwk2" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cil516e8s002fe8imngrujz29" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/picture/">picture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/七牛/">七牛</a></li></ul>
@@ -1469,7 +1596,7 @@ res0: Long = 1000
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cil4jxrxc002jc8imhj50cnor" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cil516e8v002ne8im94ivawb9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dockerfile/">dockerfile</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -1723,7 +1850,7 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cil4jxryg002rc8imvwmdp86n" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cil516e90002ve8imxce3yvl1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
@@ -1815,112 +1942,10 @@ object MatchPatternTester extends App{
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cil4jxrv30000c8imt58h0m0b" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/12/2016.2.12.scala_BiMap/" data-id="cil516e780000e8imfzw0of0n" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/datastructure/">datastructure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016.2.5.scala_theory" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/11/2016.2.5.scala_theory/" class="article-date">
-  <time datetime="2016-02-10T16:00:00.000Z" itemprop="datePublished">2016-02-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/11/2016.2.5.scala_theory/">scala编程相关知识1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description:<br>这篇博客中记录一下 scala 编程语言中的知识点</p>
-<hr>
-<h1 id="case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5"><a href="#case_class__u5728_scala__u4E2D_u7684_u4F7F_u7528_u65B9_u6CD5" class="headerlink" title="case class 在 scala 中的使用方法"></a>case class 在 scala 中的使用方法</h1><p> case class 和 java 中所定义的 class 二者类似</p>
-<ul>
-<li>在创建 case class 对象实例的时候，可以不用在实例前面加上 new 关键字</li>
-</ul>
-<pre>
-case class apple(name:String)
-class banana(color:String)
-
-val app = apple("i am a apple — —b")
-val ban = new banana("i am yellow — —||")
-</pre>
-
-<ul>
-<li><p>case class 创建的类对象实例调用 .toString 方法时显示出来的字体更漂亮<br>case class 实例会将 ‘case class 名称(里面是成员变量名称)’ 显示出来<br>class 的 .toString 方法会显示类似 java 语言直接打 Object 象信息的数据<br>如果你想通过打印的方式来快速获取类对象中的成员数据信息的话，推荐使用 case class</p>
-</li>
-<li><p>case class 默认实现了 equals 和 hashCode 两个方法，所以 case class 实例化的对象可直接调用这两个方法</p>
-</li>
-<li><p>case class 实现了(extends) Serializable ，可以对 case class 对象执行序列化操作</p>
-</li>
-<li>在声明 case class 的时候，传入的构造参数均是 public 的可以直接通过 实例名称.构造函数参数名称<br>来访问</li>
-</ul>
-<pre>
-case class Document(docId: String, body: String="", label: Set[String] = Set.empty, integerLabel: Int)
-其中 body: String="" 这种赋值方式是默认赋值，如果调用者没有为该参数指定参数数值的话，就会使用默认的赋值。
-如果调用者为该参数指定特定数值的话，该指定的特定数值便会替代该指定默认参数数值
-但是如果最后一个参数为必须传入数值的参数类型的话，中间的参数数值是必须要给定的
-
-1. val doc1 = Document("id1",2)
-   println(doc1.toString) // 将会出错
-2. val doc2 = Document("id2","doc2",Set("abc","eft")
-   println(doc1.label)  // output Set(abc,eft)   
-</pre>
-
-<ul>
-<li>case class 对象实例支持模式匹配，这是 scala 为何要提出 case class 这一类型的原因</li>
-</ul>
-<pre>
-abstract  class methodX
-case class test1(n: Int) extends methodX
-case class test2(a: Int, b: Int) extends methodX
-
-object MatchPatternTester extends App{
-
-  def matchTester(term: methodX ){
-    term match{
-      case test1(n) =>
-        println("this is test1" +n)
-      case test2(a,b) =>
-        println("this is test2 a , b"+a +" " +b)
-    }
-  }
-
- val x1 = test1(1027)
-
- val x1Result =matchTester(x1)
-
- val x2 = test2(10,72)
- val x2Result = matchTester(x2)
-
-}
-</pre>
-
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/11/2016.2.5.scala_theory/" data-id="cil4jxrw3000vc8im2c418bpq" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/programming-theory/">programming-theory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scala/">scala</a></li></ul>
 
     </footer>
   </div>
@@ -1944,7 +1969,7 @@ object MatchPatternTester extends App{
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -1953,7 +1978,7 @@ object MatchPatternTester extends App{
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 15px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 10px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 15px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 20px;">spark</a> <a href="/tags/theory/" style="font-size: 15px;">theory</a> <a href="/tags/translate/" style="font-size: 10px;">translate</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 15px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 15px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 15px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 20px;">spark</a> <a href="/tags/theory/" style="font-size: 15px;">theory</a> <a href="/tags/translate/" style="font-size: 15px;">translate</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
     </div>
   </div>
 
@@ -1962,7 +1987,7 @@ object MatchPatternTester extends App{
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -1974,7 +1999,11 @@ object MatchPatternTester extends App{
       <ul>
         
           <li>
-            <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial</a>
+            <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial[Java 并发/多线程教程]</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/">Multithreading Benefits [多线程带来的福利]</a>
           </li>
         
           <li>
@@ -1987,10 +2016,6 @@ object MatchPatternTester extends App{
         
           <li>
             <a href="/2016/02/19/2016.2.19.Google-Test 使用教程/">Google 测试框架 g-Test 使用教程</a>
-          </li>
-        
-          <li>
-            <a href="/2016/02/18/2016.2.18.dht.note/">DHT Chord 理论学习笔记 1</a>
           </li>
         
       </ul>
