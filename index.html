@@ -65,65 +65,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2016.2.27.java_multithreading_costs3" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/" class="article-date">
-  <time datetime="2016-02-26T16:00:00.000Z" itemprop="datePublished">2016-02-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/27/2016.2.27.java_multithreading_costs3/">Multithreading Costs</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Descriptions:<br>java 并发文档翻译，文章链接地址 <a href="http://tutorials.jenkov.com/java-concurrency/costs.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/costs.html</a></p>
-<hr>
-<p>Going from a singlethreaded to a multithreaded application doesn’t just provide benifits.<br>将单线程程序修改成多线程好处是有的，但同时也会带来其他方面的损失。</p>
-<p>It also has some costs. Don’t just multithread-enable an application just because you can.<br>使用多线程需要为之付出相应的代价。 不要仅仅因为你会多线程便去在编程中使用这种技术。</p>
-<p>You should have a good idea that the benefits gained by doing so, are larger than the cost.<br>在使用之前你应该明确的知道相比于应用多线程所花费的代价，你能够获得更大的收益(的时候再来决定将多线程加入到你的程序中)。</p>
-<p>When in doubt, try measuring the performance or responsiveness of the application, instead of just guessing.<br>如果你不能很好的做出决断，那么试着权衡一下程序的性能或是响应能力在使用多线程技术前后有何变化，而不是仅仅通过猜测的方式来决定是否使用(多线程)。</p>
-<h2 id="More_complex_design"><a href="#More_complex_design" class="headerlink" title="More complex design"></a>More complex design</h2><h2 id="u8BBE_u8BA1_u66F4_u52A0_u590D_u6742"><a href="#u8BBE_u8BA1_u66F4_u52A0_u590D_u6742" class="headerlink" title="设计更加复杂"></a>设计更加复杂</h2><p>Though some parts of a multithreaded applications is simpler than a singlethreaded application, other parts are more complex.<br>虽然多线程应用程序在某些地方的实现要比单线程应用程序要简单的多，但是其他地方的设计要远比单线程设计复杂得多。</p>
-<p>Code executed by multiple threads accessing shared data need special attention.<br>被多线程执行的访问共享数据的代码端需要给予高度重视。</p>
-<p>Thread interaction is far from always simple.<br>线程之间的交互要远比想象的复杂。</p>
-<p>Errors arising from incorrect thread synchronization can be very hard to detect, reproduce and fix.<br>线程同步操作所引发的错误很难被探知，重现或是修复。</p>
-<h2 id="Context_Switching_Overhead"><a href="#Context_Switching_Overhead" class="headerlink" title="Context Switching Overhead"></a>Context Switching Overhead</h2><h2 id="u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362"><a href="#u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362" class="headerlink" title="过渡上下文切换"></a>过渡上下文切换</h2><p>When a CPU switches from executing one thread to executing another, the CPU needs to save the local data, program pointer etc. of the current thread, and load the local data, program pointer etc. of the next thread to execute.<br>当 CPU 从一个正在执行的线程切换去执行另一个线程的时候，这个 CPU 需要存放当前线程的本地数据,程序指针等信息; 然后加载另一个将要执行的线程中的本地数据，程序指针等信息。</p>
-<p>This switch is called a “context switch”.<br>上面所描述的切换就叫做 “上下文切换”。</p>
-<p>The CPU switches from executing in the context of one thread to executing in the context of another.<br>对于 CPU 来说，它从正在运行线程的上下文中切换到另一个即将运行的线程的上下文中。</p>
-<p>Context switching isn’t cheap.<br>上下文切换的花费高昂。</p>
-<p>You don’t want to switch between threads more than necessary.<br>所以不到万不得已，我认为你是不会在两个线程之间进行上下文切换的。</p>
-<p>You can read more about context switching on Wikipedia:<br>你可以通过查阅维基百科来获取更多关于上下文切换相关的知识:</p>
-<p><a href="http://en.wikipedia.org/wiki/Context_switch" target="_blank" rel="external">http://en.wikipedia.org/wiki/Context_switch</a></p>
-<h2 id="Increased_Resource_Consumption"><a href="#Increased_Resource_Consumption" class="headerlink" title="Increased Resource Consumption"></a>Increased Resource Consumption</h2><h2 id="u589E_u52A0_u8D44_u6E90_u6D88_u8017"><a href="#u589E_u52A0_u8D44_u6E90_u6D88_u8017" class="headerlink" title="增加资源消耗"></a>增加资源消耗</h2><p>A thread needs some resources from computer in order to run.<br>一个线程需要从计算机中获取相应资源以便于能够运行起来。</p>
-<p>Besides CPU time a thread needs some memory to keep its local stack.<br>除此之外，线程在获取到 CPU 资源之后需要额外的内存空间来存放它的本地栈。</p>
-<p>It may also take up some resources inside the operating system needed to manage the thread.<br>线程或许也会在用来管理线程的操作系统内部占据一些资源。</p>
-<p>Try creating a program that creates 100 thread that does nothing but wait, and see how much memory the application takes when running.<br>(你可以)试着创建一个包含100个不做任何事情且仅处于等待状态的线程的程序，然后观察一下该程序运行起来的时候它总共消耗多少内存。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_multithreading_costs3/" data-id="cil52w88y000098imryjd0lqj" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/multithrading/">multithrading</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-2016.2.27.java_concurrency.Multithreading Tutorial_1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" class="article-date">
@@ -179,7 +120,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="cil51m2to00162kim3cpjhxjn" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="cil53su4x001j2oimnywcmvod" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translate/">translate</a></li></ul>
@@ -213,7 +154,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Description:<br>java 并发文档翻译，文章链接地址<a href="http://tutorials.jenkov.com/java-concurrency/benefits.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/benefits.html</a></p>
+        <p>Descriptions:<br>java 并发文档翻译，文章链接地址<a href="http://tutorials.jenkov.com/java-concurrency/benefits.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/benefits.html</a></p>
 <hr>
 <p>The reason multithreading is still used in spite of its challenges is that multithreading can have several benifits.<br>虽然使用多线程编程有着诸多挑战，但是它却仍被广泛使用的原因是因为多线程本身具有着许多优势。</p>
 <p>Some of these benefits are:<br>优势如下:</p>
@@ -305,7 +246,66 @@ while ( server is active){
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/" data-id="cil51m2t8000k2kimu8rm1clf" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/" data-id="cil53su4c000k2oimb4e468r0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016.2.27.java_multithreading_costs3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/" class="article-date">
+  <time datetime="2016-02-26T16:00:00.000Z" itemprop="datePublished">2016-02-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/27/2016.2.27.java_multithreading_costs3/">Multithreading Costs [多线程所花费的代价]</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Descriptions:<br>java 并发文档翻译，文章链接地址 <a href="http://tutorials.jenkov.com/java-concurrency/costs.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/costs.html</a></p>
+<hr>
+<p>Going from a singlethreaded to a multithreaded application doesn’t just provide benifits.<br>将单线程程序修改成多线程好处是有的，但同时也会带来其他方面的损失。</p>
+<p>It also has some costs. Don’t just multithread-enable an application just because you can.<br>使用多线程需要为之付出相应的代价。 不要仅仅因为你会多线程便去在编程中使用这种技术。</p>
+<p>You should have a good idea that the benefits gained by doing so, are larger than the cost.<br>在使用之前你应该明确的知道相比于应用多线程所花费的代价，你能够获得更大的收益(的时候再来决定将多线程加入到你的程序中)。</p>
+<p>When in doubt, try measuring the performance or responsiveness of the application, instead of just guessing.<br>如果你不能很好的做出决断，那么试着权衡一下程序的性能或是响应能力在使用多线程技术前后有何变化，而不是仅仅通过猜测的方式来决定是否使用(多线程)。</p>
+<h2 id="More_complex_design"><a href="#More_complex_design" class="headerlink" title="More complex design"></a>More complex design</h2><h2 id="u8BBE_u8BA1_u66F4_u52A0_u590D_u6742"><a href="#u8BBE_u8BA1_u66F4_u52A0_u590D_u6742" class="headerlink" title="设计更加复杂"></a>设计更加复杂</h2><p>Though some parts of a multithreaded applications is simpler than a singlethreaded application, other parts are more complex.<br>虽然多线程应用程序在某些地方的实现要比单线程应用程序要简单的多，但是其他地方的设计要远比单线程设计复杂得多。</p>
+<p>Code executed by multiple threads accessing shared data need special attention.<br>被多线程执行的访问共享数据的代码端需要给予高度重视。</p>
+<p>Thread interaction is far from always simple.<br>线程之间的交互要远比想象的复杂。</p>
+<p>Errors arising from incorrect thread synchronization can be very hard to detect, reproduce and fix.<br>线程同步操作所引发的错误很难被探知，重现或是修复。</p>
+<h2 id="Context_Switching_Overhead"><a href="#Context_Switching_Overhead" class="headerlink" title="Context Switching Overhead"></a>Context Switching Overhead</h2><h2 id="u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362"><a href="#u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362" class="headerlink" title="过渡上下文切换"></a>过渡上下文切换</h2><p>When a CPU switches from executing one thread to executing another, the CPU needs to save the local data, program pointer etc. of the current thread, and load the local data, program pointer etc. of the next thread to execute.<br>当 CPU 从一个正在执行的线程切换去执行另一个线程的时候，这个 CPU 需要存放当前线程的本地数据,程序指针等信息; 然后加载另一个将要执行的线程中的本地数据，程序指针等信息。</p>
+<p>This switch is called a “context switch”.<br>上面所描述的切换就叫做 “上下文切换”。</p>
+<p>The CPU switches from executing in the context of one thread to executing in the context of another.<br>对于 CPU 来说，它从正在运行线程的上下文中切换到另一个即将运行的线程的上下文中。</p>
+<p>Context switching isn’t cheap.<br>上下文切换的花费高昂。</p>
+<p>You don’t want to switch between threads more than necessary.<br>所以不到万不得已，我认为你是不会在两个线程之间进行上下文切换的。</p>
+<p>You can read more about context switching on Wikipedia:<br>你可以通过查阅维基百科来获取更多关于上下文切换相关的知识:</p>
+<p><a href="http://en.wikipedia.org/wiki/Context_switch" target="_blank" rel="external">http://en.wikipedia.org/wiki/Context_switch</a></p>
+<h2 id="Increased_Resource_Consumption"><a href="#Increased_Resource_Consumption" class="headerlink" title="Increased Resource Consumption"></a>Increased Resource Consumption</h2><h2 id="u589E_u52A0_u8D44_u6E90_u6D88_u8017"><a href="#u589E_u52A0_u8D44_u6E90_u6D88_u8017" class="headerlink" title="增加资源消耗"></a>增加资源消耗</h2><p>A thread needs some resources from computer in order to run.<br>一个线程需要从计算机中获取相应资源以便于能够运行起来。</p>
+<p>Besides CPU time a thread needs some memory to keep its local stack.<br>除此之外，线程在获取到 CPU 资源之后需要额外的内存空间来存放它的本地栈。</p>
+<p>It may also take up some resources inside the operating system needed to manage the thread.<br>线程或许也会在用来管理线程的操作系统内部占据一些资源。</p>
+<p>Try creating a program that creates 100 thread that does nothing but wait, and see how much memory the application takes when running.<br>(你可以)试着创建一个包含100个不做任何事情且仅处于等待状态的线程的程序，然后观察一下该程序运行起来的时候它总共消耗多少内存。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_multithreading_costs3/" data-id="cil53su4u001d2oim1vxf8b5f" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
@@ -944,7 +944,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil51m2tr001b2kimk4mdwsn2" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cil53su50001o2oimduk0pflc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDEA/">IDEA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Intellij/">Intellij</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/debug/">debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -992,7 +992,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cil51m2tv001l2kimuauvyc3e" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cil53su54001y2oimnlxph7te" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official/">official</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
@@ -1266,7 +1266,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cil51m2tz001t2kimq284mkv2" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cil53su5900262oimojxadoah" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gtest/">Gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gtest/">gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/manual/">manual</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tutorial/">tutorial</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试/">测试</a></li></ul>
@@ -1390,7 +1390,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cil51m2u400262kim4dsavkm3" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cil53su5f002j2oim93p3xmnm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chord/">Chord</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DHT/">DHT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/P2P/">P2P</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/note/">note</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -1439,7 +1439,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cil51m2u8002g2kimmje26l4j" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cil53su5q002t2oimy0gzvbzv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/picture/">picture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/七牛/">七牛</a></li></ul>
@@ -1655,7 +1655,7 @@ res0: Long = 1000
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cil51m2ud002o2kimdxmwo5yo" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cil53su5u00312oimwdho97ya" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dockerfile/">dockerfile</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -1909,7 +1909,7 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cil51m2uh002w2kimrxjcub01" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="cil53su5x00392oimj3owcxmu" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
@@ -1936,7 +1936,7 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/multithrading/">multithrading</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translation/">translation</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java-log4j-log-pattern/">java, log4j, log pattern</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translation/">translation</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -1945,7 +1945,7 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 16.67px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/multithrading/" style="font-size: 10px;">multithrading</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/tags/theory/" style="font-size: 13.33px;">theory</a> <a href="/tags/translate/" style="font-size: 10px;">translate</a> <a href="/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 16.67px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/java-log4j-log-pattern/" style="font-size: 10px;">java, log4j, log pattern</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/tags/theory/" style="font-size: 13.33px;">theory</a> <a href="/tags/translate/" style="font-size: 10px;">translate</a> <a href="/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
     </div>
   </div>
 
@@ -1966,15 +1966,15 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
       <ul>
         
           <li>
-            <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/">Multithreading Costs</a>
-          </li>
-        
-          <li>
             <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial [Java 并发/多线程教程]</a>
           </li>
         
           <li>
             <a href="/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/">Multithreading Benefits [多线程带来的福利]</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/">Multithreading Costs [多线程所花费的代价]</a>
           </li>
         
           <li>
