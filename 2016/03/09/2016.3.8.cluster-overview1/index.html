@@ -15,7 +15,8 @@ Cluster Mode OverviewSpark集群模式概览This document gives a short overview
 <meta property="og:description" content="Descriptions: 最近正在系统学习 Spark ，本篇文章翻译自 Spark 官方指导文档 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com
 
 Cluster Mode OverviewSpark集群模式概览This document gives a short overview of how Spark runs on clusters, to make it">
-<meta property="og:updated_time" content="2016-03-09T14:34:31.658Z">
+<meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/hehe_1_%E9%9B%86%E7%BE%A4%E6%A1%86%E6%9E%B6%E6%88%AA%E5%9B%BE.png">
+<meta property="og:updated_time" content="2016-03-09T14:39:34.032Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark 部署文档-Spark 集群模式概览">
 <meta name="twitter:description" content="Descriptions: 最近正在系统学习 Spark ，本篇文章翻译自 Spark 官方指导文档 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com
@@ -101,6 +102,7 @@ Cluster Mode OverviewSpark集群模式概览This document gives a short overview
 <p>Once connected, Spark acquires executors on nodes in the cluster, which are processes that run computations and store data for your application.<br><br>一旦 Spark 与资源调度器二者相连接，Spark 便会向位于集群中的多个结点索取执行器资源。这些执行器由多个进程构成的专门用来为你的应用程序提供计算和存放数据的功能。</p>
 <p>Next, it sends your application code (defined by JAR or Python files passed to SparkContext) to the executors.<br><br>接下来你所提交的应用程序代码(被传递给 Spark 上下文对象实例的应用程序代码是以 JAR 或者是 Python 文件所存放的)会被发送给位于集群中各个结点的执行器上。</p>
 <p>Finally, SparkContext sends tasks to the exeuctors to run.<br><br>最后，Spark 上下文对象便会将任务分发给执行器来运行。</p>
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/hehe_1_%E9%9B%86%E7%BE%A4%E6%A1%86%E6%9E%B6%E6%88%AA%E5%9B%BE.png" alt=""></p>
 <h2 id="Cluster_Manager_Types"><a href="#Cluster_Manager_Types" class="headerlink" title="Cluster Manager Types"></a>Cluster Manager Types</h2><p>The system currently supports three cluster managers:</p>
 <ul>
 <li><a href="http://spark.apache.org/docs/latest/spark-standalone.html" target="_blank" rel="external">Standalone</a> - a simple cluster manager included with Spark that makes it easy to set up a cluster.<br></li>
@@ -198,7 +200,7 @@ Cluster Mode OverviewSpark集群模式概览This document gives a short overview
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/03/09/2016.3.8.cluster-overview1/" data-id="cilky19el000ms8imwyc5exdq" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/03/09/2016.3.8.cluster-overview1/" data-id="cilkyeo4k000m30im7kpkzet0" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/guides/">guides</a></li></ul>
