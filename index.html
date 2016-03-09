@@ -65,9 +65,149 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2016.2.27.java_concurrency.Multithreading Tutorial_1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016.3.8.cluster-overview1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" class="article-date">
+    <a href="/2016/03/09/2016.3.8.cluster-overview1/" class="article-date">
+  <time datetime="2016-03-08T16:00:00.000Z" itemprop="datePublished">2016-03-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/09/2016.3.8.cluster-overview1/">Spark 部署文档-Spark 集群模式概览</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Descriptions: 最近正在系统学习 Spark ，本篇文章翻译自 <a href="http://spark.apache.org/docs/latest/cluster-overview.html" target="_blank" rel="external">Spark 官方指导文档</a> 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com</p>
+<hr>
+<h1 id="Cluster_Mode_Overview"><a href="#Cluster_Mode_Overview" class="headerlink" title="Cluster Mode Overview"></a>Cluster Mode Overview</h1><h1 id="Spark_u96C6_u7FA4_u6A21_u5F0F_u6982_u89C8"><a href="#Spark_u96C6_u7FA4_u6A21_u5F0F_u6982_u89C8" class="headerlink" title="Spark集群模式概览"></a>Spark集群模式概览</h1><p>This document gives a short overview of how Spark runs on clusters, to make it easier to understand the components involved.<br><br>本文档简要介绍了 Spark 的集群运行模式，目的是为了让用户更加容易了解 Spark 中涉及到的组件。</p>
+<p>Read through the <a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">application submission guide</a> to learn about launching applications on a cluster.<br><br>用户可以通读<a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">如何向 spark 集群提交应用程序指导手册</a>来了解如何在集群上运行应用程序。</p>
+<h2 id="Components"><a href="#Components" class="headerlink" title="Components"></a>Components</h2><h2 id="Spark__u4E2D_u7684_u7EC4_u4EF6"><a href="#Spark__u4E2D_u7684_u7EC4_u4EF6" class="headerlink" title="Spark 中的组件"></a>Spark 中的组件</h2><p>Spark applications run as independent sets of processes on a cluster, coordinated by the SparkContext object in your main program(called the driver program).<br><br>Spark 应用程序以独立的进程集合运行与集群之上，并被位于主程序(这个主程序也被称作是驱动程序)中称作 Spark 上下文(SparkContext)的对象实例所协调调度。</p>
+<p>Specifically, to run on a cluster, the SparkContext can connect to several types of cluster managers(either Spark’s own standalone cluster manager, Mesos or YARN), which allocate resources across applications.<br><br>特别值得注意的是，以集群运行的 Spark 中的 SparkContext 可以连接多种类型的用于跨应用程序分配资源的集群调度器(这个调度器既可以是 Spark 自己独立的集群资源管理器，也可以是 Mesos 或是 YARN).</p>
+<p>Once connected, Spark acquires executors on nodes in the cluster, which are processes that run computations and store data for your application.<br><br>一旦 Spark 与资源调度器二者相连接，Spark 便会向位于集群中的多个结点索取执行器资源。这些执行器由多个进程构成的专门用来为你的应用程序提供计算和存放数据的功能。</p>
+<p>Next, it sends your application code (defined by JAR or Python files passed to SparkContext) to the executors.<br><br>接下来你所提交的应用程序代码(被传递给 Spark 上下文对象实例的应用程序代码是以 JAR 或者是 Python 文件所存放的)会被发送给位于集群中各个结点的执行器上。</p>
+<p>Finally, SparkContext sends tasks to the exeuctors to run.<br><br>最后，Spark 上下文对象便会将任务分发给执行器来运行。</p>
+<h2 id="Cluster_Manager_Types"><a href="#Cluster_Manager_Types" class="headerlink" title="Cluster Manager Types"></a>Cluster Manager Types</h2><p>The system currently supports three cluster managers:</p>
+<ul>
+<li><a href="http://spark.apache.org/docs/latest/spark-standalone.html" target="_blank" rel="external">Standalone</a> - a simple cluster manager included with Spark that makes it easy to set up a cluster.<br></li>
+<li><p>单机模式 - 该模式是基于 Spark 自身包含的集群资源管理器来启动 Spark 的，该资源管理器的作用便是是为了让集群易于启动。</p>
+</li>
+<li><p><a href="http://spark.apache.org/docs/latest/running-on-mesos.html" target="_blank" rel="external">Apache Mesos</a> - a general cluster manager that can also run Hadoop MapReduce and service applications.<br></p>
+</li>
+<li>基于 Apache Mesos 的集群模式 - Apache Mesos 是一种普遍被用于集群资源管理的调度器，也可以用作 Hadoop MapReduce 和其他服务应用的资源调度器。</li>
+</ul>
+<ul>
+<li><a href="http://spark.apache.org/docs/latest/running-on-yarn.html" target="_blank" rel="external">Hadoop YARN</a> - the resource manager in Hadoop 2.<br></li>
+<li>基于 Hadoop YARN 的集群模式 - Hadoop YARN 是应用于 Hadoop 2版本中的资源管理调度器。</li>
+</ul>
+<p>In addition, Spark’s <a href="http://spark.apache.org/docs/latest/ec2-scripts.html" target="_blank" rel="external">EC2 launch scripts</a> make it easy to launch a standalone cluster on Amazon EC2.<br><br>除了上述的资源调度器之外， 通过运行 Spark 中的 EC2 启动脚本也可以很容易地在 Amazon 的 EC2 服务器上以单机模式来启动 Spark 。</p>
+<h2 id="Submitting_Applications"><a href="#Submitting_Applications" class="headerlink" title="Submitting Applications"></a>Submitting Applications</h2><h2 id="u5173_u4E8E_u5982_u4F55_u5411_Spark__u4E0A_u63D0_u4EA4_u5E94_u7528"><a href="#u5173_u4E8E_u5982_u4F55_u5411_Spark__u4E0A_u63D0_u4EA4_u5E94_u7528" class="headerlink" title="关于如何向 Spark 上提交应用"></a>关于如何向 Spark 上提交应用</h2><p>Applications can be submitted to a cluster of any type using the spark-submit script.<br><br>可以使用Spark 自带的 spark-submit 脚本来将应用程序提交到上述 Spark 的任意一类集群的上。</p>
+<p>The <a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">application submission guide</a> describes how to do this.<br><br>这篇 [如何向 Spark 集群提交应用程序教程] 上详细记录了如何提交应用到 Spark 集群。</p>
+<h2 id="Monitoring"><a href="#Monitoring" class="headerlink" title="Monitoring"></a>Monitoring</h2><h2 id="u5173_u4E8E_Spark__u96C6_u7FA4_u76D1_u63A7"><a href="#u5173_u4E8E_Spark__u96C6_u7FA4_u76D1_u63A7" class="headerlink" title="关于 Spark 集群监控"></a>关于 Spark 集群监控</h2><p>Each driver program has a web UI, typically on port 4040, that displays information about running tasks, executors, and storage usage. <br><br>每个驱动程序都有其用于展示任务运行，执行器状态以及存储详细信息的 web 图形展示界面，该图形界面的访问端口号通常是 4040。</p>
+<p>Simply go to http://<driver-node>:4040 in a web browser to access this UI. The <a href="http://spark.apache.org/docs/latest/monitoring.html" target="_blank" rel="external">monitoring guide</a> also describes other monitoring options.<br><br>(你只要)简单地在浏览器中输入这个网址 http://<driver-node>:4040 Spark 的图形用户界面就展示在你眼前了。</driver-node></driver-node></p>
+<p>The <a href="http://spark.apache.org/docs/latest/monitoring.html" target="_blank" rel="external">monitoring guide</a> also describes other monitoring options.<br><br><a href="/">Spark 集群监控教程</a>这一文档中同样也介绍了其他用于 Spark 集群监控的选项。</p>
+<h2 id="Job_Scheduling"><a href="#Job_Scheduling" class="headerlink" title="Job Scheduling"></a>Job Scheduling</h2><h2 id="u4F5C_u4E1A_u8C03_u5EA6"><a href="#u4F5C_u4E1A_u8C03_u5EA6" class="headerlink" title="作业调度"></a>作业调度</h2><p>Spark gives control over resource allocation both across applications(at the level of the cluster manager) and within applications(if multiple computations are happening on the same SparkContext). <br><br>Spark 同时在跨应用程序和在应用程序中充当着掌控资源分配的角色，在跨程序资源分配中 Spark 是作为集群管理者来进行资源分配，而当 SparkContext 中同时执行多个计算时 Spark 会在应用程序内进行资源分配。</p>
+<p>The <a href="http://spark.apache.org/docs/latest/job-scheduling.html" target="_blank" rel="external">job scheduling overview</a> describes this in more detail.<br><br>在<a href="http://spark.apache.org/docs/latest/job-scheduling.html" target="_blank" rel="external">作业调度概览</a>一文中对此进行了详细的介绍。</p>
+<h2 id="Glossary"><a href="#Glossary" class="headerlink" title="Glossary"></a>Glossary</h2><h2 id="Spark__u96C6_u7FA4_u672F_u8BED_u5217_u8868"><a href="#Spark__u96C6_u7FA4_u672F_u8BED_u5217_u8868" class="headerlink" title="Spark 集群术语列表"></a>Spark 集群术语列表</h2><p>The following table summarizes terms you’ll see used to refer to cluster concepts:<br><br>下面表格总结了 Spark 集群中常用到的概念术语:</p>
+<p>术语/解释</p>
+<ul>
+<li><b>Application</b></li>
+<li>应用程序</li>
+<li>Using program built on Spark. Consists of a driver program and executors on the cluster.<br></li>
+<li>运行在 Spark 平台上的程序。(这种程序通常是)由集群上的一个驱动(程序)和多个执行器(程序)所组成的。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Application jar</b></li>
+<li>jar 文件格式的应用程序</li>
+<li>A jar containing the user’s Spark application. In some cases users will want to create an “uber jar” containing their application along with its dependencies. The user’s jar should never include Hadoop or Spark libraries, however, these will be added at runtime.</li>
+<li>所谓的 jar 应用程序指的是将用户自己编写的 Spark 代码打包成 jar 应用程序。在某些场合用户会将应用程序和其所依赖的文件打包成一个 “uber jar” 类型文件。 但是值得注意的是，用户是万万不可在生成应用 jar 文件时将应用程序中所依赖的 Hadoop 或是Spark 库文件一并加载到其中的。应用程序中所使用的Hadoop 和 Spark 库会在应用程序的运行期由 Spark 集群平台来提供。</li>
+</ul>
+<hr>
+<ul>
+<li><b> Driver program </b></li>
+<li>驱动程序</li>
+<li>The process running the main() function of the application and creating the SparkContext</li>
+<li>驱动程序指的是代码中包含程序入口函数 main() 方法同时在代码中创建 SparkContext 对象的程序。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Cluster manager</b></li>
+<li>集群调度器/其实叫做集群管理器也行啦~</li>
+<li>An external service for acquiring resources on the cluster( e.g. standalone manager, Mesos, YARN)</li>
+<li>用于在集群中获取资源的(不属于集群的)外部服务程序(就像是 Spark 单机结点启动的资源管理器，或是第三方像 Mesos ， YARN 这样的资源调度框架)</li>
+</ul>
+<hr>
+<ul>
+<li><b>Deploy mode</b></li>
+<li>(Spark的)部署模式</li>
+<li>Distinguishes where the driver process runs. In “cluster” mode, the framework launches the driver inside of the cluster. In “client” mode, the submitter lanuches the driver of the cluster.</li>
+<li>集群的部署模式这一术语是用来区分驱动程序在何处运行的。如果是以”集群”模式运行的，指的是 Spark 这个计算框架在<b>集群中来</b>调用驱动程序的。 如果是以”客户端”模式运行，那便是 Spark 中的 submitter/任务提交者在<b>集群之外</b>调用驱动程序来启动的。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Worker node </b></li>
+<li>工作结点</li>
+<li>Any node that can run application code in the cluster.</li>
+<li>在集群中只要能跑应用程序代码的结点都叫做工作结点</li>
+</ul>
+<hr>
+<ul>
+<li><b>Executor </b></li>
+<li>执行器</li>
+<li>A process launched for an application on a worker node, that runs tasks and keeps data in memory or disk storage across them. Each application has its own executors.</li>
+<li>在用于运行任务并在内存或是磁盘上保存数据的工作结点上为执行应用程序而启动进程便可以称它是执行器。每个应用都有其自己的一组执行器。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Task</b></li>
+<li>任务</li>
+<li>A unit of work that will be sent to one executor.</li>
+<li>任务指的是将会被发送给一个执行器的一系列工作。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Job</b></li>
+<li>作业</li>
+<li>A parallel computation consisting of multiple tasks that gets spawned in response to a Spark action(e.g. save, collect); you’ll see this term used in the driver’s logs.</li>
+<li>作业指的是由多个任务所构成的并行计算操作。 这些任务从 Spark 所响应的操作(例如存储，收集数据)中获取执行结果；作业在驱动程序所打印的日志文件中是比较常见的术语。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Stage</b></li>
+<li>阶段</li>
+<li>Each job gets divided into smaller sets of tasks called stages that depend on each other(similar to the map and reduce stages in MapReduce); you’ll see this term used in the driver’s logs.</li>
+<li>每份作业在被执行的时候都会被分割成由更小粒度的任务构成的集合。而该任务又被称作是’阶段’，而这些多个阶段彼此间是相互依赖的(就和 MapReduce 中的 map阶段和reduce阶段类似)；’阶段’这一术语在驱动程序打印的日志中比较常见。</li>
+</ul>
+<p>end</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/03/09/2016.3.8.cluster-overview1/" data-id="cilky19el000ms8imwyc5exdq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/guides/">guides</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016.2.27.java_multithreading_costs3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/" class="article-date">
   <time datetime="2016-02-26T16:00:00.000Z" itemprop="datePublished">2016-02-27</time>
 </a>
     
@@ -79,7 +219,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial [Java 并发/多线程教程]</a>
+      <a class="article-title" href="/2016/02/27/2016.2.27.java_multithreading_costs3/">Multithreading Costs [多线程所花费的代价]</a>
     </h1>
   
 
@@ -87,43 +227,35 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Description:<br>java 并发文档翻译，文章链接地址<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
+        <p>Descriptions:<br>java 并发文档翻译，文章链接地址 <a href="http://tutorials.jenkov.com/java-concurrency/costs.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/costs.html</a></p>
 <hr>
-<p><br>Back in the old days a computer had a single CPU, and was only capable of executing a single program at a time.<br><br>回退到旧时光，那时的计算机只有单核并且每次只能够运行一段程序。<br><br><br>Later came multitasking which meant that computers could execute multiple programs(AKA tasks or processes) at the same time.<br><br>不久之后多任务计算机登场，多任务计算机指的是那些可以同时运行多段程序(也可以叫做多任务或多进程)的计算机。<br><br><br>It wasn’t really “at the same time” though.<br><br>事实上这些任务并非是在同一时间段”并发的”。<br><br><br>The single CPU was shared between the programs.<br><br>计算机单核的处理器资源是以共享的方式在多个程序之间被调用。<br><br><br>The operating system would switch between the programs running, executing each of them for a little while before switching.<br><br>操作系统也是在多个”同时”执行的程序间来回进行切换，在从一个程序切换到另一个程序的过程中依次执行每段程序中的一小段。<br><br></p>
-
-<p><br>Along with multitasking came new challenges for software developers.<br><br>随着多任务计算机时代的来临，软件开发人员也面临着新的跳帧。<br><br><br>Programers can no longer assume to have all the CPU time available, nor all memory or any other computer resources.<br><br>程序员再也不能确保随时都能够访问计算机的 CPU ，内存乃至其他计算机的资源了。<br><br><br>A “good citizen” program should release all resources it is no longer using, so other programs can use them.<br><br>对于一段”模范”程序来说，应该将对它无用的资源全部释放掉，以确保这些资源可被其他程序所调用。<br><br></p>
-
-<p><br>Later yet came multithread which mean that you could have multiple thread of execution inside the same program.<br>接下来到来的便是多线程的时代，就是在同一段程序中允许你能同时运行多个线程。<br><br><br>A thread of execution can be thought of as a CPU executing the program. <br><br>由一个线程所运行的程序可被等价地看做是由一个 CPU 所执行的程序。<br><br><br>When you have multiple threads executing the same program, it is like having multiple CPUs execute within the same program.<br><br>多个线程运行同一段程序，便可以将其比作是多个 CPU 在同一段程序中运行。<br><br></p>
-
-<p><br>Multithreading can be a great way to increase the performance of some types of programs.<br><br>多线程这种技术可以极大程度上来提高某种类型程序的效率。<br><br><br>However, multithreading is even more challenging than multitasking. <br><br>然而，多线程编程要远比多任务编程面临更多的挑战。<br><br><br>The threads are executing within the same program and are hence reading and writing the same memory simultanously.<br><br>由于程序允许多个线程运行在其中，因此这些线程便有可能在同一时间点上的读写相同的内存空间。<br><br><br>This can result in errors not seen in a singlethread program.<br><br>上述的这种操作可能引发在单线程运行的程序中遇不到的错误的发生。<br><br><br>Some of these errors may not be seen on single CPU machines, because two threads never really execute “simultanously”.<br><br>在引发的错误中有些错误在单核计算机上可能不会遇到，因为运行于单核计算机上的两个线程并不是真正意义上的并发。<br><br><br>Modern computers, though, come with multicore CPUs, and even with multiple CPUs too. This means that separate threads can be executed by separate cores or CPUs simultaneously.<br><br>如今的现代计算机都是多核甚至多 CPU 的。 这就意味着可以将线程以 CPU 的核或是 CPU 为单位来实现并发计算。<br><br><br></p>
-
-<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/thread1_2345%E6%88%AA%E5%9B%BE20160227111114.png" alt=""></p>
-<p><br>If a thread reads a memory location while another thread writes to it, what value will the first thread end up reading ? <br><br>(设想一下这个场景)如果一个线程在读取一个内存单元空间的时候恰好另一个线程在对这块内存空间执行写入操作的话，第一个线程在执行读操作之后它将获得的数值是什么？ <br><br><br>The old value ? <br><br>是内存空间中原先的那个数值？<br><br><br>The value written by the second thread ? <br><br>还是另一个线程刚刚写入的数值？<br><br><br>Or a value that is mix between the two ? <br><br>还是新旧混合的数值？<br><br><br>Or, if two threads are writing to be the same memory location simultanously, what value will be left when they are done ? <br><br>又或是，如果两个线程同时向同一块内存空间中执行写入操作的话，当这两个线程执行写操作结束的时候，所写入的内存空间中将会是那个数值？<br><br><br>The value written by the first thread ?<br><br>是第一个线程写入的数值？<br><br><br>The value written by the second thread ? <br><br>还是第二个线程刚刚写入的数值？<br><br><br>Or a mix of the two values written?<br><br>亦或是两个线程写入数值的混合值？<br><br></p>
-
-
-<p><br>Without proper precautions any of these outcomes are possible.<br><br>如果没有适当的提前声明(约定)的话上述的任何一种情况都是有可能发生的。<br><br><br>The behavior would not even be predicable.<br><br>执行操作的方式甚至都有可能是不可预知的。<br><br><br>The outcome could change from time to time.<br><br>也有可能每次运行都会得到不同的结果。<br><br><br>Therefore it is important as a developer to know how to take the right precautions - meaning learning to control how threads access shared resources like memory, files, databases etc.<br><br>因此对于一个开发人员来说认识到如何(根据不同的情景/场合)来做出正确的预防措施 - 也就是说他应该清楚如何控制线程来(安全地)访问一些像是内存，文件，数据库等等诸如此类的共享资源 是十分重要的。<br><br><br>That is one of the topics this java concurrency tutorial addresses.<br><br>而(如何在多线程并发的情况下安全地访问共享资源)这便是这篇’java 并发教程’所要向您重点讲述的内容。<br><br></p>
-
-<h2 id="Multithreading_and_Concurrency_in_Java"><a href="#Multithreading_and_Concurrency_in_Java" class="headerlink" title="Multithreading and Concurrency in Java"></a>Multithreading and Concurrency in Java</h2><h2 id="Java__u4E2D_u7684_u591A_u7EBF_u7A0B_u4E0E_u5E76_u53D1"><a href="#Java__u4E2D_u7684_u591A_u7EBF_u7A0B_u4E0E_u5E76_u53D1" class="headerlink" title="Java 中的多线程与并发"></a>Java 中的多线程与并发</h2><p><br>Java was one of the first languages to make multithreading easily available to developers. <br><br>Java 是第一批实现将多线程功能对开发者而言简单易用的开发语言中的一种。<br><br><br>Java had multithreading capabilities from the very beginging. <br><br>Java 这种开发语言在被创造之处就支持多线程编程这种技术。<br><br><br>Therefore, Java developers often face the problems described above. <br><br>这也是为何 Java 的开发人员经常会在开发中遇到上描述的众多问题。<br><br><br>That is the reason I am writing this trail on Java concurrency.<br><br>而这也正是为何我要编写以 Java 并行技术为主题的这一系列文档。<br><br><br>As notes to myself, and any fellow Java developer whom may benifit from it.<br><br>而这一系列文章也将作为我自己的学习笔记，同时希望可以让其他的 Java 开发人员从中受益。<br><br></p>
-
-<p><br>The trail will primarily be concerned with multithreading in Java, but some of the problems occuring in multithreading are similar to problems occuring in multitasking and in distributed systems. <br><br><br>这篇专栏主要关注 Java 开发中的多线程技术，除此之外其实在多任务系统和分布式系统中也会遇到与多线程相似的问题这也是我们讨论的重点。<br><br><br>References to multitasking and distributed systems may therefore occur in this trail too.<br><br>考虑到多任务和分布式系统中的相关知识也会在本文中有所提及。 <br><br><br>Hence the word “concurrency” rather “multithreading”.<br><br>所以在这里我们将这一系列的文章以’并发’而不是’多线程’来进行命名。<br><br></p>
-
-
-<h2 id="2015__u5E74_u4E4B_u540E_u548C_2015__u5E74_u4E4B_u524D_u7684_Java__u5E76_u53D1_u6280_u672F"><a href="#2015__u5E74_u4E4B_u540E_u548C_2015__u5E74_u4E4B_u524D_u7684_Java__u5E76_u53D1_u6280_u672F" class="headerlink" title="2015 年之后和 2015 年之前的 Java 并发技术"></a>2015 年之后和 2015 年之前的 Java 并发技术</h2><p><br>A lot has happened in the world of concurrent architecture and design since the first Java concurrency books were written, and even since the Java 5 concurrency utilities were released.<br><br>自从第一版关于 Java 并发的书籍问世以及 Java 5 中的并发包被发布之后，并发架构的世界中已经发生了很大的变动。<br><br></p>
-
-<p><br>New, asynchronous “shared-nothing” platforms and APIs like Vert.x and Play/Akka and Qbit have emerged.<br><br>新的一种，异步的 “无需共享任何资源” 的平台和API 像是 Vert.x , Play/Akka 和 Qbit 这样的框架相继涌现。<br><br><br>These platforms use a different concurrency model than the standard Java/JEE concurrency model of threading, shared memory and locking. <br><br>这种平台相比于标准的 Java/JEE 使用共享内存和所的线程并发模式，采用了完全不同的并发模式。<br><br><br>New non-blocking concurrency algorithms have been published, and new non-blocking tools like the LMax Disrupter have been added to our toolkits. <br><br>新式的无阻塞并发算法被推出，同时新型的无阻塞开发工具显示 LMax Disrupter 被键入到我们的开发平台工具中。<br><br><br>New functional programming parallelism has been introduced with the Fork and Join framework in Java7, and the collection streams API in Java8.<br><br>基于函数式并发新的编程方法被引入到 Java7 中，同时在 Java8 中对集合流的相关 API 予以支持。<br><br></p>
-
-<p><br>With all these new developments it is about time that I updated this Java Concurrency tutorial. <br><br>Java 开发中发生了如此之多的变化，所以这也是我该更新 Java 并发教程手册的时候了。<br><br><br>Therefore, this tutorial is once again work in progress. <br><br>这篇 Java 并发教程会一如既往地以不断更新的方式来发布。<br><br><br>New tutorials will be published whenever time is available to write them.<br><br>只要我一有时间便会向文章集中添加新的教程文章。<br><br></p>
-
-<p><a href="/">下一篇文章</a></p>
-<p>end</p>
+<p>Going from a singlethreaded to a multithreaded application doesn’t just provide benifits.<br>将单线程程序修改成多线程好处是有的，但同时也会带来其他方面的损失。</p>
+<p>It also has some costs. Don’t just multithread-enable an application just because you can.<br>使用多线程需要为之付出相应的代价。 不要仅仅因为你会多线程便去在编程中使用这种技术。</p>
+<p>You should have a good idea that the benefits gained by doing so, are larger than the cost.<br>在使用之前你应该明确的知道相比于应用多线程所花费的代价，你能够获得更大的收益(的时候再来决定将多线程加入到你的程序中)。</p>
+<p>When in doubt, try measuring the performance or responsiveness of the application, instead of just guessing.<br>如果你不能很好的做出决断，那么试着权衡一下程序的性能或是响应能力在使用多线程技术前后有何变化，而不是仅仅通过猜测的方式来决定是否使用(多线程)。</p>
+<h2 id="More_complex_design"><a href="#More_complex_design" class="headerlink" title="More complex design"></a>More complex design</h2><h2 id="u8BBE_u8BA1_u66F4_u52A0_u590D_u6742"><a href="#u8BBE_u8BA1_u66F4_u52A0_u590D_u6742" class="headerlink" title="设计更加复杂"></a>设计更加复杂</h2><p>Though some parts of a multithreaded applications is simpler than a singlethreaded application, other parts are more complex.<br>虽然多线程应用程序在某些地方的实现要比单线程应用程序要简单的多，但是其他地方的设计要远比单线程设计复杂得多。</p>
+<p>Code executed by multiple threads accessing shared data need special attention.<br>被多线程执行的访问共享数据的代码端需要给予高度重视。</p>
+<p>Thread interaction is far from always simple.<br>线程之间的交互要远比想象的复杂。</p>
+<p>Errors arising from incorrect thread synchronization can be very hard to detect, reproduce and fix.<br>线程同步操作所引发的错误很难被探知，重现或是修复。</p>
+<h2 id="Context_Switching_Overhead"><a href="#Context_Switching_Overhead" class="headerlink" title="Context Switching Overhead"></a>Context Switching Overhead</h2><h2 id="u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362"><a href="#u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362" class="headerlink" title="过渡上下文切换"></a>过渡上下文切换</h2><p>When a CPU switches from executing one thread to executing another, the CPU needs to save the local data, program pointer etc. of the current thread, and load the local data, program pointer etc. of the next thread to execute.<br>当 CPU 从一个正在执行的线程切换去执行另一个线程的时候，这个 CPU 需要存放当前线程的本地数据,程序指针等信息; 然后加载另一个将要执行的线程中的本地数据，程序指针等信息。</p>
+<p>This switch is called a “context switch”.<br>上面所描述的切换就叫做 “上下文切换”。</p>
+<p>The CPU switches from executing in the context of one thread to executing in the context of another.<br>对于 CPU 来说，它从正在运行线程的上下文中切换到另一个即将运行的线程的上下文中。</p>
+<p>Context switching isn’t cheap.<br>上下文切换的花费高昂。</p>
+<p>You don’t want to switch between threads more than necessary.<br>所以不到万不得已，我认为你是不会在两个线程之间进行上下文切换的。</p>
+<p>You can read more about context switching on Wikipedia:<br>你可以通过查阅维基百科来获取更多关于上下文切换相关的知识:</p>
+<p><a href="http://en.wikipedia.org/wiki/Context_switch" target="_blank" rel="external">http://en.wikipedia.org/wiki/Context_switch</a></p>
+<h2 id="Increased_Resource_Consumption"><a href="#Increased_Resource_Consumption" class="headerlink" title="Increased Resource Consumption"></a>Increased Resource Consumption</h2><h2 id="u589E_u52A0_u8D44_u6E90_u6D88_u8017"><a href="#u589E_u52A0_u8D44_u6E90_u6D88_u8017" class="headerlink" title="增加资源消耗"></a>增加资源消耗</h2><p>A thread needs some resources from computer in order to run.<br>一个线程需要从计算机中获取相应资源以便于能够运行起来。</p>
+<p>Besides CPU time a thread needs some memory to keep its local stack.<br>除此之外，线程在获取到 CPU 资源之后需要额外的内存空间来存放它的本地栈。</p>
+<p>It may also take up some resources inside the operating system needed to manage the thread.<br>线程或许也会在用来管理线程的操作系统内部占据一些资源。</p>
+<p>Try creating a program that creates 100 thread that does nothing but wait, and see how much memory the application takes when running.<br>(你可以)试着创建一个包含100个不做任何事情且仅处于等待状态的线程的程序，然后观察一下该程序运行起来的时候它总共消耗多少内存。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="ciliqh1r8001bqwim1hz9ydcn" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_multithreading_costs3/" data-id="cilky19fw001es8im6i6y0jvx" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translate/">translate</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
 
     </footer>
   </div>
@@ -246,7 +378,7 @@ while ( server is active){
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/" data-id="ciliqh1qr000mqwim81yy243h" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/" data-id="cilky19ew000ts8imwp7aaoah" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
@@ -258,9 +390,9 @@ while ( server is active){
 
 
   
-    <article id="post-2016.2.27.java_multithreading_costs3" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2016.2.27.java_concurrency.Multithreading Tutorial_1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/" class="article-date">
+    <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" class="article-date">
   <time datetime="2016-02-26T16:00:00.000Z" itemprop="datePublished">2016-02-27</time>
 </a>
     
@@ -272,7 +404,7 @@ while ( server is active){
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/27/2016.2.27.java_multithreading_costs3/">Multithreading Costs [多线程所花费的代价]</a>
+      <a class="article-title" href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial [Java 并发/多线程教程]</a>
     </h1>
   
 
@@ -280,35 +412,43 @@ while ( server is active){
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Descriptions:<br>java 并发文档翻译，文章链接地址 <a href="http://tutorials.jenkov.com/java-concurrency/costs.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/costs.html</a></p>
+        <p>Description:<br>java 并发文档翻译，文章链接地址<a href="http://tutorials.jenkov.com/java-concurrency/index.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/index.html</a></p>
 <hr>
-<p>Going from a singlethreaded to a multithreaded application doesn’t just provide benifits.<br>将单线程程序修改成多线程好处是有的，但同时也会带来其他方面的损失。</p>
-<p>It also has some costs. Don’t just multithread-enable an application just because you can.<br>使用多线程需要为之付出相应的代价。 不要仅仅因为你会多线程便去在编程中使用这种技术。</p>
-<p>You should have a good idea that the benefits gained by doing so, are larger than the cost.<br>在使用之前你应该明确的知道相比于应用多线程所花费的代价，你能够获得更大的收益(的时候再来决定将多线程加入到你的程序中)。</p>
-<p>When in doubt, try measuring the performance or responsiveness of the application, instead of just guessing.<br>如果你不能很好的做出决断，那么试着权衡一下程序的性能或是响应能力在使用多线程技术前后有何变化，而不是仅仅通过猜测的方式来决定是否使用(多线程)。</p>
-<h2 id="More_complex_design"><a href="#More_complex_design" class="headerlink" title="More complex design"></a>More complex design</h2><h2 id="u8BBE_u8BA1_u66F4_u52A0_u590D_u6742"><a href="#u8BBE_u8BA1_u66F4_u52A0_u590D_u6742" class="headerlink" title="设计更加复杂"></a>设计更加复杂</h2><p>Though some parts of a multithreaded applications is simpler than a singlethreaded application, other parts are more complex.<br>虽然多线程应用程序在某些地方的实现要比单线程应用程序要简单的多，但是其他地方的设计要远比单线程设计复杂得多。</p>
-<p>Code executed by multiple threads accessing shared data need special attention.<br>被多线程执行的访问共享数据的代码端需要给予高度重视。</p>
-<p>Thread interaction is far from always simple.<br>线程之间的交互要远比想象的复杂。</p>
-<p>Errors arising from incorrect thread synchronization can be very hard to detect, reproduce and fix.<br>线程同步操作所引发的错误很难被探知，重现或是修复。</p>
-<h2 id="Context_Switching_Overhead"><a href="#Context_Switching_Overhead" class="headerlink" title="Context Switching Overhead"></a>Context Switching Overhead</h2><h2 id="u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362"><a href="#u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362" class="headerlink" title="过渡上下文切换"></a>过渡上下文切换</h2><p>When a CPU switches from executing one thread to executing another, the CPU needs to save the local data, program pointer etc. of the current thread, and load the local data, program pointer etc. of the next thread to execute.<br>当 CPU 从一个正在执行的线程切换去执行另一个线程的时候，这个 CPU 需要存放当前线程的本地数据,程序指针等信息; 然后加载另一个将要执行的线程中的本地数据，程序指针等信息。</p>
-<p>This switch is called a “context switch”.<br>上面所描述的切换就叫做 “上下文切换”。</p>
-<p>The CPU switches from executing in the context of one thread to executing in the context of another.<br>对于 CPU 来说，它从正在运行线程的上下文中切换到另一个即将运行的线程的上下文中。</p>
-<p>Context switching isn’t cheap.<br>上下文切换的花费高昂。</p>
-<p>You don’t want to switch between threads more than necessary.<br>所以不到万不得已，我认为你是不会在两个线程之间进行上下文切换的。</p>
-<p>You can read more about context switching on Wikipedia:<br>你可以通过查阅维基百科来获取更多关于上下文切换相关的知识:</p>
-<p><a href="http://en.wikipedia.org/wiki/Context_switch" target="_blank" rel="external">http://en.wikipedia.org/wiki/Context_switch</a></p>
-<h2 id="Increased_Resource_Consumption"><a href="#Increased_Resource_Consumption" class="headerlink" title="Increased Resource Consumption"></a>Increased Resource Consumption</h2><h2 id="u589E_u52A0_u8D44_u6E90_u6D88_u8017"><a href="#u589E_u52A0_u8D44_u6E90_u6D88_u8017" class="headerlink" title="增加资源消耗"></a>增加资源消耗</h2><p>A thread needs some resources from computer in order to run.<br>一个线程需要从计算机中获取相应资源以便于能够运行起来。</p>
-<p>Besides CPU time a thread needs some memory to keep its local stack.<br>除此之外，线程在获取到 CPU 资源之后需要额外的内存空间来存放它的本地栈。</p>
-<p>It may also take up some resources inside the operating system needed to manage the thread.<br>线程或许也会在用来管理线程的操作系统内部占据一些资源。</p>
-<p>Try creating a program that creates 100 thread that does nothing but wait, and see how much memory the application takes when running.<br>(你可以)试着创建一个包含100个不做任何事情且仅处于等待状态的线程的程序，然后观察一下该程序运行起来的时候它总共消耗多少内存。</p>
+<p><br>Back in the old days a computer had a single CPU, and was only capable of executing a single program at a time.<br><br>回退到旧时光，那时的计算机只有单核并且每次只能够运行一段程序。<br><br><br>Later came multitasking which meant that computers could execute multiple programs(AKA tasks or processes) at the same time.<br><br>不久之后多任务计算机登场，多任务计算机指的是那些可以同时运行多段程序(也可以叫做多任务或多进程)的计算机。<br><br><br>It wasn’t really “at the same time” though.<br><br>事实上这些任务并非是在同一时间段”并发的”。<br><br><br>The single CPU was shared between the programs.<br><br>计算机单核的处理器资源是以共享的方式在多个程序之间被调用。<br><br><br>The operating system would switch between the programs running, executing each of them for a little while before switching.<br><br>操作系统也是在多个”同时”执行的程序间来回进行切换，在从一个程序切换到另一个程序的过程中依次执行每段程序中的一小段。<br><br></p>
+
+<p><br>Along with multitasking came new challenges for software developers.<br><br>随着多任务计算机时代的来临，软件开发人员也面临着新的跳帧。<br><br><br>Programers can no longer assume to have all the CPU time available, nor all memory or any other computer resources.<br><br>程序员再也不能确保随时都能够访问计算机的 CPU ，内存乃至其他计算机的资源了。<br><br><br>A “good citizen” program should release all resources it is no longer using, so other programs can use them.<br><br>对于一段”模范”程序来说，应该将对它无用的资源全部释放掉，以确保这些资源可被其他程序所调用。<br><br></p>
+
+<p><br>Later yet came multithread which mean that you could have multiple thread of execution inside the same program.<br>接下来到来的便是多线程的时代，就是在同一段程序中允许你能同时运行多个线程。<br><br><br>A thread of execution can be thought of as a CPU executing the program. <br><br>由一个线程所运行的程序可被等价地看做是由一个 CPU 所执行的程序。<br><br><br>When you have multiple threads executing the same program, it is like having multiple CPUs execute within the same program.<br><br>多个线程运行同一段程序，便可以将其比作是多个 CPU 在同一段程序中运行。<br><br></p>
+
+<p><br>Multithreading can be a great way to increase the performance of some types of programs.<br><br>多线程这种技术可以极大程度上来提高某种类型程序的效率。<br><br><br>However, multithreading is even more challenging than multitasking. <br><br>然而，多线程编程要远比多任务编程面临更多的挑战。<br><br><br>The threads are executing within the same program and are hence reading and writing the same memory simultanously.<br><br>由于程序允许多个线程运行在其中，因此这些线程便有可能在同一时间点上的读写相同的内存空间。<br><br><br>This can result in errors not seen in a singlethread program.<br><br>上述的这种操作可能引发在单线程运行的程序中遇不到的错误的发生。<br><br><br>Some of these errors may not be seen on single CPU machines, because two threads never really execute “simultanously”.<br><br>在引发的错误中有些错误在单核计算机上可能不会遇到，因为运行于单核计算机上的两个线程并不是真正意义上的并发。<br><br><br>Modern computers, though, come with multicore CPUs, and even with multiple CPUs too. This means that separate threads can be executed by separate cores or CPUs simultaneously.<br><br>如今的现代计算机都是多核甚至多 CPU 的。 这就意味着可以将线程以 CPU 的核或是 CPU 为单位来实现并发计算。<br><br><br></p>
+
+<p><img src="http://7xqz39.com1.z0.glb.clouddn.com/thread1_2345%E6%88%AA%E5%9B%BE20160227111114.png" alt=""></p>
+<p><br>If a thread reads a memory location while another thread writes to it, what value will the first thread end up reading ? <br><br>(设想一下这个场景)如果一个线程在读取一个内存单元空间的时候恰好另一个线程在对这块内存空间执行写入操作的话，第一个线程在执行读操作之后它将获得的数值是什么？ <br><br><br>The old value ? <br><br>是内存空间中原先的那个数值？<br><br><br>The value written by the second thread ? <br><br>还是另一个线程刚刚写入的数值？<br><br><br>Or a value that is mix between the two ? <br><br>还是新旧混合的数值？<br><br><br>Or, if two threads are writing to be the same memory location simultanously, what value will be left when they are done ? <br><br>又或是，如果两个线程同时向同一块内存空间中执行写入操作的话，当这两个线程执行写操作结束的时候，所写入的内存空间中将会是那个数值？<br><br><br>The value written by the first thread ?<br><br>是第一个线程写入的数值？<br><br><br>The value written by the second thread ? <br><br>还是第二个线程刚刚写入的数值？<br><br><br>Or a mix of the two values written?<br><br>亦或是两个线程写入数值的混合值？<br><br></p>
+
+
+<p><br>Without proper precautions any of these outcomes are possible.<br><br>如果没有适当的提前声明(约定)的话上述的任何一种情况都是有可能发生的。<br><br><br>The behavior would not even be predicable.<br><br>执行操作的方式甚至都有可能是不可预知的。<br><br><br>The outcome could change from time to time.<br><br>也有可能每次运行都会得到不同的结果。<br><br><br>Therefore it is important as a developer to know how to take the right precautions - meaning learning to control how threads access shared resources like memory, files, databases etc.<br><br>因此对于一个开发人员来说认识到如何(根据不同的情景/场合)来做出正确的预防措施 - 也就是说他应该清楚如何控制线程来(安全地)访问一些像是内存，文件，数据库等等诸如此类的共享资源 是十分重要的。<br><br><br>That is one of the topics this java concurrency tutorial addresses.<br><br>而(如何在多线程并发的情况下安全地访问共享资源)这便是这篇’java 并发教程’所要向您重点讲述的内容。<br><br></p>
+
+<h2 id="Multithreading_and_Concurrency_in_Java"><a href="#Multithreading_and_Concurrency_in_Java" class="headerlink" title="Multithreading and Concurrency in Java"></a>Multithreading and Concurrency in Java</h2><h2 id="Java__u4E2D_u7684_u591A_u7EBF_u7A0B_u4E0E_u5E76_u53D1"><a href="#Java__u4E2D_u7684_u591A_u7EBF_u7A0B_u4E0E_u5E76_u53D1" class="headerlink" title="Java 中的多线程与并发"></a>Java 中的多线程与并发</h2><p><br>Java was one of the first languages to make multithreading easily available to developers. <br><br>Java 是第一批实现将多线程功能对开发者而言简单易用的开发语言中的一种。<br><br><br>Java had multithreading capabilities from the very beginging. <br><br>Java 这种开发语言在被创造之处就支持多线程编程这种技术。<br><br><br>Therefore, Java developers often face the problems described above. <br><br>这也是为何 Java 的开发人员经常会在开发中遇到上描述的众多问题。<br><br><br>That is the reason I am writing this trail on Java concurrency.<br><br>而这也正是为何我要编写以 Java 并行技术为主题的这一系列文档。<br><br><br>As notes to myself, and any fellow Java developer whom may benifit from it.<br><br>而这一系列文章也将作为我自己的学习笔记，同时希望可以让其他的 Java 开发人员从中受益。<br><br></p>
+
+<p><br>The trail will primarily be concerned with multithreading in Java, but some of the problems occuring in multithreading are similar to problems occuring in multitasking and in distributed systems. <br><br><br>这篇专栏主要关注 Java 开发中的多线程技术，除此之外其实在多任务系统和分布式系统中也会遇到与多线程相似的问题这也是我们讨论的重点。<br><br><br>References to multitasking and distributed systems may therefore occur in this trail too.<br><br>考虑到多任务和分布式系统中的相关知识也会在本文中有所提及。 <br><br><br>Hence the word “concurrency” rather “multithreading”.<br><br>所以在这里我们将这一系列的文章以’并发’而不是’多线程’来进行命名。<br><br></p>
+
+
+<h2 id="2015__u5E74_u4E4B_u540E_u548C_2015__u5E74_u4E4B_u524D_u7684_Java__u5E76_u53D1_u6280_u672F"><a href="#2015__u5E74_u4E4B_u540E_u548C_2015__u5E74_u4E4B_u524D_u7684_Java__u5E76_u53D1_u6280_u672F" class="headerlink" title="2015 年之后和 2015 年之前的 Java 并发技术"></a>2015 年之后和 2015 年之前的 Java 并发技术</h2><p><br>A lot has happened in the world of concurrent architecture and design since the first Java concurrency books were written, and even since the Java 5 concurrency utilities were released.<br><br>自从第一版关于 Java 并发的书籍问世以及 Java 5 中的并发包被发布之后，并发架构的世界中已经发生了很大的变动。<br><br></p>
+
+<p><br>New, asynchronous “shared-nothing” platforms and APIs like Vert.x and Play/Akka and Qbit have emerged.<br><br>新的一种，异步的 “无需共享任何资源” 的平台和API 像是 Vert.x , Play/Akka 和 Qbit 这样的框架相继涌现。<br><br><br>These platforms use a different concurrency model than the standard Java/JEE concurrency model of threading, shared memory and locking. <br><br>这种平台相比于标准的 Java/JEE 使用共享内存和所的线程并发模式，采用了完全不同的并发模式。<br><br><br>New non-blocking concurrency algorithms have been published, and new non-blocking tools like the LMax Disrupter have been added to our toolkits. <br><br>新式的无阻塞并发算法被推出，同时新型的无阻塞开发工具显示 LMax Disrupter 被键入到我们的开发平台工具中。<br><br><br>New functional programming parallelism has been introduced with the Fork and Join framework in Java7, and the collection streams API in Java8.<br><br>基于函数式并发新的编程方法被引入到 Java7 中，同时在 Java8 中对集合流的相关 API 予以支持。<br><br></p>
+
+<p><br>With all these new developments it is about time that I updated this Java Concurrency tutorial. <br><br>Java 开发中发生了如此之多的变化，所以这也是我该更新 Java 并发教程手册的时候了。<br><br><br>Therefore, this tutorial is once again work in progress. <br><br>这篇 Java 并发教程会一如既往地以不断更新的方式来发布。<br><br><br>New tutorials will be published whenever time is available to write them.<br><br>只要我一有时间便会向文章集中添加新的教程文章。<br><br></p>
+
+<p><a href="/">下一篇文章</a></p>
+<p>end</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_multithreading_costs3/" data-id="ciliqh1r50017qwim6jc04ea5" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="cilky19fz001is8imch4612n5" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translate/">translate</a></li></ul>
 
     </footer>
   </div>
@@ -944,7 +1084,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="ciliqh1rb001gqwim3j70ac9i" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cilky19g2001ns8im52p1jtbt" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDEA/">IDEA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Intellij/">Intellij</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/debug/">debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -992,7 +1132,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="ciliqh1rf001qqwimtezipo8c" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cilky19g8001xs8imbkyjpyyw" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official/">official</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
@@ -1266,7 +1406,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="ciliqh1rk001yqwimkhs64dvp" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cilky19gd0025s8im5dfj04gm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gtest/">Gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gtest/">gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/manual/">manual</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tutorial/">tutorial</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试/">测试</a></li></ul>
@@ -1390,7 +1530,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="ciliqh1rq002bqwimapxvf40f" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cilky19gi002is8imurkmjqfo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chord/">Chord</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DHT/">DHT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/P2P/">P2P</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/note/">note</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -1439,7 +1579,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="ciliqh1s2002lqwimvlai4et2" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cilky19gn002ss8im7fkbikuk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/picture/">picture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/七牛/">七牛</a></li></ul>
@@ -1655,264 +1795,10 @@ res0: Long = 1000
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="ciliqh1s6002tqwimv0m5f2ox" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cilky19gq0030s8im18hrupn7" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dockerfile/">dockerfile</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016.2.13.docker_install" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/13/2016.2.13.docker_install/" class="article-date">
-  <time datetime="2016-02-12T16:00:00.000Z" itemprop="datePublished">2016-02-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/13/2016.2.13.docker_install/">在 Ubuntu 上面安装部署 docker</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description: 本篇博客简单记录一下在 ubuntu 上安装部署 docker 的流程，以及 docker 常用的命令<br><br>Docker-Hub 管理镜像的方式和 github 管理代码的方式类似，你可在 <a href="https://hub.docker.com/" target="_blank" rel="external">Docker-Hub 网站</a>上面申请一个账号<br><br>便可以 push 自己创建的系统镜像，或是 search,pull 他人的系统镜像到本地了，十分方便。</p>
-<hr>
-<h1 id="u5B98_u7F51_u4E0A_u4E0B_u8F7D_docker"><a href="#u5B98_u7F51_u4E0A_u4E0B_u8F7D_docker" class="headerlink" title="官网上下载 docker"></a>官网上下载 docker</h1><p>打开终端，可以通过输入 docker 命令来检查当前系统中是否已经安装有 docker ，如果没有安装系统会显示出 </p>
-<pre>
-apt-get install docker.io 
-</pre>
-
-<p>的提示语句消息，按照提示输入命令来在 ubuntu 上面安装 docker<br>如果您想在 windows 上面部署 docker 环境，只需要到官网上面下载 docker-install.exe 文件即可，<br><br>该文件提供 windows 系统下面 docker 运行所需要的软件，包括 Virtual-Box ，Git 和 docker-hub 图形界面工具，<br><br>不过这里介绍的是基于 ubuntu 请打算在 windows 上面部署的同学绕行。  </p>
-<hr>
-<h1 id="docker__u4E2D_u7684_u955C_u50CF_u548C_u5BB9_u5668"><a href="#docker__u4E2D_u7684_u955C_u50CF_u548C_u5BB9_u5668" class="headerlink" title="docker 中的镜像和容器"></a>docker 中的镜像和容器</h1><p>在动手 pull 一个镜像之前，还要啰嗦一下，那就是对 docker 中的<b>镜像</b> ，<b>容器</b> 这两个名词的理解。<br><br>如果将镜像文件比作是 Java 编程语言中的类(文件)的话，那么容器便是基于 Java 类所实例化(new) 的一个对象实例。<br><br>镜像文件是不会被轻易改变的，它由唯一ID号码所标识，该 ID 号码和远程 pull 该镜像文件的镜像库中的文件 ID 号码保持一致。<br><br>而通过镜像文件实例化的容器一旦被创建，运行之后便是时刻处于变化状态。当然如果你如果想保存容器的当前状态的话，<br><br>也可以通过docker 提供的命令，将容器X(当前的状态)写入镜像文件中，这样再次通过镜像文件生成容器实例的时候，<br><br>该被生成的容器实例所处状态便和容器 X 是保持一致的。但是在这里也需要知道容器也是由不同的 ID 号码所唯一标识的，<br><br>就如同 Java 编程中每个类对象都由不同的 hashCode来标识一样。</p>
-<hr>
-<h1 id="u4F7F_u7528_docker"><a href="#u4F7F_u7528_docker" class="headerlink" title="使用 docker"></a>使用 docker</h1><p>在 docker 安装好了之后，输入 docker 命令之后会有很多参数提示信息，在这里介绍几个十分常用的命令:</p>
-<h3 id="docker_-h"><a href="#docker_-h" class="headerlink" title="docker -h"></a>docker -h</h3><p>该命令用来显示 docker 的帮助选项</p>
-<h3 id="docker_version"><a href="#docker_version" class="headerlink" title="docker version"></a>docker version</h3><p>用来显示当前 Docker 的版本信息，啰嗦一句， docker 在 1.8 版本之后才能够支持本地向 docker-hub 上面提交 docker 镜像文件。<br>所以有些时候查看 docker version 还是很有必要的(曾经使用 1.2 的 docker 提交镜像文件一个整下午失败的教训)</p>
-<h3 id="docker_info"><a href="#docker_info" class="headerlink" title="docker info"></a>docker info</h3><p>该命令用来显示当前系统中 Docker 的信息，镜像文件和被创建的容器数目等信息</p>
-<h3 id="docker_login"><a href="#docker_login" class="headerlink" title="docker login"></a>docker login</h3><p>该命令在你想 <a href="https://hub.docker.com/" target="_blank" rel="external">docker-hub</a> 上面注册信息之后，可以在命令行通过该命令远程登录， <br><br>如同 github 上面注册信息并添加ssh-key 之后通过 ssh 远程登录一样。</p>
-<pre>
-Username: kylin27
-Password: *******************
-Email: kylin27@outlook.com
-</pre>
-
-<p>你的登录信息存放在 .dockercfg 这个文件中</p>
-<h3 id="docker_logout"><a href="#docker_logout" class="headerlink" title="docker logout"></a>docker logout</h3><p>注销当前登录的账号</p>
-<h3 id="docker_search"><a href="#docker_search" class="headerlink" title="docker search"></a>docker search</h3><p>该命令用来在 docker-hub 上面寻找符合描述信息的 docker 镜像文件<br>比如我想搜索已经安装部署了 </p>
-<ul>
-<li>被其他用户收藏超过 10 次</li>
-<li>列出信息的时候会显示了该镜像完整的描述信息</li>
-<li>java8</li>
-<li>并且能够自动化构建镜像</li>
-<li>的docker 镜像的话可以</li>
-</ul>
-<pre>
-docker search -s 10 --automated --no-trunc java8
-
-# -s 10  搜查出被其他用户收藏(s short for stars) >= 10 次的 docker 镜像
-# --automated 支持自动化构建镜像
-# -- no-trunc 在显示被搜索的信息时，需要显示出完整的镜像描述信息
-# java8 镜像描述信息
-</pre>
-
-<h3 id="docker_pull"><a href="#docker_pull" class="headerlink" title="docker pull"></a>docker pull</h3><p>将 docker-hub 中的镜像拉去(pull) 到本地镜像库</p>
-<h3 id="docker_tag"><a href="#docker_tag" class="headerlink" title="docker tag"></a>docker tag</h3><p>为本地的某个镜像文件打标签，说到打标签就不得不啰嗦几句了，在 docker-hub 中通常将镜像文件按照标签来存放，<br>根据标签来存放镜像文件可以最大化的减少服务器端冗余的数据。 不过打标签是需要遵循一定的格式的:</p>
-<pre>
-docker tag username/image_name
-
-## 其中 username 便是你使用 docker login 命令的时候使用的用户名
-## image_name 便是你想为当前镜像文件起的名字
-</pre>
-
-
-<h3 id="docker_push"><a href="#docker_push" class="headerlink" title="docker push"></a>docker push</h3><p>便是将当前系统中的镜像文件’推送’到docker-hub 上面的命令，<br>推送之后，你便可以通过网页的 <a href="https://hub.docker.com/" target="_blank" rel="external">docker-hub</a> 登录自己的账户查看了(就是等同于 github 上面查看自己推送的代码一样)<br><br>推送之后，也就意味着这个镜像文件交个 docker-hub 来’托管’， 通过使用 docker search 命令也可以搜索得到的。<br>docker  push 命令推送镜像之前，最好(一定要)使用 docker tag 命令来为它打上标签</p>
-<h3 id="docker_images"><a href="#docker_images" class="headerlink" title="docker images"></a>docker images</h3><p>列出本地镜像库中所有的镜像文件，当本地镜像库中镜像文件增多的时候，<br>推荐使用 <code>docker images [镜像文件起始名称]</code> 命令来查找(筛选)特定的镜像文件</p>
-<h3 id="docker_ps"><a href="#docker_ps" class="headerlink" title="docker ps"></a>docker ps</h3><p>这个命令用来显示当前系统中所有运行的容器</p>
-<h3 id="docker_rmi"><a href="#docker_rmi" class="headerlink" title="docker rmi"></a>docker rmi</h3><p>这个命令用来删除本地镜像文件</p>
-<h3 id="docker_rm"><a href="#docker_rm" class="headerlink" title="docker rm"></a>docker rm</h3><p>删除本地容器对象，镜像文件就像是母鸡，删了就不能生蛋(容器)了，但蛋砸了(容器删了)只要是母鸡(生成该容器的镜像文件)还在，一切都好说。<br><br>如果当前容器的状态没有同步到镜像文件中，那… 就当我啥也没说好了.</p>
-<h3 id="docker__5Bstart_7C_stop__7C_restart_5D"><a href="#docker__5Bstart_7C_stop__7C_restart_5D" class="headerlink" title="docker [start| stop | restart]"></a>docker [start| stop | restart]</h3><p>docker 容器运行系列命令，分别是启动，停止，重启一个容器</p>
-<h3 id="docker_pause"><a href="#docker_pause" class="headerlink" title="docker pause"></a>docker pause</h3><p>暂停某个容器中的所有进程，但是该docker容器的进程并不停止 停止docker容器中的进程 != 杀死 docker 容器</p>
-<h3 id="docker_unpause"><a href="#docker_unpause" class="headerlink" title="docker unpause"></a>docker unpause</h3><p>将 docker 容器中被暂停的进程重新恢复运行</p>
-<h3 id="docker_kill"><a href="#docker_kill" class="headerlink" title="docker kill"></a>docker kill</h3><p>杀死 docker 某个容器进程，杀死 != 移除</p>
-<h3 id="docker_save"><a href="#docker_save" class="headerlink" title="docker save"></a>docker save</h3><p>将镜像文件进行归档保存,后接参数 -o (output file) 用来指定归档文件的名称<br>第一个参数是生成归档的文件名称，<br><br>第二个参数是本地镜像文件名称，这里的冒号后面对应是为同一个镜像文件的不同变动所加上的标签 ;<br><br>我通常是按照对当前镜像文件作出的改变，或者是镜像文件生成的日期来添加标签(好记…)<br>同时归档文件还可以使用 .tag.gz ; .tgz, bzip 等等多种压缩文件类型 </p>
-<pre>
-docker save -o kylin27_java8.tar kylin27/ubuntu:java8
-</pre>
-
-<h3 id="docker_load"><a href="#docker_load" class="headerlink" title="docker load"></a>docker load</h3><p>将归档(docker save 生成的 .tar 文件之后)的docker 镜像文件，重新生成 docker 经常文件(save 的逆向操作)<br>后接参数 -i (input file)</p>
-<pre>
-docker load -i kylin27_java8.tar
-</pre>
-
-<h3 id="docker_export"><a href="#docker_export" class="headerlink" title="docker export"></a>docker export</h3><p>刚刚介绍的拿对是 <b>镜像文件 &lt;=&gt; 归档文件</b>的相互转换， 接下来的这两个命令便是<b>容器 =&gt; 归档文件 ; 归档文件 =&gt; 镜像</b>的相互转换。<br>docker export -o 命令是将当前的容器进行归档，</p>
-<pre>
-docker export -o kylin27_container_java8.tar 30484q39as30
-</pre> 
-
-<p>上述的命令是将 ID 号码为 30484q39as30 的容器归档生成名为 kylin27_container_java8.tar 的文件</p>
-<h3 id="docker_import"><a href="#docker_import" class="headerlink" title="docker import"></a>docker import</h3><p>将容器归档文件生成镜像文件</p>
-<pre>
-cat ./kylin27_container_java8.jar | sudo docker import - kylin27_ubuntu:java8
-</pre>
-
-<p>上述的命令是用来将数据信息从归档文件 kylin27_java8.jar 中读出来，然后调用 docker import 命令生成名为 kylin27_ubuntu:java8 的镜像文件</p>
-<h3 id="docker_commit"><a href="#docker_commit" class="headerlink" title="docker commit"></a>docker commit</h3><p>将当前处于运行状态的容器中所有被变动的状态同步给镜像文件，也就是将这个容器进行模板化，将容器中所有的信息写入(更新)到<br>镜像文件中(该镜像文件既可以是原来的镜像文件，也可以写入到一个新的镜像文件中)</p>
-<pre>
-docker commit [容器ID] [要被更新的镜像文件名称|新创建的镜像文件名称]
-</pre>
-
-
-<h3 id="docker_inspect"><a href="#docker_inspect" class="headerlink" title="docker inspect"></a>docker inspect</h3><p>在刚才介绍的命令中，比较一般的登录到运行容器中的方法是 docker run 后接登录之后执行的程序，<br><br>在上述命令中介绍的是一登录容器边启动它的命令控制台的交互程序，还有一种方式是先使用 run 方法来登录然后修改容器的 IP 地址，<br><br>在通过 ssh 的方式来登录。 不过官方推荐的方式是，使用 docker inspect + 容器 ID 号码来提取正处于运行状态的容器 PID 号码<br><br>(对的就是容器的进程号)， 然后通过  nsenter  这个程序来直接切入到容器进程中； 我们接下来就介绍这种方法:<br><br>nsenter  在 Ubuntu-14.4 和它之前的版本均不支持，如果您的 Ubuntu 版本要小于等于 14.4 那么通过下面的命令来安装(更新)</p>
-<pre>
-cd /tmp
-curl https://www.kernel.org/pub/linux/utils/util-linux/v2.24/util-linux-2.24.tar.gz | tar -zxf-cd util-linux-2.24./configure --without-ncursesmake nsentercp nsenter /usr/local/bin
-</pre>
-
-<p>不得不说，有人曾经很详细的了解 docker 用来存放镜像和容器的底层文件，发现 docker 底层是通过使用 json-schema 格式的文件来存放镜像和容器<br> 所处的状态的，而当前所介绍的这个 docker inspect 命令便是抽取 docker 容器对应的 json-schema 格式的文件内容，而后面的通过参数来指定<br> 需要获取的是底层文件中的哪种属性信息字段<br>输入上述命令之后，便可以获取当前运行容器的进程 PID 号码</p>
-<pre>
-$docker inspect --format param  容器 ID 号
-</pre>
-<b>上述的param 使用冒号中括号中括号.State.PID 中括号中括号冒号 来替代，我的博客格式显示有点问题，没办法直接表示</b>
-
-输入上述命令之后，便可以获取当前运行容器的进程 PID 号码
-
-<pre>
-$nsenter --target $PID --mount --uts --ipc --net --pid 
-</pre>
-
-<p>上面的 $PID  使用输入 docker inspect 命令之后显示出来的数据结果来替代</p>
-<hr>
-<h1 id="docker__u547D_u4EE4_u4F7F_u7528_u6848_u4F8B"><a href="#docker__u547D_u4EE4_u4F7F_u7528_u6848_u4F8B" class="headerlink" title="docker 命令使用案例"></a>docker 命令使用案例</h1><p>接下来通过案例的方式来系统学习一下 ubuntu 下面 docker 的使用方法，在案例中，我们要</p>
-<ul>
-<li><p>下载 ubuntu 的镜像文件</p>
-<pre>
-$docker pull ubuntu:14.04
-output message :
-14.04: Pulling from ubuntu
-f15ce52fc004: Downloading 24.85 MB/65.68 MB
-f15ce52fc004: Downloading  25.4 MB/65.68 MB
-f15ce52fc004: Downloading 56.75 MB/65.68 MB
-8693db7e8a00: Download complete
-</pre>
-</li>
-<li><p>显示当前系统中所有 docker 镜像文件</p>
-<pre>
-$docker images 
-output message :
-REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
-ubuntu              14.04               8693db7e8a00        3 weeks ago         187.9 MB
-</pre>
-</li>
-<li><p>通过镜像文件生成容器并登录</p>
-<pre>
-$docker run -i -t ubuntu14.04/bin/bash
-output message :
-root@b4bfcdde7b31:/#    // 这就进入了运行的 ubuntu:14.04 的容器中了 ; 退出的话直接在命令行中输入 exit 即可
-</pre>
-</li>
-<li><p>登录容器之后，安装一个 wget 软件</p>
-<pre>
-root@b4bfcdde7b31:/# apt-get install wget 
-</pre>
-</li>
-<li><p>待到软件安装成功之后，将容器当前状态更新到新创建的镜像文件中</p>
-</li>
-<li>不过首先应该获取到该容器的 ID 号码，打开一个新的 ssh 远程连接/终端窗口输入查看当前系统中所有容器和其ID号码<pre>
-$docker ps 
-output message :
-docker ps
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-b4bfcdde7b31        ubuntu:14.04        "/bin/bash"         4 minutes ago       Up 4 minutes                            desperate_poitras   
-// b4bfcdde7b31  这个便是容器的 ID 号码，用于在系统中唯一标识容器
-</pre>
-
-
-</li>
-</ul>
-<ul>
-<li><p>生成该<b>容器</b>的归档文件</p>
-<pre>
-$docker export -o kylin27_container_wget.tar.gz b4bfcdde7b31 
-# 等待之后，便会在当前路径下面找到名为 kylin27_container_wget.tar.gz 的归档文件
-</pre>
-</li>
-<li><p>生成该容器的镜像文件<br><pre><br>$docker commit b4bfcdde7b31 ubuntu_14:wget<br>// 冒号后面的是为镜像文件创建的标签，而冒号前面是该镜像文件对应镜像库的名称</pre></p>
-</li>
-</ul>
-<p></p>
-<ul>
-<li><p>为该镜像文件打标签<br>在将镜像文件提交到 docker-hub 上面的时候需要注意两点 1. 确保成功 login 2. 确保 docker 镜像文件所打的标签符合 docker-hub 格式<br>必定如果你用过 github 的话(没用过也不会看到这篇搭建在 github 上面的博客)应该熟悉 github 上面的 repository 的命名和路径规则<br> 通常是用户名+资源库名称，道理放到 docker-hub 上面也是一样的。</p>
-<pre>
-docker tag ubuntu_14:wget kylin27/ubuntu14:wget
-</pre>
-
-<p>再次输入命令 docker images 会看到如下信息</p>
-<pre>
-REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
-ubuntu_14           wget                44552cea1d79        5 minutes ago       187.9 MB
-kylin27/ubuntu14    wget                44552cea1d79        5 minutes ago       187.9 MB
-ubuntu              14.04               8693db7e8a00        3 weeks ago         187.9 MB
-</pre>
-
-<p>看到ubuntu_14 和 kylin27/ubuntu14 这两个镜像文件虽然镜像库名称不同，但是 IMAGE ID 却是相同的，这就是方便区分标识，但却最大程度上减少冗余文件的存储的思想所在。</p>
-</li>
-<li><p>为该<b>镜像</b>创建文档文件</p>
-<pre>
-$docker save -o kylin27.tar ubuntu_14:wget
-</pre>
-
-<p>随后便可以在当前目录下面看到名为 kylin27.tar 的归档文件</p>
-</li>
-<li><p>将该镜像文件推送到 docker-hub 上面 <b>在推送镜像文件之前，需要先把系统中生成该镜像文件的容器给停止(血与泪的教训) </b></p>
-<pre>
-$docker stop b4bfcdde7b31
-$docker push kylin27/ubuntu14:wget
-output message:
-The push refers to a repository [kylin27/ubuntu] (len: 1)
-44552cea1d79: Image already exists 
-8693db7e8a00: Image successfully pushed 
-a4c5be5b6e59: Image successfully pushed 
-c4fae638e7ce: Image successfully pushed 
-f15ce52fc004: Image successfully pushed 
-Digest: sha256:09dd6e67f2c8ec9a0a9e21f4e34f415083dcd29a96e156b5d36fbdd4295f5c2f
-</pre>
-
-</li>
-</ul>
-<p>成功推送信息之后，到自己的 <a href="https://hub.docker.com/r/kylin27/ubuntu/" target="_blank" rel="external">docker-hub</a> 上便可以看到咯~<br>  在页面右边的显示信息便是该镜像文件 pull 的路径，如果你对这个镜像文件感兴趣的话便可以通过该信息将镜像 pull 到本地</p>
-<ul>
-<li>再来介绍一个 docker 中实用的批量删除 none 镜像文件的命令<br>在频繁创建删除 docker 镜像文件之后便会生成很多名为 none 的镜像文件，在这里可以通过下面的命令将所有无用的 none 镜像文件删除。<pre>
-$docker ps -a | grep "Exited" | awk '{print $1 }'|xargs docker stop
-$docker ps -a | grep "Exited" | awk '{print $1 }'|xargs docker rm
-$docker images|grep none|awk '{print $3 }'|xargs docker rmi
-</pre>
-
-</li>
-</ul>
-<p>end</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/13/2016.2.13.docker_install/" data-id="ciliqh1s90031qwiml4u1jrju" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
 
     </footer>
   </div>
@@ -1936,7 +1822,7 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translation/">translation</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/">Spark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/guides/">guides</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translation/">translation</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -1945,7 +1831,7 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 16.67px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/tags/theory/" style="font-size: 13.33px;">theory</a> <a href="/tags/translate/" style="font-size: 10px;">translate</a> <a href="/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/cluster/" style="font-size: 13.33px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 16.67px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/guides/" style="font-size: 10px;">guides</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/tags/theory/" style="font-size: 13.33px;">theory</a> <a href="/tags/translate/" style="font-size: 10px;">translate</a> <a href="/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
     </div>
   </div>
 
@@ -1954,7 +1840,7 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -1966,11 +1852,7 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
       <ul>
         
           <li>
-            <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial [Java 并发/多线程教程]</a>
-          </li>
-        
-          <li>
-            <a href="/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/">Multithreading Benefits [多线程带来的福利]</a>
+            <a href="/2016/03/09/2016.3.8.cluster-overview1/">Spark 部署文档-Spark 集群模式概览</a>
           </li>
         
           <li>
@@ -1978,11 +1860,15 @@ $docker images|grep none|awk '{print $3 }'|xargs docker rmi
           </li>
         
           <li>
-            <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/">基于单节点的 Spark &amp; IDEA 远程调试</a>
+            <a href="/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/">Multithreading Benefits [多线程带来的福利]</a>
           </li>
         
           <li>
-            <a href="/2016/02/25/2016.2.25.spark.manual.translate1/">Spark 文档翻译1</a>
+            <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial [Java 并发/多线程教程]</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/">基于单节点的 Spark &amp; IDEA 远程调试</a>
           </li>
         
       </ul>

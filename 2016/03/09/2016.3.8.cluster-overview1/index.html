@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Spark 部署文档-Spark 集群模式概览 | Kylin&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Descriptions: 最近正在系统学习 Spark ，本篇文章翻译自 Spark 官方指导文档 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com
+
+Cluster Mode OverviewSpark集群模式概览This document gives a short overview of how Spark runs on clusters, to make it">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark 部署文档-Spark 集群模式概览">
+<meta property="og:url" content="http://kylin27.github.io/2016/03/09/2016.3.8.cluster-overview1/index.html">
+<meta property="og:site_name" content="Kylin's Blog">
+<meta property="og:description" content="Descriptions: 最近正在系统学习 Spark ，本篇文章翻译自 Spark 官方指导文档 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com
+
+Cluster Mode OverviewSpark集群模式概览This document gives a short overview of how Spark runs on clusters, to make it">
+<meta property="og:updated_time" content="2016-03-09T14:34:31.658Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spark 部署文档-Spark 集群模式概览">
+<meta name="twitter:description" content="Descriptions: 最近正在系统学习 Spark ，本篇文章翻译自 Spark 官方指导文档 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com
+
+Cluster Mode OverviewSpark集群模式概览This document gives a short overview of how Spark runs on clusters, to make it">
+  
+    <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kylin&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Kylin27@outlook.com</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://kylin27.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2016.3.8.cluster-overview1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/03/09/2016.3.8.cluster-overview1/" class="article-date">
+  <time datetime="2016-03-08T16:00:00.000Z" itemprop="datePublished">2016-03-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spark 部署文档-Spark 集群模式概览
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Descriptions: 最近正在系统学习 Spark ，本篇文章翻译自 <a href="http://spark.apache.org/docs/latest/cluster-overview.html" target="_blank" rel="external">Spark 官方指导文档</a> 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com</p>
+<hr>
+<h1 id="Cluster_Mode_Overview"><a href="#Cluster_Mode_Overview" class="headerlink" title="Cluster Mode Overview"></a>Cluster Mode Overview</h1><h1 id="Spark_u96C6_u7FA4_u6A21_u5F0F_u6982_u89C8"><a href="#Spark_u96C6_u7FA4_u6A21_u5F0F_u6982_u89C8" class="headerlink" title="Spark集群模式概览"></a>Spark集群模式概览</h1><p>This document gives a short overview of how Spark runs on clusters, to make it easier to understand the components involved.<br><br>本文档简要介绍了 Spark 的集群运行模式，目的是为了让用户更加容易了解 Spark 中涉及到的组件。</p>
+<p>Read through the <a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">application submission guide</a> to learn about launching applications on a cluster.<br><br>用户可以通读<a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">如何向 spark 集群提交应用程序指导手册</a>来了解如何在集群上运行应用程序。</p>
+<h2 id="Components"><a href="#Components" class="headerlink" title="Components"></a>Components</h2><h2 id="Spark__u4E2D_u7684_u7EC4_u4EF6"><a href="#Spark__u4E2D_u7684_u7EC4_u4EF6" class="headerlink" title="Spark 中的组件"></a>Spark 中的组件</h2><p>Spark applications run as independent sets of processes on a cluster, coordinated by the SparkContext object in your main program(called the driver program).<br><br>Spark 应用程序以独立的进程集合运行与集群之上，并被位于主程序(这个主程序也被称作是驱动程序)中称作 Spark 上下文(SparkContext)的对象实例所协调调度。</p>
+<p>Specifically, to run on a cluster, the SparkContext can connect to several types of cluster managers(either Spark’s own standalone cluster manager, Mesos or YARN), which allocate resources across applications.<br><br>特别值得注意的是，以集群运行的 Spark 中的 SparkContext 可以连接多种类型的用于跨应用程序分配资源的集群调度器(这个调度器既可以是 Spark 自己独立的集群资源管理器，也可以是 Mesos 或是 YARN).</p>
+<p>Once connected, Spark acquires executors on nodes in the cluster, which are processes that run computations and store data for your application.<br><br>一旦 Spark 与资源调度器二者相连接，Spark 便会向位于集群中的多个结点索取执行器资源。这些执行器由多个进程构成的专门用来为你的应用程序提供计算和存放数据的功能。</p>
+<p>Next, it sends your application code (defined by JAR or Python files passed to SparkContext) to the executors.<br><br>接下来你所提交的应用程序代码(被传递给 Spark 上下文对象实例的应用程序代码是以 JAR 或者是 Python 文件所存放的)会被发送给位于集群中各个结点的执行器上。</p>
+<p>Finally, SparkContext sends tasks to the exeuctors to run.<br><br>最后，Spark 上下文对象便会将任务分发给执行器来运行。</p>
+<h2 id="Cluster_Manager_Types"><a href="#Cluster_Manager_Types" class="headerlink" title="Cluster Manager Types"></a>Cluster Manager Types</h2><p>The system currently supports three cluster managers:</p>
+<ul>
+<li><a href="http://spark.apache.org/docs/latest/spark-standalone.html" target="_blank" rel="external">Standalone</a> - a simple cluster manager included with Spark that makes it easy to set up a cluster.<br></li>
+<li><p>单机模式 - 该模式是基于 Spark 自身包含的集群资源管理器来启动 Spark 的，该资源管理器的作用便是是为了让集群易于启动。</p>
+</li>
+<li><p><a href="http://spark.apache.org/docs/latest/running-on-mesos.html" target="_blank" rel="external">Apache Mesos</a> - a general cluster manager that can also run Hadoop MapReduce and service applications.<br></p>
+</li>
+<li>基于 Apache Mesos 的集群模式 - Apache Mesos 是一种普遍被用于集群资源管理的调度器，也可以用作 Hadoop MapReduce 和其他服务应用的资源调度器。</li>
+</ul>
+<ul>
+<li><a href="http://spark.apache.org/docs/latest/running-on-yarn.html" target="_blank" rel="external">Hadoop YARN</a> - the resource manager in Hadoop 2.<br></li>
+<li>基于 Hadoop YARN 的集群模式 - Hadoop YARN 是应用于 Hadoop 2版本中的资源管理调度器。</li>
+</ul>
+<p>In addition, Spark’s <a href="http://spark.apache.org/docs/latest/ec2-scripts.html" target="_blank" rel="external">EC2 launch scripts</a> make it easy to launch a standalone cluster on Amazon EC2.<br><br>除了上述的资源调度器之外， 通过运行 Spark 中的 EC2 启动脚本也可以很容易地在 Amazon 的 EC2 服务器上以单机模式来启动 Spark 。</p>
+<h2 id="Submitting_Applications"><a href="#Submitting_Applications" class="headerlink" title="Submitting Applications"></a>Submitting Applications</h2><h2 id="u5173_u4E8E_u5982_u4F55_u5411_Spark__u4E0A_u63D0_u4EA4_u5E94_u7528"><a href="#u5173_u4E8E_u5982_u4F55_u5411_Spark__u4E0A_u63D0_u4EA4_u5E94_u7528" class="headerlink" title="关于如何向 Spark 上提交应用"></a>关于如何向 Spark 上提交应用</h2><p>Applications can be submitted to a cluster of any type using the spark-submit script.<br><br>可以使用Spark 自带的 spark-submit 脚本来将应用程序提交到上述 Spark 的任意一类集群的上。</p>
+<p>The <a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">application submission guide</a> describes how to do this.<br><br>这篇 [如何向 Spark 集群提交应用程序教程] 上详细记录了如何提交应用到 Spark 集群。</p>
+<h2 id="Monitoring"><a href="#Monitoring" class="headerlink" title="Monitoring"></a>Monitoring</h2><h2 id="u5173_u4E8E_Spark__u96C6_u7FA4_u76D1_u63A7"><a href="#u5173_u4E8E_Spark__u96C6_u7FA4_u76D1_u63A7" class="headerlink" title="关于 Spark 集群监控"></a>关于 Spark 集群监控</h2><p>Each driver program has a web UI, typically on port 4040, that displays information about running tasks, executors, and storage usage. <br><br>每个驱动程序都有其用于展示任务运行，执行器状态以及存储详细信息的 web 图形展示界面，该图形界面的访问端口号通常是 4040。</p>
+<p>Simply go to http://<driver-node>:4040 in a web browser to access this UI. The <a href="http://spark.apache.org/docs/latest/monitoring.html" target="_blank" rel="external">monitoring guide</a> also describes other monitoring options.<br><br>(你只要)简单地在浏览器中输入这个网址 http://<driver-node>:4040 Spark 的图形用户界面就展示在你眼前了。</driver-node></driver-node></p>
+<p>The <a href="http://spark.apache.org/docs/latest/monitoring.html" target="_blank" rel="external">monitoring guide</a> also describes other monitoring options.<br><br><a href="/">Spark 集群监控教程</a>这一文档中同样也介绍了其他用于 Spark 集群监控的选项。</p>
+<h2 id="Job_Scheduling"><a href="#Job_Scheduling" class="headerlink" title="Job Scheduling"></a>Job Scheduling</h2><h2 id="u4F5C_u4E1A_u8C03_u5EA6"><a href="#u4F5C_u4E1A_u8C03_u5EA6" class="headerlink" title="作业调度"></a>作业调度</h2><p>Spark gives control over resource allocation both across applications(at the level of the cluster manager) and within applications(if multiple computations are happening on the same SparkContext). <br><br>Spark 同时在跨应用程序和在应用程序中充当着掌控资源分配的角色，在跨程序资源分配中 Spark 是作为集群管理者来进行资源分配，而当 SparkContext 中同时执行多个计算时 Spark 会在应用程序内进行资源分配。</p>
+<p>The <a href="http://spark.apache.org/docs/latest/job-scheduling.html" target="_blank" rel="external">job scheduling overview</a> describes this in more detail.<br><br>在<a href="http://spark.apache.org/docs/latest/job-scheduling.html" target="_blank" rel="external">作业调度概览</a>一文中对此进行了详细的介绍。</p>
+<h2 id="Glossary"><a href="#Glossary" class="headerlink" title="Glossary"></a>Glossary</h2><h2 id="Spark__u96C6_u7FA4_u672F_u8BED_u5217_u8868"><a href="#Spark__u96C6_u7FA4_u672F_u8BED_u5217_u8868" class="headerlink" title="Spark 集群术语列表"></a>Spark 集群术语列表</h2><p>The following table summarizes terms you’ll see used to refer to cluster concepts:<br><br>下面表格总结了 Spark 集群中常用到的概念术语:</p>
+<p>术语/解释</p>
+<ul>
+<li><b>Application</b></li>
+<li>应用程序</li>
+<li>Using program built on Spark. Consists of a driver program and executors on the cluster.<br></li>
+<li>运行在 Spark 平台上的程序。(这种程序通常是)由集群上的一个驱动(程序)和多个执行器(程序)所组成的。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Application jar</b></li>
+<li>jar 文件格式的应用程序</li>
+<li>A jar containing the user’s Spark application. In some cases users will want to create an “uber jar” containing their application along with its dependencies. The user’s jar should never include Hadoop or Spark libraries, however, these will be added at runtime.</li>
+<li>所谓的 jar 应用程序指的是将用户自己编写的 Spark 代码打包成 jar 应用程序。在某些场合用户会将应用程序和其所依赖的文件打包成一个 “uber jar” 类型文件。 但是值得注意的是，用户是万万不可在生成应用 jar 文件时将应用程序中所依赖的 Hadoop 或是Spark 库文件一并加载到其中的。应用程序中所使用的Hadoop 和 Spark 库会在应用程序的运行期由 Spark 集群平台来提供。</li>
+</ul>
+<hr>
+<ul>
+<li><b> Driver program </b></li>
+<li>驱动程序</li>
+<li>The process running the main() function of the application and creating the SparkContext</li>
+<li>驱动程序指的是代码中包含程序入口函数 main() 方法同时在代码中创建 SparkContext 对象的程序。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Cluster manager</b></li>
+<li>集群调度器/其实叫做集群管理器也行啦~</li>
+<li>An external service for acquiring resources on the cluster( e.g. standalone manager, Mesos, YARN)</li>
+<li>用于在集群中获取资源的(不属于集群的)外部服务程序(就像是 Spark 单机结点启动的资源管理器，或是第三方像 Mesos ， YARN 这样的资源调度框架)</li>
+</ul>
+<hr>
+<ul>
+<li><b>Deploy mode</b></li>
+<li>(Spark的)部署模式</li>
+<li>Distinguishes where the driver process runs. In “cluster” mode, the framework launches the driver inside of the cluster. In “client” mode, the submitter lanuches the driver of the cluster.</li>
+<li>集群的部署模式这一术语是用来区分驱动程序在何处运行的。如果是以”集群”模式运行的，指的是 Spark 这个计算框架在<b>集群中来</b>调用驱动程序的。 如果是以”客户端”模式运行，那便是 Spark 中的 submitter/任务提交者在<b>集群之外</b>调用驱动程序来启动的。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Worker node </b></li>
+<li>工作结点</li>
+<li>Any node that can run application code in the cluster.</li>
+<li>在集群中只要能跑应用程序代码的结点都叫做工作结点</li>
+</ul>
+<hr>
+<ul>
+<li><b>Executor </b></li>
+<li>执行器</li>
+<li>A process launched for an application on a worker node, that runs tasks and keeps data in memory or disk storage across them. Each application has its own executors.</li>
+<li>在用于运行任务并在内存或是磁盘上保存数据的工作结点上为执行应用程序而启动进程便可以称它是执行器。每个应用都有其自己的一组执行器。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Task</b></li>
+<li>任务</li>
+<li>A unit of work that will be sent to one executor.</li>
+<li>任务指的是将会被发送给一个执行器的一系列工作。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Job</b></li>
+<li>作业</li>
+<li>A parallel computation consisting of multiple tasks that gets spawned in response to a Spark action(e.g. save, collect); you’ll see this term used in the driver’s logs.</li>
+<li>作业指的是由多个任务所构成的并行计算操作。 这些任务从 Spark 所响应的操作(例如存储，收集数据)中获取执行结果；作业在驱动程序所打印的日志文件中是比较常见的术语。</li>
+</ul>
+<hr>
+<ul>
+<li><b>Stage</b></li>
+<li>阶段</li>
+<li>Each job gets divided into smaller sets of tasks called stages that depend on each other(similar to the map and reduce stages in MapReduce); you’ll see this term used in the driver’s logs.</li>
+<li>每份作业在被执行的时候都会被分割成由更小粒度的任务构成的集合。而该任务又被称作是’阶段’，而这些多个阶段彼此间是相互依赖的(就和 MapReduce 中的 map阶段和reduce阶段类似)；’阶段’这一术语在驱动程序打印的日志中比较常见。</li>
+</ul>
+<p>end</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/03/09/2016.3.8.cluster-overview1/" data-id="cilky19el000ms8imwyc5exdq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/guides/">guides</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Multithreading Costs [多线程所花费的代价]</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/">Spark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/guides/">guides</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translation/">translation</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/cluster/" style="font-size: 13.33px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 16.67px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/guides/" style="font-size: 10px;">guides</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/tags/theory/" style="font-size: 13.33px;">theory</a> <a href="/tags/translate/" style="font-size: 10px;">translate</a> <a href="/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 10px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/03/09/2016.3.8.cluster-overview1/">Spark 部署文档-Spark 集群模式概览</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/">Multithreading Costs [多线程所花费的代价]</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/">Multithreading Benefits [多线程带来的福利]</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial [Java 并发/多线程教程]</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/">基于单节点的 Spark &amp; IDEA 远程调试</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Kylin<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>
