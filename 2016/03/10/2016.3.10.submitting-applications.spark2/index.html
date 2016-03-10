@@ -5,16 +5,16 @@
   
   <title>Spark 部署文档-如何向 Spark 上提交应用程序-2 | Kylin&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Descriptions:最近正在系统阅读 Spark 官方文档，阅读的同时尝试着翻译了其中部分的章节，本篇文档原文链接地址:http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management ，个人水平有限,若有不恰当之处欢迎指正，邮箱地址 kylin27@outlook.">
+  <meta name="description" content="Descriptions:最近正在系统阅读 Spark 官方文档，阅读的同时也试着翻译了其中部分的章节，本篇文档原文链接地址:http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management ，个人水平有限,若翻译有不恰当之处欢迎指正，邮箱地址 kylin27@outloo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spark 部署文档-如何向 Spark 上提交应用程序-2">
 <meta property="og:url" content="http://kylin27.github.io/2016/03/10/2016.3.10.submitting-applications.spark2/index.html">
 <meta property="og:site_name" content="Kylin's Blog">
-<meta property="og:description" content="Descriptions:最近正在系统阅读 Spark 官方文档，阅读的同时尝试着翻译了其中部分的章节，本篇文档原文链接地址:http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management ，个人水平有限,若有不恰当之处欢迎指正，邮箱地址 kylin27@outlook.">
-<meta property="og:updated_time" content="2016-03-10T15:28:58.640Z">
+<meta property="og:description" content="Descriptions:最近正在系统阅读 Spark 官方文档，阅读的同时也试着翻译了其中部分的章节，本篇文档原文链接地址:http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management ，个人水平有限,若翻译有不恰当之处欢迎指正，邮箱地址 kylin27@outloo">
+<meta property="og:updated_time" content="2016-03-10T15:41:45.839Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark 部署文档-如何向 Spark 上提交应用程序-2">
-<meta name="twitter:description" content="Descriptions:最近正在系统阅读 Spark 官方文档，阅读的同时尝试着翻译了其中部分的章节，本篇文档原文链接地址:http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management ，个人水平有限,若有不恰当之处欢迎指正，邮箱地址 kylin27@outlook.">
+<meta name="twitter:description" content="Descriptions:最近正在系统阅读 Spark 官方文档，阅读的同时也试着翻译了其中部分的章节，本篇文档原文链接地址:http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management ，个人水平有限,若翻译有不恰当之处欢迎指正，邮箱地址 kylin27@outloo">
   
     <link rel="alternative" href="/atom.xml" title="Kylin&#39;s Blog" type="application/atom+xml">
   
@@ -86,10 +86,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Descriptions:<br>最近正在系统阅读 Spark 官方文档，阅读的同时尝试着翻译了其中部分的章节，本篇文档原文链接地址:<a href="http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management" target="_blank" rel="external">http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management</a> ，个人水平有限,若有不恰当之处欢迎指正，邮箱地址 kylin27@outlook.com </p>
+        <p>Descriptions:<br>最近正在系统阅读 Spark 官方文档，阅读的同时也试着翻译了其中部分的章节，本篇文档原文链接地址:<a href="http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management" target="_blank" rel="external">http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management</a> ，<br>个人水平有限,若翻译有不恰当之处欢迎指正，邮箱地址 kylin27@outlook.com </p>
 <hr>
 <h1 id="Submitting_Applications"><a href="#Submitting_Applications" class="headerlink" title="Submitting Applications"></a>Submitting Applications</h1><h1 id="u5982_u4F55_u5411_Spark__u4E0A_u63D0_u4EA4_u5E94_u7528_u7A0B_u5E8F"><a href="#u5982_u4F55_u5411_Spark__u4E0A_u63D0_u4EA4_u5E94_u7528_u7A0B_u5E8F" class="headerlink" title="如何向 Spark 上提交应用程序"></a>如何向 Spark 上提交应用程序</h1><p>The spark-submit script in Spark’s bin directory is used to launch applications on a cluster.<br>位于 Spark bin 目录下面的 spark-submit 脚本是用来在集群上启动应用程序的。</p>
-<p>It can use all Spark’s supported cluster <a href="http://spark.apache.org/docs/latest/cluster-overview.html#cluster-manager-types" target="_blank" rel="external">cluster managers</a> through a uniform interface so you don’t have to configure your application specially for each one.<br>spark-submit 启动脚本通过统一接口来支持 Spark 中的多种集群(资源)管理器的(笔者: 比如说 Spark 自带的资源管理器，或是 Mesos ，YARN 这种第三方资源调度框架)，所以你无需因为管理器的不同来重新配置你的应用程序。</p>
+<p>It can use all Spark’s supported cluster <a href="http://spark.apache.org/docs/latest/cluster-overview.html#cluster-manager-types" target="_blank" rel="external">cluster managers</a> through a uniform interface so you don’t have to configure your application specially for each one.<br>spark-submit 启动脚本通过统一接口来支持 Spark 中的多种集群(资源)管理器(译者: 比如说 Spark 自带的资源管理器，或是 Mesos ，YARN 这种第三方资源调度框架)，所以你无需因为管理器的不同来重新配置你的应用程序。</p>
 <h2 id="Building_Your_Applications_u2019s_Dependencies"><a href="#Building_Your_Applications_u2019s_Dependencies" class="headerlink" title="Building Your Applications’s Dependencies"></a>Building Your Applications’s Dependencies</h2><h2 id="u5982_u4F55_u6784_u5EFA_u4F9D_u8D56_u4E8E_u5176_u4ED6_u5E93_u7684_u5E94_u7528_u7A0B_u5E8F"><a href="#u5982_u4F55_u6784_u5EFA_u4F9D_u8D56_u4E8E_u5176_u4ED6_u5E93_u7684_u5E94_u7528_u7A0B_u5E8F" class="headerlink" title="如何构建依赖于其他库的应用程序"></a>如何构建依赖于其他库的应用程序</h2><p>If your code depends on other projects, you will need to package them alongside your application in order to distribute the code to a Spark cluster.<br>如果你所编写的代码依赖于其他的项目的话，建议你在打包时将代码依赖的项目和你所编写的应用放到一起，这样的话可以保证依赖项目可以随代码一起被分发到 Spark 集群上。</p>
 <p>To do this, create an assembly jar(or “uber” jar) containing your code and its dependencies.<br>可以通过创建一个组装 Jar 包，在该 Jar 中既包含你编写的代码又包含代码所依赖的文件，这样的话便可以实现自定义代码所依赖项目会随应用程序一起被分发了。</p>
 <p>Both <a href="/">sbt</a> and <a href="/">Maven</a> have assembly plugins.<br><a href="/">sbt</a>和 <a href="/">Maven</a> 这两种项目管理工具均有可生成上述的组装 Jar 包的插件。</p>
@@ -318,6 +318,7 @@ export HADOOP_CONF_DIR=XXX
 <p>If your are ever unclear where configuration options are coming from, you can print out fine-grained debugging information by running spark-submit with the –verose option.<br>如果你对 Spark 中的某些配置选项不是很理解，不知道某些参数是用来做什么的话，建议在运行 spark-submit 脚本的时后接 –verose 参数这个选项，这样就可以将每个后接参数的调试信息详细打印出来了。</p>
 <h2 id="Advanced_Dependency_Management"><a href="#Advanced_Dependency_Management" class="headerlink" title="Advanced Dependency Management"></a>Advanced Dependency Management</h2><p>##<br>When using spark-submit, the application jar along with any jars included with the –jars option will be automatically transferred to the cluster.<br>当运行 spark-submit 脚本时，应用程序连同任何 –jars 参数选项后接的 jar 文件都会被自动的提交给集群。</p>
 <p>Spark uses the following URL scheme to allow different strategies for disseminating jars:<br>Spark 使用如下所示的多种 URL 模式来实现不同策略的 jar 文件的分发:</p>
+<p>（其实上面都是我瞎编的… ，今天太晚了，我编不下去了，明天继续编… =。=） <br></p>
 <ul>
 <li><p>file: - Absolute path and file:/URIs are servered by the driver’s HTTP file server, and every executor pulls the file from the driver HTTP server.</p>
 </li>
@@ -335,7 +336,7 @@ export HADOOP_CONF_DIR=XXX
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/03/10/2016.3.10.submitting-applications.spark2/" data-id="cilmfdxck000tigim5c7dyqh5" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/03/10/2016.3.10.submitting-applications.spark2/" data-id="cilmg0or4000tagimohzq9xnd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official-doc/">official-doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>

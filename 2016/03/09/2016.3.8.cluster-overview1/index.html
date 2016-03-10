@@ -16,7 +16,7 @@ Cluster Mode OverviewSpark集群模式概览This document gives a short overview
 
 Cluster Mode OverviewSpark集群模式概览This document gives a short overview of how Spark runs on clusters, to make it">
 <meta property="og:image" content="http://7xqz39.com1.z0.glb.clouddn.com/hehe_1_%E9%9B%86%E7%BE%A4%E6%A1%86%E6%9E%B6%E6%88%AA%E5%9B%BE.png">
-<meta property="og:updated_time" content="2016-03-09T15:32:39.483Z">
+<meta property="og:updated_time" content="2016-03-10T15:40:21.102Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark 部署文档-Spark 集群模式概览1">
 <meta name="twitter:description" content="Descriptions: 最近正在系统学习 Spark ，本篇文章翻译自 Spark 官方指导文档 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com
@@ -96,7 +96,7 @@ Cluster Mode OverviewSpark集群模式概览This document gives a short overview
         <p>Descriptions: <br><br>最近正在系统学习 Spark ，本篇文章翻译自 <a href="http://spark.apache.org/docs/latest/cluster-overview.html" target="_blank" rel="external">Spark 官方指导文档</a> 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com</p>
 <hr>
 <h1 id="Cluster_Mode_Overview"><a href="#Cluster_Mode_Overview" class="headerlink" title="Cluster Mode Overview"></a>Cluster Mode Overview</h1><h1 id="Spark_u96C6_u7FA4_u6A21_u5F0F_u6982_u89C8"><a href="#Spark_u96C6_u7FA4_u6A21_u5F0F_u6982_u89C8" class="headerlink" title="Spark集群模式概览"></a>Spark集群模式概览</h1><p>This document gives a short overview of how Spark runs on clusters, to make it easier to understand the components involved.<br><br>本文档简要介绍了 Spark 的集群运行模式，目的是为了让用户更加容易了解 Spark 中涉及到的组件。</p>
-<p>Read through the <a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">application submission guide</a> to learn about launching applications on a cluster.<br><br>用户可以通读<a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">如何向 spark 集群提交应用程序指导手册</a>来了解如何在集群上运行应用程序。</p>
+<p>Read through the <a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">application submission guide</a> to learn about launching applications on a cluster.<br><br>用户可以通读<a href="http://kylin27.github.io/2016/03/10/2016.3.10.submitting-applications.spark2/">如何向 spark 集群提交应用程序指导手册</a>来了解如何在集群上运行应用程序。</p>
 <h2 id="Components"><a href="#Components" class="headerlink" title="Components"></a>Components</h2><h2 id="Spark__u4E2D_u7684_u7EC4_u4EF6"><a href="#Spark__u4E2D_u7684_u7EC4_u4EF6" class="headerlink" title="Spark 中的组件"></a>Spark 中的组件</h2><p>Spark applications run as independent sets of processes on a cluster, coordinated by the SparkContext object in your main program(called the driver program).<br><br>Spark 应用程序以独立的进程集合运行与集群之上，并被位于主程序(这个主程序也被称作是驱动程序)中称作 Spark 上下文(SparkContext)的对象实例所协调调度。</p>
 <p>Specifically, to run on a cluster, the SparkContext can connect to several types of cluster managers(either Spark’s own standalone cluster manager, Mesos or YARN), which allocate resources across applications.<br><br>特别值得注意的是，以集群运行的 Spark 中的 SparkContext 可以连接多种类型的用于跨应用程序分配资源的集群调度器(这个调度器既可以是 Spark 自己独立的集群资源管理器，也可以是 Mesos 或是 YARN).</p>
 <p>Once connected, Spark acquires executors on nodes in the cluster, which are processes that run computations and store data for your application.<br><br>一旦 Spark 与资源调度器二者相连接，Spark 便会向位于集群中的多个结点索取执行器资源。这些执行器由多个进程构成的专门用来为你的应用程序提供计算和存放数据的功能。</p>
@@ -209,7 +209,7 @@ Cluster Mode OverviewSpark集群模式概览This document gives a short overview
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/03/09/2016.3.8.cluster-overview1/" data-id="cilmfdxcg000migimy2clwbo5" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/03/09/2016.3.8.cluster-overview1/" data-id="cilmg0or0000magimoblmcuvn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official-guides/">official-guides</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>

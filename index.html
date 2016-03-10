@@ -87,10 +87,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Descriptions:<br>最近正在系统阅读 Spark 官方文档，阅读的同时尝试着翻译了其中部分的章节，本篇文档原文链接地址:<a href="http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management" target="_blank" rel="external">http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management</a> ，个人水平有限,若有不恰当之处欢迎指正，邮箱地址 kylin27@outlook.com </p>
+        <p>Descriptions:<br>最近正在系统阅读 Spark 官方文档，阅读的同时也试着翻译了其中部分的章节，本篇文档原文链接地址:<a href="http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management" target="_blank" rel="external">http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management</a> ，<br>个人水平有限,若翻译有不恰当之处欢迎指正，邮箱地址 kylin27@outlook.com </p>
 <hr>
 <h1 id="Submitting_Applications"><a href="#Submitting_Applications" class="headerlink" title="Submitting Applications"></a>Submitting Applications</h1><h1 id="u5982_u4F55_u5411_Spark__u4E0A_u63D0_u4EA4_u5E94_u7528_u7A0B_u5E8F"><a href="#u5982_u4F55_u5411_Spark__u4E0A_u63D0_u4EA4_u5E94_u7528_u7A0B_u5E8F" class="headerlink" title="如何向 Spark 上提交应用程序"></a>如何向 Spark 上提交应用程序</h1><p>The spark-submit script in Spark’s bin directory is used to launch applications on a cluster.<br>位于 Spark bin 目录下面的 spark-submit 脚本是用来在集群上启动应用程序的。</p>
-<p>It can use all Spark’s supported cluster <a href="http://spark.apache.org/docs/latest/cluster-overview.html#cluster-manager-types" target="_blank" rel="external">cluster managers</a> through a uniform interface so you don’t have to configure your application specially for each one.<br>spark-submit 启动脚本通过统一接口来支持 Spark 中的多种集群(资源)管理器的(笔者: 比如说 Spark 自带的资源管理器，或是 Mesos ，YARN 这种第三方资源调度框架)，所以你无需因为管理器的不同来重新配置你的应用程序。</p>
+<p>It can use all Spark’s supported cluster <a href="http://spark.apache.org/docs/latest/cluster-overview.html#cluster-manager-types" target="_blank" rel="external">cluster managers</a> through a uniform interface so you don’t have to configure your application specially for each one.<br>spark-submit 启动脚本通过统一接口来支持 Spark 中的多种集群(资源)管理器(译者: 比如说 Spark 自带的资源管理器，或是 Mesos ，YARN 这种第三方资源调度框架)，所以你无需因为管理器的不同来重新配置你的应用程序。</p>
 <h2 id="Building_Your_Applications_u2019s_Dependencies"><a href="#Building_Your_Applications_u2019s_Dependencies" class="headerlink" title="Building Your Applications’s Dependencies"></a>Building Your Applications’s Dependencies</h2><h2 id="u5982_u4F55_u6784_u5EFA_u4F9D_u8D56_u4E8E_u5176_u4ED6_u5E93_u7684_u5E94_u7528_u7A0B_u5E8F"><a href="#u5982_u4F55_u6784_u5EFA_u4F9D_u8D56_u4E8E_u5176_u4ED6_u5E93_u7684_u5E94_u7528_u7A0B_u5E8F" class="headerlink" title="如何构建依赖于其他库的应用程序"></a>如何构建依赖于其他库的应用程序</h2><p>If your code depends on other projects, you will need to package them alongside your application in order to distribute the code to a Spark cluster.<br>如果你所编写的代码依赖于其他的项目的话，建议你在打包时将代码依赖的项目和你所编写的应用放到一起，这样的话可以保证依赖项目可以随代码一起被分发到 Spark 集群上。</p>
 <p>To do this, create an assembly jar(or “uber” jar) containing your code and its dependencies.<br>可以通过创建一个组装 Jar 包，在该 Jar 中既包含你编写的代码又包含代码所依赖的文件，这样的话便可以实现自定义代码所依赖项目会随应用程序一起被分发了。</p>
 <p>Both <a href="/">sbt</a> and <a href="/">Maven</a> have assembly plugins.<br><a href="/">sbt</a>和 <a href="/">Maven</a> 这两种项目管理工具均有可生成上述的组装 Jar 包的插件。</p>
@@ -319,6 +319,7 @@ export HADOOP_CONF_DIR=XXX
 <p>If your are ever unclear where configuration options are coming from, you can print out fine-grained debugging information by running spark-submit with the –verose option.<br>如果你对 Spark 中的某些配置选项不是很理解，不知道某些参数是用来做什么的话，建议在运行 spark-submit 脚本的时后接 –verose 参数这个选项，这样就可以将每个后接参数的调试信息详细打印出来了。</p>
 <h2 id="Advanced_Dependency_Management"><a href="#Advanced_Dependency_Management" class="headerlink" title="Advanced Dependency Management"></a>Advanced Dependency Management</h2><p>##<br>When using spark-submit, the application jar along with any jars included with the –jars option will be automatically transferred to the cluster.<br>当运行 spark-submit 脚本时，应用程序连同任何 –jars 参数选项后接的 jar 文件都会被自动的提交给集群。</p>
 <p>Spark uses the following URL scheme to allow different strategies for disseminating jars:<br>Spark 使用如下所示的多种 URL 模式来实现不同策略的 jar 文件的分发:</p>
+<p>（其实上面都是我瞎编的… ，今天太晚了，我编不下去了，明天继续编… =。=） <br></p>
 <ul>
 <li><p>file: - Absolute path and file:/URIs are servered by the driver’s HTTP file server, and every executor pulls the file from the driver HTTP server.</p>
 </li>
@@ -336,7 +337,7 @@ export HADOOP_CONF_DIR=XXX
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/03/10/2016.3.10.submitting-applications.spark2/" data-id="cilmfdxck000tigim5c7dyqh5" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/03/10/2016.3.10.submitting-applications.spark2/" data-id="cilmg0or4000tagimohzq9xnd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official-doc/">official-doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
@@ -373,7 +374,7 @@ export HADOOP_CONF_DIR=XXX
         <p>Descriptions: <br><br>最近正在系统学习 Spark ，本篇文章翻译自 <a href="http://spark.apache.org/docs/latest/cluster-overview.html" target="_blank" rel="external">Spark 官方指导文档</a> 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com</p>
 <hr>
 <h1 id="Cluster_Mode_Overview"><a href="#Cluster_Mode_Overview" class="headerlink" title="Cluster Mode Overview"></a>Cluster Mode Overview</h1><h1 id="Spark_u96C6_u7FA4_u6A21_u5F0F_u6982_u89C8"><a href="#Spark_u96C6_u7FA4_u6A21_u5F0F_u6982_u89C8" class="headerlink" title="Spark集群模式概览"></a>Spark集群模式概览</h1><p>This document gives a short overview of how Spark runs on clusters, to make it easier to understand the components involved.<br><br>本文档简要介绍了 Spark 的集群运行模式，目的是为了让用户更加容易了解 Spark 中涉及到的组件。</p>
-<p>Read through the <a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">application submission guide</a> to learn about launching applications on a cluster.<br><br>用户可以通读<a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">如何向 spark 集群提交应用程序指导手册</a>来了解如何在集群上运行应用程序。</p>
+<p>Read through the <a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">application submission guide</a> to learn about launching applications on a cluster.<br><br>用户可以通读<a href="http://kylin27.github.io/2016/03/10/2016.3.10.submitting-applications.spark2/">如何向 spark 集群提交应用程序指导手册</a>来了解如何在集群上运行应用程序。</p>
 <h2 id="Components"><a href="#Components" class="headerlink" title="Components"></a>Components</h2><h2 id="Spark__u4E2D_u7684_u7EC4_u4EF6"><a href="#Spark__u4E2D_u7684_u7EC4_u4EF6" class="headerlink" title="Spark 中的组件"></a>Spark 中的组件</h2><p>Spark applications run as independent sets of processes on a cluster, coordinated by the SparkContext object in your main program(called the driver program).<br><br>Spark 应用程序以独立的进程集合运行与集群之上，并被位于主程序(这个主程序也被称作是驱动程序)中称作 Spark 上下文(SparkContext)的对象实例所协调调度。</p>
 <p>Specifically, to run on a cluster, the SparkContext can connect to several types of cluster managers(either Spark’s own standalone cluster manager, Mesos or YARN), which allocate resources across applications.<br><br>特别值得注意的是，以集群运行的 Spark 中的 SparkContext 可以连接多种类型的用于跨应用程序分配资源的集群调度器(这个调度器既可以是 Spark 自己独立的集群资源管理器，也可以是 Mesos 或是 YARN).</p>
 <p>Once connected, Spark acquires executors on nodes in the cluster, which are processes that run computations and store data for your application.<br><br>一旦 Spark 与资源调度器二者相连接，Spark 便会向位于集群中的多个结点索取执行器资源。这些执行器由多个进程构成的专门用来为你的应用程序提供计算和存放数据的功能。</p>
@@ -486,7 +487,7 @@ export HADOOP_CONF_DIR=XXX
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/03/09/2016.3.8.cluster-overview1/" data-id="cilmfdxcg000migimy2clwbo5" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/03/09/2016.3.8.cluster-overview1/" data-id="cilmg0or0000magimoblmcuvn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official-guides/">official-guides</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
@@ -612,7 +613,7 @@ while ( server is active){
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/" data-id="cilmfdxcn000yigimade3hial" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/" data-id="cilmg0or7000yagim8cqv2mnf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
@@ -671,7 +672,7 @@ while ( server is active){
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_multithreading_costs3/" data-id="cilmfdxd1001jigimpidml9gc" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_multithreading_costs3/" data-id="cilmg0orj001jagim9rvvf0jk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
@@ -738,7 +739,7 @@ while ( server is active){
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="cilmfdxd4001nigim058cn33v" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="cilmg0orn001nagimfttegoum" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translate/">translate</a></li></ul>
@@ -1377,7 +1378,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cilmfdxd8001sigimprqxyod3" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cilmg0orq001sagimen9857al" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDEA/">IDEA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Intellij/">Intellij</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/debug/">debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -1425,7 +1426,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cilmfdxdd0022igimvtk5zujz" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cilmg0oru0022agim7k323t3u" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official/">official</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
@@ -1699,7 +1700,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cilmfdxdh0029igim3cj82p62" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cilmg0orx0029agimnlynjbax" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gtest/">Gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gtest/">gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/manual/">manual</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tutorial/">tutorial</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试/">测试</a></li></ul>
@@ -1823,7 +1824,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cilmfdxds002migim294asgwj" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cilmg0os3002magimhvev6kkm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chord/">Chord</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DHT/">DHT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/P2P/">P2P</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/note/">note</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -1872,7 +1873,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cilmfdxdx002wigimvfcxjmap" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cilmg0os7002wagimsfks3l8k" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/picture/">picture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/七牛/">七牛</a></li></ul>
