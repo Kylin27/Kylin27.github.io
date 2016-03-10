@@ -65,6 +65,289 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-2016.3.10.submitting-applications.spark2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/03/10/2016.3.10.submitting-applications.spark2/" class="article-date">
+  <time datetime="2016-03-09T16:00:00.000Z" itemprop="datePublished">2016-03-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/10/2016.3.10.submitting-applications.spark2/">Spark 部署文档-如何向 Spark 上提交应用程序-2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Descriptions:<br>最近正在系统阅读 Spark 官方文档，阅读的同时尝试着翻译了其中部分的章节，本篇文档原文链接地址:<a href="http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management" target="_blank" rel="external">http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management</a> ，个人水平有限,若有不恰当之处欢迎指正，邮箱地址 kylin27@outlook.com </p>
+<hr>
+<h1 id="Submitting_Applications"><a href="#Submitting_Applications" class="headerlink" title="Submitting Applications"></a>Submitting Applications</h1><h1 id="u5982_u4F55_u5411_Spark__u4E0A_u63D0_u4EA4_u5E94_u7528_u7A0B_u5E8F"><a href="#u5982_u4F55_u5411_Spark__u4E0A_u63D0_u4EA4_u5E94_u7528_u7A0B_u5E8F" class="headerlink" title="如何向 Spark 上提交应用程序"></a>如何向 Spark 上提交应用程序</h1><p>The spark-submit script in Spark’s bin directory is used to launch applications on a cluster.<br>位于 Spark bin 目录下面的 spark-submit 脚本是用来在集群上启动应用程序的。</p>
+<p>It can use all Spark’s supported cluster <a href="http://spark.apache.org/docs/latest/cluster-overview.html#cluster-manager-types" target="_blank" rel="external">cluster managers</a> through a uniform interface so you don’t have to configure your application specially for each one.<br>spark-submit 启动脚本通过统一接口来支持 Spark 中的多种集群(资源)管理器的(笔者: 比如说 Spark 自带的资源管理器，或是 Mesos ，YARN 这种第三方资源调度框架)，所以你无需因为管理器的不同来重新配置你的应用程序。</p>
+<h2 id="Building_Your_Applications_u2019s_Dependencies"><a href="#Building_Your_Applications_u2019s_Dependencies" class="headerlink" title="Building Your Applications’s Dependencies"></a>Building Your Applications’s Dependencies</h2><h2 id="u5982_u4F55_u6784_u5EFA_u4F9D_u8D56_u4E8E_u5176_u4ED6_u5E93_u7684_u5E94_u7528_u7A0B_u5E8F"><a href="#u5982_u4F55_u6784_u5EFA_u4F9D_u8D56_u4E8E_u5176_u4ED6_u5E93_u7684_u5E94_u7528_u7A0B_u5E8F" class="headerlink" title="如何构建依赖于其他库的应用程序"></a>如何构建依赖于其他库的应用程序</h2><p>If your code depends on other projects, you will need to package them alongside your application in order to distribute the code to a Spark cluster.<br>如果你所编写的代码依赖于其他的项目的话，建议你在打包时将代码依赖的项目和你所编写的应用放到一起，这样的话可以保证依赖项目可以随代码一起被分发到 Spark 集群上。</p>
+<p>To do this, create an assembly jar(or “uber” jar) containing your code and its dependencies.<br>可以通过创建一个组装 Jar 包，在该 Jar 中既包含你编写的代码又包含代码所依赖的文件，这样的话便可以实现自定义代码所依赖项目会随应用程序一起被分发了。</p>
+<p>Both <a href="/">sbt</a> and <a href="/">Maven</a> have assembly plugins.<br><a href="/">sbt</a>和 <a href="/">Maven</a> 这两种项目管理工具均有可生成上述的组装 Jar 包的插件。</p>
+<p>When creating assembly jars, list Spark and Hadoop as provided dependencies; these need not be bundled since they are provided by the cluster manager at runtime.<br>当打包组装 Jar 包的时候，会将你所编写代码所依赖的 Spark 和 Hadoop 库显示出来； 不过你并不需要将 Spark 和 Hadoop 的库文件加载到 Jar 包中的，因为这些依赖文件将会在应用程序的运行期由 Spark 集群资源管理器来提供。</p>
+<p>Once you have an assembled jar you can call the bin/spark-submit script as shown here while passing your jar.<br>一旦 Jar 文件被成功创建，你便可以通过调用位于 bin 目录下面的也是当前我们正在介绍的这个 spark-submit 脚本来将你的 Jar 文件提交到 Spark 集群上了。</p>
+<p>For Python, you can use the –py-files argument of spark-submit to add .py, .zip or .egg files to be distributed with your application.<br>如果依赖的是 Python 语言编写的库的话，你可以在使用 spark-submit 脚本的时候通过后接 –py-files 这个参数选项来将以 .py，.zip 或是 .egg 为后缀文件和你的应用一起发布到 Spark 集群上面。</p>
+<p>If you depend on multiple Python files we recommend packaging them into a .zip or .egg.<br>如果你的应用程序依赖于不止一个 Python 文件，建议你将多个 Python 文件打包成 .zip 或是 .egg 类型的文件。</p>
+<h2 id="Launching_Applications_with_spark-submit"><a href="#Launching_Applications_with_spark-submit" class="headerlink" title="Launching Applications with spark-submit"></a>Launching Applications with spark-submit</h2><h2 id="u4F7F_u7528_spark-submit__u811A_u672C_u6765_u53D1_u5E03_u5E94_u7528_u7A0B_u5E8F_u5230_Spark__u96C6_u7FA4"><a href="#u4F7F_u7528_spark-submit__u811A_u672C_u6765_u53D1_u5E03_u5E94_u7528_u7A0B_u5E8F_u5230_Spark__u96C6_u7FA4" class="headerlink" title="使用 spark-submit 脚本来发布应用程序到 Spark 集群"></a>使用 spark-submit 脚本来发布应用程序到 Spark 集群</h2><p>Once a user application is bundled, it can be launched using the bin/spark-submit script.<br>一旦用户自定义应用程序和依赖文件被成功绑定，便可以使用 bin 路径下的 spark-submit 脚本将其发布到 Spark 上。</p>
+<p>This script takes care of setting up the classpath with Spark and its dependencies, and can support different cluster managers and deploy modes that Sparks supports.<br>spark-submit 脚本支持为 Spark 和其所依赖的库来设定 classpath，同时 spark-submit 启动脚本后接的多种参数选项可以很好的配合 Spark 支持的多种集群管理器与启动模式:</p>
+<p><b> ps: 由于博客支持符号优先，将下面的 # 替换成左右尖括号</b></p>
+<pre>
+./bin/spark-submit \
+  --class  #main-class#     \
+  --master #master-url#      \
+  --deploy-mode #deploy-mode# \
+  --conf #key#=#value#           \
+  ... # other options 
+  #application-jar#                \
+  [application-arguments]
+</pre>
+
+<p>Some of the commonly used options are:<br>spark-submit 脚本中常用的参数选项描述如下:</p>
+<ul>
+<li>–class: The entry point for your application(e.g. org.apache.spark.examples.SparkPi)</li>
+<li><p>–class: 这个参数选项是用来指定整个应用程序的入口点的(例如， Spark 源码包中的 SparkPi 这个类就可以看做是整个应用的入口点)。</p>
+</li>
+<li><p>–master: The <a href="http://spark.apache.org/docs/latest/submitting-applications.html#master-urls" target="_blank" rel="external">master URL</a> for the cluster(e.g. spark://23.195.26.187:7077)</p>
+</li>
+<li><p>–master: 这个参数选项是用来指定集群<a href="http://spark.apache.org/docs/latest/submitting-applications.html#master-urls" target="_blank" rel="external">主节点的 URL 地址</a>的(例如你可以将主结点的 IP 设定为 23.195.26.187:7077 然后通过 spark://23.195.26.187:7077 来访问主结点)。</p>
+</li>
+<li><p>–deploy-mode: Whether to deploy your driver on the worker nodes(cluster) or locally as an external client(client)(default: client)</p>
+</li>
+<li><p>–deploy-mode: 这个选项是用来设定你在哪里启动驱动程序的，是在工作结点上(这个是集群模式)还是作为外部客户端在本地启动的(这个是客户端模式)，默认的缺省部署模式是本地启动的客户模式。</p>
+</li>
+<li><p>–conf: Arbitrary Spark configuration property in key=value format. For values that contain spaces wrap “key=value” in quotes(as shown).</p>
+</li>
+<li><p>–conf: Spark 中用来以键值对方式强制改写配置信息的参数选项。如果键值对的数值中有空格，可以使用引号来包装”键=值”。(像这样 “键=值”)</p>
+</li>
+<li><p>application-jar: Path to a bundled jar including your application and all dependencies. The URL must be globally visible inside of your cluster, for instance, an hdfs://path of a file:// path that is present on all nodes.</p>
+</li>
+<li><p>application-jar: 这个参数选项用来指定包含你的应用程序和其所依赖的文件在内绑定好的 jar 文件的路径。 如果使用 URL 来定位的话，这个 URL 对于整个集群来说一定要是全局可见的，例如，若是在 HDFS 上面以 hdfs:// 开头， 或是如果文件路径在所有结点上都存在则可以以 file:// 来开头。  </p>
+</li>
+<li><p>application-arguments: Arguments passed to the main method of your main class,if any.</p>
+</li>
+<li>application-arguments: 如果你所编写的应用程序的主函数入口在运行的时候需要传参的话，使用这个参数选项并后接需要传递给主函数的参数，参数便可以正确地传递给应用程序的主函数。</li>
+</ul>
+<p>A common deployment strategy is to submit your application from a gateway machine that is physically co-located with your worker machines(e.g. Master node in a standalone EC2 cluster).<br>一种比较常用的在 Spark 集群上部署应用程序的方式是在网关主机上提交你的应用，这个网关主机指的就是在集群中和其他工作主机通过物理网络是互相可达的。(例如在独立模式的 EC2 集群中的主结点就扮演着网关主机的角色)。</p>
+<p>In this setup, client mode is appropriate. In client mode, the driver is launched directly within the spark-submit process which acts as a client to the cluster.<br>启动 Spark 时， 客户/本地模式是很推荐的启动模式。 在客户模式下启动，驱动程序会以进程成员的方式随 spark-submit 一起直接被启动，该进程扮演着访问集群的客户端的角色。</p>
+<p>The input and output of the application is attached to the console.<br>应用程序的输入输出信息可通过控制台上来直接访问。</p>
+<p>Thus, this mode is especially suitable for applications that involve the REPL(e.g. Spark shell).<br>正因如此这种模式尤其适合使用到 REPL 表达式(例如 Spark shell 脚本)的应用程序。</p>
+<p>Alternatively, if your application is submitted from a machine far from the worker machines(e.g. locally on your laptop), it is common to use cluster mode to minimize network latency between the drivers and the executors.<br>相应的，如果你提交应用程序的主机距离其所支配的工作主机很远的话(比如说，你使用笔记本来执行本地任务提交)，推荐你使用集群这种部署方式来启动 Spark 以减少驱动程序和执行器二者之间网络通信所带来的延迟。</p>
+<p>Note that cluster mode is currently not supported for Mesos clusters.<br>值得注意的是，目前 Spark 的集群并不适用于由 Mesos 管理的集群中的。</p>
+<p>Currently only YARN supports cluster mode for Python applications.<br>目前只有基于 YARN 管理器的 Spark 集群支持 Python 应用程序的运行。</p>
+<p>For Python applications, simply pass a .py file in the place of <application-jar> instead of a JAR, and Python .zip, .egg or .py files to the search path with –py-files.<br>关于如何向 Spark 集群提交 Python 应用程序，只需要简单地将在参数选项 <application-jar> 后面原本追加 JAR 文件的地方使用你所要上传的 .py 文件即可，如果是多个 .py 文件的话，可以将其打包成 .zip ，.egg 文件包或者使用 –py-files 参数来制定该多个 .py 文件的搜索路径名称都可以。</application-jar></application-jar></p>
+<p>There are a few options available that are specific to the <a href="http://spark.apache.org/docs/latest/cluster-overview.html#cluster-manager-types" target="_blank" rel="external">cluster manager</a> that is being used.<br>专门用于处于运行中状态的集群管理器的命令参数选项并不多。</p>
+<p>For example, with a <a href="http://spark.apache.org/docs/latest/spark-standalone.html" target="_blank" rel="external">Spark standalone cluster</a> with cluster deploy mode, you can also specify –supervise to make sure that the driver is automatically restarted if it fails with non-zero exit code.<br>例如以<a href="/">独立模式启动的 Spark</a>你可以通过 –supervise 这个命令参数是来确保当驱动程序以返回值非零的状态退出之后(译者:也就是错误状态退出的时候)，该驱动程序可以实现自动重启。</p>
+<p>To enumerate all such options avaialable to spark-submit, run it with –help. Here are a few examples of common options:<br>如果想一一列举 spark-submit 脚本可用的参数选项信息的话，可以在启动 spark-submit 脚本的时候输入 –help 选项。 下面是使用 spark-submit 脚本常用的参数选项举例:</p>
+<pre>
+# Run application locally on 8 cores
+# 以本地 8 核的方式来向 Spark 提交应用程序
+
+./bin/spark-submit \
+  --class org.apache.spark.examples.SparkPi \
+  --master local[8]  \
+  /path/to/examples.jar \
+  100
+
+译者注: 上述的 spark-submit 提交命令解释入下
+--class org.apache.spark.examples.SparkPi 
+这条命令所对应的是用于指定提交给 Spark 的 Jar 文件的主入口函数的(也就是包含 main() 入口函数的类，并且在其中成功创建 SparkContext 对象实例的所在类)所在类
+--master 
+这个参数选项，应该指定(暂时还不太清楚这个)
+
+/path/to/examples.jar 
+这个参数选项用来指定提交给 Spark 的 Jar 文件在本地的路径信息
+
+100 
+这个参数是用来传递给 Jar 中的主入口函数在启动的时候需要向 
+main(String [] args ){...} 传入的参数，
+当然如果主入口函数不需要传入参数的话，这个参数选项可以不加。 
+</pre>
+
+<pre>
+# Run on a Spark standalone cluster in client deploy mode
+# 以客户部署模式来启动独立 Spark 集群
+
+./bin/spark-submit \
+  --class org.apache.spark.examples.SparkPi \
+  --master spark://207.184.161.138:7077 \
+  --executor-memory 20G  \
+  --total-executor-cores 100 \
+  /path/to/examples.jar  \
+  1000
+
+译者注: 上述的 spark-submit 提交命令注释如下
+--class org.apache.spark.examples.SparkPi
+主函数入口所在类
+
+--master spark://207.184.161.138:7077
+用 URL 来定位 Spark 集群中的主结点
+
+--executor-memory 20G 
+用来为每个执行器进程分配内存空间
+
+--total-executor-cores 100 
+用来指定 Spark 开启多少个执行者进程
+
+/path/to/examples.jar 
+用来指定用户提交 Jar 文件所在目录信息
+
+1000
+用户提交的 Jar 文件中主函数启动所需要的参数
+
+</pre>
+
+<pre>
+# Run on a Spark standalone cluster in cluster deploy mode with supervise
+# 使用监控着来以集群部署模式来启动独立 Spark 集群
+
+./bin/spark-submit  \
+  --class org.apache.spark.examples.SparkPi \
+  --master spark://207.184.161.138:7077 \
+  --deploy-mode cluster
+  --supervise
+  --executor-memory 20G \
+  --total-executor-cores 100 \
+  /path/to/examples.jar \
+  1000 
+
+</pre>
+
+<pre>
+# Run on a YARN cluster
+export HADOOP_CONF_DIR=XXX
+./bin/spark-submit \
+ --class org.apache.spark.examples.SparkPi \
+ --master yarn \
+ --deploy-mode cluster \  # can be client for client mod
+ --executor-memory 20G \
+ --num-executors 50  \
+ /path/to/examples.jar \
+ 1000
+
+</pre>
+
+<pre>
+# Run a Python application on a Spark standalone cluster
+# 在独立的 Spark 集群上运行 Python 应用程序
+
+./bin/spark-submit   \
+  --master spark://207.184.161,138:7077 \
+  examples/src/main/python/pi.py  \
+  1000
+
+</pre>
+
+<pre>
+# Run on a Mesos cluster in cluster deploy mode with supervise 
+# 使用 supervise 监控在集群部署模式下启动运行在 Mesos 集群上的 Spark 
+
+./bin/spark-submit \
+  --class org.apache.spark.examples.SparkPi \
+  --master mesos://207.184.161.138:7077 \
+  --deploy-mode cluster
+  --supervise
+  --executor-memory 20G \
+  --total-executor-cores 100 \
+  http://path/to/examples.jar \
+  1000
+</pre>
+
+<h2 id="Master_URLs"><a href="#Master_URLs" class="headerlink" title="Master URLs"></a>Master URLs</h2><h2 id="u5173_u4E8E_u4E3B_u7ED3_u70B9_URL__u5730_u5740_u63CF_u8FF0_u683C_u5F0F"><a href="#u5173_u4E8E_u4E3B_u7ED3_u70B9_URL__u5730_u5740_u63CF_u8FF0_u683C_u5F0F" class="headerlink" title="关于主结点 URL 地址描述格式"></a>关于主结点 URL 地址描述格式</h2><p>The master URL passed to Spark can be in one of the following formats:<br>主节点的 URL 地址以参数选项 –master 的方式传递给 Spark ，不过该主结点的 URL 地址需要遵循如下描述的格式：</p>
+<p>Master URL / Meaning<br>主结点 URL / 该 URL 地址所适用的场合</p>
+<ul>
+<li>local </li>
+<li>Runing Spark locally with one worker thread (i.e. no parallelism at all).</li>
+<li>此种主结点 URL 地址描述适用于仅开启一个工作者线程的本地 Spark 运行模式(也就是说，运行于此模式下的 Spark 并不支持并行)</li>
+</ul>
+<hr>
+<ul>
+<li>local[K]</li>
+<li>Run Spark locally with K worker threads (ideally, set this to the number of cores on your machine).</li>
+<li>此证 URL 地址描述适用于开启 K 个工作者线程且本地模式启动 Spark 的场景，(通常情况下，理想的方式是运行 Spark 主机 CPU 中有多少个核便相应地开启多少个线程)</li>
+</ul>
+<hr>
+<ul>
+<li>local[*]</li>
+<li>Run Spark locally with as many worker threads as logical cores on your machine.</li>
+<li>本地模式启动 Spark 且让当前主机的 CPU 中的内核 AT 力场全开的运行尽量多的线程。</li>
+</ul>
+<hr>
+<ul>
+<li>spark://HOST:PORT</li>
+<li>Connect to the given <a href="http://spark.apache.org/docs/latest/spark-standalone.html" target="_blank" rel="external">Spark standalone cluster</a> master. The port must be whichever one your master is configured to use, which is 7077 by default.</li>
+<li>这种 URL 地址适用于用于连接以<a href="http://spark.apache.org/docs/latest/spark-standalone.html" target="_blank" rel="external">独立集群的方式启动的 Spark</a> 上的主结点。 端口号要先对其进行配置然后才可以使用，默认的端口号是 7077 .</li>
+</ul>
+<hr>
+<ul>
+<li>mesos://HOST:PORT</li>
+<li>Connect to the given <a href="http://spark.apache.org/docs/latest/running-on-mesos.html" target="_blank" rel="external">Mesos</a> cluster. The port must be whichever one your is configured to use, which 5050 by default. Or, for a Mesos cluster using Zookeeper, use mesos://zk://…. To submit with –deploy-mode cluster, the HOST:PORT should be configured to connect to the <a href="http://spark.apache.org/docs/latest/running-on-mesos.html#cluster-mode" target="_blank" rel="external">MesosClusterDispatcher</a>.</li>
+<li>当想要连接使用 <a href="http://spark.apache.org/docs/latest/running-on-mesos.html" target="_blank" rel="external">Mesos</a> 管理的 Spark 集群中的主结点的时候，使用这个 URL 地址就对了。 端口号在使用之前必须要通过相关配置文件加以设定，缺省端口号是 5050. 或者是， 如果这个 Mesos 使用 Zookeeper 框架的话，那么 URL 地址就相应地变成 mesos://zk://….。 可以使用 –deploy-mode cluster 来向 Mesos 组织的 Spark 集群上提交应用程序，而 HOST:PORT 应该被配置成 <a href="http://spark.apache.org/docs/latest/running-on-mesos.html#cluster-mode" target="_blank" rel="external">Mesos 集群分配器</a>的 URL 访问地址。</li>
+</ul>
+<hr>
+<ul>
+<li>yarn</li>
+<li>Connect to a <a href="http://spark.apache.org/docs/latest/running-on-yarn.html" target="_blank" rel="external">YARN</a> cluster in client or cluster mode depending on the value of –deploy-mode. The cluster location will be found based on the HADOOP_CONF_DIR or YARN_CONF_DIR variable.</li>
+<li>yarn 常用作连接使用 <a href="http://spark.apache.org/docs/latest/running-on-yarn.html" target="_blank" rel="external">YARN</a> 管理器的以本地客户端模式或是集群模式启动的 Spark 集群中的主结点， yarn 是 –deploy-mode 这个参数选项的后接值。 集群的地址可通过查找相关配置文件中的 HADOOP_CONF_DIR 或是 YARN_CONF_DIR 环境变量值来定位。</li>
+</ul>
+<hr>
+<ul>
+<li>yarn-client</li>
+<li>Equivalent to yarn with –deploy-mode client, which is preferred to ‘yarn-client’.</li>
+<li>该 URL 等同于以 yarn 的客户/本地模式启动 Spark 的时候后接 –deploy-mode 这个参数选项，不过前者更加被人所熟知。</li>
+</ul>
+<hr>
+<ul>
+<li>yarn-cluster</li>
+<li>Equivalent to yarn with –deploy-mode cluster, which is prefered to ‘yarn-cluster’</li>
+<li>这个 URL 地址使用与以 yarn 集群 方式启动的时候使用 –deploy-mode cluster 这个参数选项，也通常人们更喜欢用 ‘yarn-cluster’ 。</li>
+</ul>
+<h2 id="Loading_Configuration_from_a_File"><a href="#Loading_Configuration_from_a_File" class="headerlink" title="Loading Configuration from a File"></a>Loading Configuration from a File</h2><h2 id="u4ECE_u6587_u4EF6_u4E2D_u6765_u52A0_u8F7D_u914D_u7F6E_u9009_u9879"><a href="#u4ECE_u6587_u4EF6_u4E2D_u6765_u52A0_u8F7D_u914D_u7F6E_u9009_u9879" class="headerlink" title="从文件中来加载配置选项"></a>从文件中来加载配置选项</h2><p>The spark-submit script can load default <a href="http://spark.apache.org/docs/latest/configuration.html" target="_blank" rel="external">Spark configuration values</a> from a properties file and pass them on to your application.<br>Spark 中用于提交应用的 spark-submit 脚本可以从配置文件中加载默认的 Spark 配置信息，并将这些配置信息应用在你所提交的应用程序中。</p>
+<p>By default it will read options from conf/spark-defaults.conf in the Spark directory.<br>默认情况下， spark-submit 脚本会从 Spark 所在路径下的 conf/spark-default.conf 配置文件中来读取配置选项信息。</p>
+<p>For more detail, see the section on <a href="http://spark.apache.org/docs/latest/configuration.html#loading-default-configurations" target="_blank" rel="external">loading default configurations</a>.<br>若想要进一步了解关于配置信息加载的问题，可以查阅<a href="http://spark.apache.org/docs/latest/configuration.html#loading-default-configurations" target="_blank" rel="external">如何加载默认配置信息</a>这篇文章。</p>
+<p>Loading default Spark configurations this way can obviate the need for certain flags to spark-submit. For instance, if the spark.master property is set, you can safely omit the –master flag from spark-submit.<br>如果 Spark 配置文件书写得当的话，可以减少在运行 spark-submit 脚本的时候后接参数的数目。 例如，如果 spark.master 这个参数的选项已经在配置脚本中设定好了，那么在调用 spark-submit 的时候可以省去不写 –master 这个参数选项。 </p>
+<p>In general, configuration values explicitly set on a SparkConf take the highest precedence, then flags passed to spark-submit, then values in the defaults file.<br>通常情况下不同方式的配置数值之间是有着明确的优先级的，其中通过 SparkConf 对象实例所设定的配置参数享有最高的优先级， 接下来是运行 spark-submit 脚本时所传递的参数，最后是写在配置文件中的默认选项信息。</p>
+<p>If your are ever unclear where configuration options are coming from, you can print out fine-grained debugging information by running spark-submit with the –verose option.<br>如果你对 Spark 中的某些配置选项不是很理解，不知道某些参数是用来做什么的话，建议在运行 spark-submit 脚本的时后接 –verose 参数这个选项，这样就可以将每个后接参数的调试信息详细打印出来了。</p>
+<h2 id="Advanced_Dependency_Management"><a href="#Advanced_Dependency_Management" class="headerlink" title="Advanced Dependency Management"></a>Advanced Dependency Management</h2><p>##<br>When using spark-submit, the application jar along with any jars included with the –jars option will be automatically transferred to the cluster.<br>当运行 spark-submit 脚本时，应用程序连同任何 –jars 参数选项后接的 jar 文件都会被自动的提交给集群。</p>
+<p>Spark uses the following URL scheme to allow different strategies for disseminating jars:<br>Spark 使用如下所示的多种 URL 模式来实现不同策略的 jar 文件的分发:</p>
+<ul>
+<li><p>file: - Absolute path and file:/URIs are servered by the driver’s HTTP file server, and every executor pulls the file from the driver HTTP server.</p>
+</li>
+<li><p>hdfs:, http:, https:, ftp: - these pull down files and JARs from the URI as expected</p>
+</li>
+<li><p>local: - a URI starting with local:/ is expected to exist as a local file on each worker node. This means that no network IO will be incurred, and works well for large files/JARs that are pushed to each worker, or shared via NFS, ClusterFS, etc. </p>
+</li>
+</ul>
+<p>Note that JARs and files are copied to the working directory for each SparkContext on the executor nodes. This can use up a significant amount of space over time and will need to be cleaned up. With YARN, cleanup is handled automatically, and with Spark standalone, automatic cleanup can be configured with the spark.worker.cleanup.appDataTtl property.</p>
+<p>Users may also included any other dependencies by supplying a comma-delimited list of maven coordinates with –packages. All transitive dependencies will be handled when using this command. Additional repositories( or resolvers in SBT) can be added in a comma-delimited fashion with the flat –repositories. These commands can be used with pyspark, spark-shell, and spark-submit to include Spark Packages.</p>
+<p>For Python, the equivalent –py-files option can be used to distribute .egg, .zip and .py libraries to executors.  </p>
+<h2 id="More_Information"><a href="#More_Information" class="headerlink" title="More Information"></a>More Information</h2><h2 id="u5173_u4E8E_u8FDB_u4E00_u6B65_u5B66_u4E60"><a href="#u5173_u4E8E_u8FDB_u4E00_u6B65_u5B66_u4E60" class="headerlink" title="关于进一步学习"></a>关于进一步学习</h2><p>Once you have deployed your application, the <a href="http://spark.apache.org/docs/latest/cluster-overview.html" target="_blank" rel="external">cluster mode overview</a> describes the components involved in distributed execution, and how to monitor and debug applications.<br>一旦你将你的应用部署到集群之上，在<a href="http://spark.apache.org/docs/latest/cluster-overview.html" target="_blank" rel="external">关于集群模式概览</a>一文中介绍了 Spark 在分布式环境下运行时所需要的组件，以及如何监控与调试你所部署的应用程序。</p>
+<p>end  </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/03/10/2016.3.10.submitting-applications.spark2/" data-id="cilmfdxck000tigim5c7dyqh5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official-doc/">official-doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-2016.3.8.cluster-overview1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/03/09/2016.3.8.cluster-overview1/" class="article-date">
@@ -79,7 +362,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/03/09/2016.3.8.cluster-overview1/">Spark 部署文档-Spark 集群模式概览-1</a>
+      <a class="article-title" href="/2016/03/09/2016.3.8.cluster-overview1/">Spark 部署文档-Spark 集群模式概览1</a>
     </h1>
   
 
@@ -87,7 +370,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Descriptions: 最近正在系统学习 Spark ，本篇文章翻译自 <a href="http://spark.apache.org/docs/latest/cluster-overview.html" target="_blank" rel="external">Spark 官方指导文档</a> 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com</p>
+        <p>Descriptions: <br><br>最近正在系统学习 Spark ，本篇文章翻译自 <a href="http://spark.apache.org/docs/latest/cluster-overview.html" target="_blank" rel="external">Spark 官方指导文档</a> 如有不当之处敬请指正，联系邮箱: kylin27@outlook.com</p>
 <hr>
 <h1 id="Cluster_Mode_Overview"><a href="#Cluster_Mode_Overview" class="headerlink" title="Cluster Mode Overview"></a>Cluster Mode Overview</h1><h1 id="Spark_u96C6_u7FA4_u6A21_u5F0F_u6982_u89C8"><a href="#Spark_u96C6_u7FA4_u6A21_u5F0F_u6982_u89C8" class="headerlink" title="Spark集群模式概览"></a>Spark集群模式概览</h1><p>This document gives a short overview of how Spark runs on clusters, to make it easier to understand the components involved.<br><br>本文档简要介绍了 Spark 的集群运行模式，目的是为了让用户更加容易了解 Spark 中涉及到的组件。</p>
 <p>Read through the <a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">application submission guide</a> to learn about launching applications on a cluster.<br><br>用户可以通读<a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="external">如何向 spark 集群提交应用程序指导手册</a>来了解如何在集群上运行应用程序。</p>
@@ -203,69 +486,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/03/09/2016.3.8.cluster-overview1/" data-id="cill04baj000mrkimftij42zh" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/03/09/2016.3.8.cluster-overview1/" data-id="cilmfdxcg000migimy2clwbo5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official-guides/">official-guides</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016.2.27.java_multithreading_costs3" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/" class="article-date">
-  <time datetime="2016-02-26T16:00:00.000Z" itemprop="datePublished">2016-02-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/27/2016.2.27.java_multithreading_costs3/">Multithreading Costs [多线程所花费的代价]</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Descriptions:<br>java 并发文档翻译，文章链接地址 <a href="http://tutorials.jenkov.com/java-concurrency/costs.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/costs.html</a></p>
-<hr>
-<p>Going from a singlethreaded to a multithreaded application doesn’t just provide benifits.<br>将单线程程序修改成多线程好处是有的，但同时也会带来其他方面的损失。</p>
-<p>It also has some costs. Don’t just multithread-enable an application just because you can.<br>使用多线程需要为之付出相应的代价。 不要仅仅因为你会多线程便去在编程中使用这种技术。</p>
-<p>You should have a good idea that the benefits gained by doing so, are larger than the cost.<br>在使用之前你应该明确的知道相比于应用多线程所花费的代价，你能够获得更大的收益(的时候再来决定将多线程加入到你的程序中)。</p>
-<p>When in doubt, try measuring the performance or responsiveness of the application, instead of just guessing.<br>如果你不能很好的做出决断，那么试着权衡一下程序的性能或是响应能力在使用多线程技术前后有何变化，而不是仅仅通过猜测的方式来决定是否使用(多线程)。</p>
-<h2 id="More_complex_design"><a href="#More_complex_design" class="headerlink" title="More complex design"></a>More complex design</h2><h2 id="u8BBE_u8BA1_u66F4_u52A0_u590D_u6742"><a href="#u8BBE_u8BA1_u66F4_u52A0_u590D_u6742" class="headerlink" title="设计更加复杂"></a>设计更加复杂</h2><p>Though some parts of a multithreaded applications is simpler than a singlethreaded application, other parts are more complex.<br>虽然多线程应用程序在某些地方的实现要比单线程应用程序要简单的多，但是其他地方的设计要远比单线程设计复杂得多。</p>
-<p>Code executed by multiple threads accessing shared data need special attention.<br>被多线程执行的访问共享数据的代码端需要给予高度重视。</p>
-<p>Thread interaction is far from always simple.<br>线程之间的交互要远比想象的复杂。</p>
-<p>Errors arising from incorrect thread synchronization can be very hard to detect, reproduce and fix.<br>线程同步操作所引发的错误很难被探知，重现或是修复。</p>
-<h2 id="Context_Switching_Overhead"><a href="#Context_Switching_Overhead" class="headerlink" title="Context Switching Overhead"></a>Context Switching Overhead</h2><h2 id="u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362"><a href="#u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362" class="headerlink" title="过渡上下文切换"></a>过渡上下文切换</h2><p>When a CPU switches from executing one thread to executing another, the CPU needs to save the local data, program pointer etc. of the current thread, and load the local data, program pointer etc. of the next thread to execute.<br>当 CPU 从一个正在执行的线程切换去执行另一个线程的时候，这个 CPU 需要存放当前线程的本地数据,程序指针等信息; 然后加载另一个将要执行的线程中的本地数据，程序指针等信息。</p>
-<p>This switch is called a “context switch”.<br>上面所描述的切换就叫做 “上下文切换”。</p>
-<p>The CPU switches from executing in the context of one thread to executing in the context of another.<br>对于 CPU 来说，它从正在运行线程的上下文中切换到另一个即将运行的线程的上下文中。</p>
-<p>Context switching isn’t cheap.<br>上下文切换的花费高昂。</p>
-<p>You don’t want to switch between threads more than necessary.<br>所以不到万不得已，我认为你是不会在两个线程之间进行上下文切换的。</p>
-<p>You can read more about context switching on Wikipedia:<br>你可以通过查阅维基百科来获取更多关于上下文切换相关的知识:</p>
-<p><a href="http://en.wikipedia.org/wiki/Context_switch" target="_blank" rel="external">http://en.wikipedia.org/wiki/Context_switch</a></p>
-<h2 id="Increased_Resource_Consumption"><a href="#Increased_Resource_Consumption" class="headerlink" title="Increased Resource Consumption"></a>Increased Resource Consumption</h2><h2 id="u589E_u52A0_u8D44_u6E90_u6D88_u8017"><a href="#u589E_u52A0_u8D44_u6E90_u6D88_u8017" class="headerlink" title="增加资源消耗"></a>增加资源消耗</h2><p>A thread needs some resources from computer in order to run.<br>一个线程需要从计算机中获取相应资源以便于能够运行起来。</p>
-<p>Besides CPU time a thread needs some memory to keep its local stack.<br>除此之外，线程在获取到 CPU 资源之后需要额外的内存空间来存放它的本地栈。</p>
-<p>It may also take up some resources inside the operating system needed to manage the thread.<br>线程或许也会在用来管理线程的操作系统内部占据一些资源。</p>
-<p>Try creating a program that creates 100 thread that does nothing but wait, and see how much memory the application takes when running.<br>(你可以)试着创建一个包含100个不做任何事情且仅处于等待状态的线程的程序，然后观察一下该程序运行起来的时候它总共消耗多少内存。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_multithreading_costs3/" data-id="cill04bb1001erkimrtlvdvw1" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
 
     </footer>
   </div>
@@ -388,7 +612,66 @@ while ( server is active){
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/" data-id="cill04ban000trkimmgst56zb" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.27.java_concurrency.Multithreading_benifits2/" data-id="cilmfdxcn000yigimade3hial" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2016.2.27.java_multithreading_costs3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/" class="article-date">
+  <time datetime="2016-02-26T16:00:00.000Z" itemprop="datePublished">2016-02-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/27/2016.2.27.java_multithreading_costs3/">Multithreading Costs [多线程所花费的代价]</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Descriptions:<br>java 并发文档翻译，文章链接地址 <a href="http://tutorials.jenkov.com/java-concurrency/costs.html" target="_blank" rel="external">http://tutorials.jenkov.com/java-concurrency/costs.html</a></p>
+<hr>
+<p>Going from a singlethreaded to a multithreaded application doesn’t just provide benifits.<br>将单线程程序修改成多线程好处是有的，但同时也会带来其他方面的损失。</p>
+<p>It also has some costs. Don’t just multithread-enable an application just because you can.<br>使用多线程需要为之付出相应的代价。 不要仅仅因为你会多线程便去在编程中使用这种技术。</p>
+<p>You should have a good idea that the benefits gained by doing so, are larger than the cost.<br>在使用之前你应该明确的知道相比于应用多线程所花费的代价，你能够获得更大的收益(的时候再来决定将多线程加入到你的程序中)。</p>
+<p>When in doubt, try measuring the performance or responsiveness of the application, instead of just guessing.<br>如果你不能很好的做出决断，那么试着权衡一下程序的性能或是响应能力在使用多线程技术前后有何变化，而不是仅仅通过猜测的方式来决定是否使用(多线程)。</p>
+<h2 id="More_complex_design"><a href="#More_complex_design" class="headerlink" title="More complex design"></a>More complex design</h2><h2 id="u8BBE_u8BA1_u66F4_u52A0_u590D_u6742"><a href="#u8BBE_u8BA1_u66F4_u52A0_u590D_u6742" class="headerlink" title="设计更加复杂"></a>设计更加复杂</h2><p>Though some parts of a multithreaded applications is simpler than a singlethreaded application, other parts are more complex.<br>虽然多线程应用程序在某些地方的实现要比单线程应用程序要简单的多，但是其他地方的设计要远比单线程设计复杂得多。</p>
+<p>Code executed by multiple threads accessing shared data need special attention.<br>被多线程执行的访问共享数据的代码端需要给予高度重视。</p>
+<p>Thread interaction is far from always simple.<br>线程之间的交互要远比想象的复杂。</p>
+<p>Errors arising from incorrect thread synchronization can be very hard to detect, reproduce and fix.<br>线程同步操作所引发的错误很难被探知，重现或是修复。</p>
+<h2 id="Context_Switching_Overhead"><a href="#Context_Switching_Overhead" class="headerlink" title="Context Switching Overhead"></a>Context Switching Overhead</h2><h2 id="u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362"><a href="#u8FC7_u6E21_u4E0A_u4E0B_u6587_u5207_u6362" class="headerlink" title="过渡上下文切换"></a>过渡上下文切换</h2><p>When a CPU switches from executing one thread to executing another, the CPU needs to save the local data, program pointer etc. of the current thread, and load the local data, program pointer etc. of the next thread to execute.<br>当 CPU 从一个正在执行的线程切换去执行另一个线程的时候，这个 CPU 需要存放当前线程的本地数据,程序指针等信息; 然后加载另一个将要执行的线程中的本地数据，程序指针等信息。</p>
+<p>This switch is called a “context switch”.<br>上面所描述的切换就叫做 “上下文切换”。</p>
+<p>The CPU switches from executing in the context of one thread to executing in the context of another.<br>对于 CPU 来说，它从正在运行线程的上下文中切换到另一个即将运行的线程的上下文中。</p>
+<p>Context switching isn’t cheap.<br>上下文切换的花费高昂。</p>
+<p>You don’t want to switch between threads more than necessary.<br>所以不到万不得已，我认为你是不会在两个线程之间进行上下文切换的。</p>
+<p>You can read more about context switching on Wikipedia:<br>你可以通过查阅维基百科来获取更多关于上下文切换相关的知识:</p>
+<p><a href="http://en.wikipedia.org/wiki/Context_switch" target="_blank" rel="external">http://en.wikipedia.org/wiki/Context_switch</a></p>
+<h2 id="Increased_Resource_Consumption"><a href="#Increased_Resource_Consumption" class="headerlink" title="Increased Resource Consumption"></a>Increased Resource Consumption</h2><h2 id="u589E_u52A0_u8D44_u6E90_u6D88_u8017"><a href="#u589E_u52A0_u8D44_u6E90_u6D88_u8017" class="headerlink" title="增加资源消耗"></a>增加资源消耗</h2><p>A thread needs some resources from computer in order to run.<br>一个线程需要从计算机中获取相应资源以便于能够运行起来。</p>
+<p>Besides CPU time a thread needs some memory to keep its local stack.<br>除此之外，线程在获取到 CPU 资源之后需要额外的内存空间来存放它的本地栈。</p>
+<p>It may also take up some resources inside the operating system needed to manage the thread.<br>线程或许也会在用来管理线程的操作系统内部占据一些资源。</p>
+<p>Try creating a program that creates 100 thread that does nothing but wait, and see how much memory the application takes when running.<br>(你可以)试着创建一个包含100个不做任何事情且仅处于等待状态的线程的程序，然后观察一下该程序运行起来的时候它总共消耗多少内存。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_multithreading_costs3/" data-id="cilmfdxd1001jigimpidml9gc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translation/">translation</a></li></ul>
@@ -455,7 +738,7 @@ while ( server is active){
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="cill04bb3001irkimx0ibmntp" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/" data-id="cilmfdxd4001nigim058cn33v" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrency/">concurrency</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/translate/">translate</a></li></ul>
@@ -1094,7 +1377,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cill04bb7001nrkimf547q7s1" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/26/2016.2.26.remote_debug_spark_intellij/" data-id="cilmfdxd8001sigimprqxyod3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IDEA/">IDEA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Intellij/">Intellij</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/debug/">debug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
@@ -1142,7 +1425,7 @@ root@aimer-v:/spark/bin# jps
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cill04bbc001xrkimidyk6lb4" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/25/2016.2.25.spark.manual.translate1/" data-id="cilmfdxdd0022igimvtk5zujz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/doc/">doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official/">official</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
@@ -1416,7 +1699,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cill04bbf0024rkimdofut9fo" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/19/2016.2.19.Google-Test 使用教程/" data-id="cilmfdxdh0029igim3cj82p62" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gtest/">Gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gtest/">gtest</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/manual/">manual</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tutorial/">tutorial</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试/">测试</a></li></ul>
@@ -1540,7 +1823,7 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cill04bbt002hrkimg3gpk9mo" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/18/2016.2.18.dht.note/" data-id="cilmfdxds002migim294asgwj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chord/">Chord</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DHT/">DHT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/P2P/">P2P</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/note/">note</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/theory/">theory</a></li></ul>
@@ -1589,226 +1872,10 @@ ASSERT_FALSE (condition) ；
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cill04bbz002rrkimheojcb6o" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/02/17/2016.2.17.upload_picture/" data-id="cilmfdxdx002wigimvfcxjmap" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blog/">blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/picture/">picture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/七牛/">七牛</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2016.2.14.docker_spark" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/02/14/2016.2.14.docker_spark/" class="article-date">
-  <time datetime="2016-02-13T16:00:00.000Z" itemprop="datePublished">2016-02-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/14/2016.2.14.docker_spark/">使用 docker 来构建 spark 集群</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Description:<br>在<a href="https://kylin27.github.io/2016/02/13/2016.2.13.docker_install/">上一博客</a>中介绍了如何在 ubuntu 上面部署 docker 系统，以及 docker 的基本命令; 在本篇博客中将会介绍如何利用 docker-hub 上的资源来快速搭建一个 spark 集群</p>
-<hr>
-<h1 id="u5982_u4F55_u4F7F_u7528_dockerfile__u6765_u751F_u6210_docker__u955C_u50CF_u6587_u4EF6"><a href="#u5982_u4F55_u4F7F_u7528_dockerfile__u6765_u751F_u6210_docker__u955C_u50CF_u6587_u4EF6" class="headerlink" title="如何使用 dockerfile 来生成 docker 镜像文件"></a>如何使用 dockerfile 来生成 docker 镜像文件</h1><p> 在后续的步骤中有一个镜像文件是无法直接从 docker-hub 的镜像库中直接下载的，但是可以从 github 上面下载到该镜像文件的 dockerfile 文件。 所以在这里介绍一下如何使用 dockerfile 来创建 docker 镜像文件。 如果今后需要的话，将会详细介绍一下如何根据自己的需要来定制编写自己的 dockerfile .</p>
-<h3 id="docker_build"><a href="#docker_build" class="headerlink" title="docker build"></a>docker build</h3><p> 用来将指定路径的中 dockerfile 生成 docker 镜像文件</p>
- <pre>
- docker build -t="amplab/apache-hadoop-hdfs-precise:1.2.1" . 
-
- // 上述命令会搜索当前路径，看是否有 dockerfile 文件，如果有，那么执行该 dockerfile 文件，并根据该 dockerfile 文件生成
- // docker 镜像文件。同时又将该镜像文件打上名为 'amplab/apache-hadoop-hdfs-precise:1.2.1' 的标签
- // 由于后面会通过 github 上面提供的 deploy.sh 脚本来构建 spark 系统，所以尽最大可能的保持 hadoop 的镜像文件的名称一致性 
- </pre>
-
-
-<h1 id="u4ECE_docker-hub__u4E2D_u4E0B_u8F7D_u955C_u50CF_u6587_u4EF6"><a href="#u4ECE_docker-hub__u4E2D_u4E0B_u8F7D_u955C_u50CF_u6587_u4EF6" class="headerlink" title="从 docker-hub 中下载镜像文件"></a>从 docker-hub 中下载镜像文件</h1><p>首先确保正确登录 docker-hub 账号<br>其实我安装 spark 的主要目的是为了使用 spark 提供的 GraphX 和 mllib 这两个工具，而 mllib 中在 spark-0.9 之后才支持，<br>所以，在这里我安装的是 spark-1.0.0 版本<br><b>在执行 pull 命令之前,我开启了翻墙的软件,这样可以节省时间</b></p>
-<pre>
-sudo docker pull amplab/apache-hadoop-hdfs-precise:1.2.1   
-// 这个镜像在 docker-hub 上面找不到，所以需要根据 github 可以获得的 Dockerfile 来构建其镜像文件
-
-$docker pull amplab/dnsmasq-precise:1.0.0
-$docker pull amplab/spark-worker:1.0.0
-$docker pull amplab/spark-master:1.0.1
-$docker pull amplab/spark-shell:1.0.1
-
-$docker images                // 通过该命令查看系统中的镜像文件
-
-REPOSITORY               TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
-ubuntu_14                wget                44552cea1d79        7 hours ago         187.9 MB
-ubuntu                   14.04               8693db7e8a00        3 weeks ago         187.9 MB
-amplab/spark-shell       1.0.0               c18acb8d81a0        20 months ago       964.3 MB
-amplab/spark-worker      1.0.0               6f77966546ee        20 months ago       964.3 MB
-amplab/spark-master      1.0.0               a43b969cfeff        20 months ago       964.3 MB
-amplab/dnsmasq-precise   latest              d9cdba2ae123        23 months ago       205.8 MB
-
-</pre>
-
-<h1 id="u4ECE_git-hub__u4E0A_u9762_u4E0B_u8F7D_u8FD0_u884C_docker__u955C_u50CF_u6587_u4EF6_u7684_u811A_u672C"><a href="#u4ECE_git-hub__u4E0A_u9762_u4E0B_u8F7D_u8FD0_u884C_docker__u955C_u50CF_u6587_u4EF6_u7684_u811A_u672C" class="headerlink" title="从 git-hub 上面下载运行 docker 镜像文件的脚本"></a>从 git-hub 上面下载运行 docker 镜像文件的脚本</h1><pre>
-$wget https://github.com/amplab/docker-scripts/archive/master.zip
-$unzip master.zip
-</pre>
-
-<h1 id="u542F_u52A8_spark__u96C6_u7FA4"><a href="#u542F_u52A8_spark__u96C6_u7FA4" class="headerlink" title="启动 spark 集群"></a>启动 spark 集群</h1><p>将路径切换到包含 /deploy 文件夹的路径下面</p>
-<pre>
-./deploy/deploy.sh -i amplab/spark:1.0.0 -w 3
-
-$docker ps                 // 通过该命令来查看系统中正在运行的容器信息
-
-CONTAINER ID        IMAGE                           COMMAND                CREATED              STATUS              PORTS                NAMES
-855415af179d        amplab/spark-shell:1.0.0        "/root/spark_shell_f   About a minute ago   Up About a minute   8888/tcp             cocky_meitner           
-5bb8f871e474        amplab/spark-shell:1.0.0        "/root/spark_shell_f   2 minutes ago        Up 2 minutes        8888/tcp             modest_brown            
-2c2d49565559        amplab/spark-worker:1.0.0       "/root/spark_worker_   5 minutes ago        Up 5 minutes        8888/tcp             silly_ptolemy           
-24b16b64e6ad        amplab/spark-worker:1.0.0       "/root/spark_worker_   5 minutes ago        Up 5 minutes        8888/tcp             compassionate_lalande   
-25efa7bbeb20        amplab/spark-worker:1.0.0       "/root/spark_worker_   5 minutes ago        Up 5 minutes        8888/tcp             happy_curie             
-1ba8d72a6cd2        amplab/spark-master:1.0.0       "/root/spark_master_   6 minutes ago        Up 6 minutes        7077/tcp, 8080/tcp   kickass_jones           
-3a8c3a8906df        amplab/dnsmasq-precise:latest   "/root/dnsmasq_files   6 minutes ago        Up 6 minutes 
-
-</pre>
-
-<p>具体的参数解释可以戳<a href="https://github.com/amplab/docker-scripts#testing" target="_blank" rel="external">这里</a><br>-w 是用来指定 spark 运行之后对应的 worker 进程个数<br>从上面输入 docker ps 命令之后显示出来的信息可以推知，我们总共创建了: spark-shell , spark-worker , spark-master, dns<br>这些容器运行，但是没有 hadoop 运行, 于是在熟悉上述流程的我又查了其他的几个spark 集群镜像文件，<a href="https://hub.docker.com/r/sequenceiq/spark/" target="_blank" rel="external">找了一个合适的</a> 接下来试试这个镜像文件好了… </p>
-<hr>
-<h1 id="u4E0D_u8FC7_u5148_u6765_u5C06_u5F53_u524D_u7CFB_u7EDF_u4E2D_u7684_u6240_u6709_u8FD0_u884C_u5BB9_u5668_u505C_u6B62"><a href="#u4E0D_u8FC7_u5148_u6765_u5C06_u5F53_u524D_u7CFB_u7EDF_u4E2D_u7684_u6240_u6709_u8FD0_u884C_u5BB9_u5668_u505C_u6B62" class="headerlink" title="不过先来将当前系统中的所有运行容器停止"></a>不过先来将当前系统中的所有运行容器停止</h1><pre>
-// 同样现将路径切换到 ./deploy 文件夹的路径下面
-$ ./deploy/kill_all.sh spark
-$ ./deploy/kill_all.sh namespace
-</pre>
-
-<hr>
-<h1 id="u5C06_u8BE5_u955C_u50CF_u6587_u4EF6_u4E0B_u8F7D_u5230_u672C_u5730"><a href="#u5C06_u8BE5_u955C_u50CF_u6587_u4EF6_u4E0B_u8F7D_u5230_u672C_u5730" class="headerlink" title="将该镜像文件下载到本地"></a>将该镜像文件下载到本地</h1><pre>
-$docker pull sequenceiq/spark:v1.6.0onHadoop2.6.0
-成功下载显示信息:
-...
-95d969caad90: Download complete 
-2d727ce74b86: Download complete 
-28c9338da9a6: Download complete 
-cb7d9861a895: Download complete 
-73bb712333d9: Download complete 
-a466bc76549f: Download complete 
-441cf02fdf7d: Download complete 
-056efae329d8: Download complete 
-Status: Downloaded newer image for sequenceiq/spark:v1.6.0onHadoop2.6.0
-</pre>
-
-<h1 id="u4ECE_docker__u955C_u50CF_u6587_u4EF6_u751F_u6210_u5E76_u8FD0_u884C_u5BB9_u5668"><a href="#u4ECE_docker__u955C_u50CF_u6587_u4EF6_u751F_u6210_u5E76_u8FD0_u884C_u5BB9_u5668" class="headerlink" title="从 docker 镜像文件生成并运行容器"></a>从 docker 镜像文件生成并运行容器</h1><p>先来查看一下当前系统中所有的镜像文件</p>
-<pre>
-$docker images     // 先来查看一下当前系统中所有的镜像文件
-REPOSITORY               TAG                   IMAGE ID            CREATED             VIRTUAL SIZE
-ubuntu_14                wget                  44552cea1d79        24 hours ago        187.9 MB
-ubuntu                   14.04                 8693db7e8a00        3 weeks ago         187.9 MB
-sequenceiq/spark         v1.6.0onHadoop2.6.0   056efae329d8        5 weeks ago         2.877 GB
-amplab/spark-shell       1.0.0                 c18acb8d81a0        20 months ago       964.3 MB
-amplab/spark-worker      1.0.0                 6f77966546ee        20 months ago       964.3 MB
-amplab/spark-master      1.0.0                 a43b969cfeff        20 months ago       964.3 MB
-amplab/dnsmasq-precise   latest                d9cdba2ae123        23 months ago       205.8 MB
-</pre>
-
-<p>再运行镜像文件生成容器实例</p>
-<pre>
-$docker run -it sequenceiq/spark:v1.6.0onHadoop2.6.0  bash 
-
-成功运行显示信息:
-Starting sshd:                                             [  OK  ]
-Starting namenodes on [1f25c1d3d790]
-1f25c1d3d790: starting namenode, logging to /usr/local/hadoop/logs/hadoop-root-namenode-1f25c1d3d790.out
-localhost: starting datanode, logging to /usr/local/hadoop/logs/hadoop-root-datanode-1f25c1d3d790.out
-Starting secondary namenodes [0.0.0.0]
-<b>上述 docker 运行命令作用是是从刚刚下载到本地的 docker 镜像文件中生成 docker 容器(该容器中就包含部署好了的 hadoop 和 spark 软件)；
-生成容器之后，登录到该容器中，并运行 bash 命令</b>
-
-成功登录显示信息:
-bash-4.1# ls     // <b>先显示一下容器中的基本信息 </b>      
-bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  pam-1.1.1-17.el6.src.rpm  proc  root  rpmbuild  sbin  selinux  srv  sys  tmp  usr  var
-bash-4.1# jps     // <b>然后查看一下容器系统中运行的进程都有什么。 可以看出有 Hadoop 节点和 Spark 等相关进程在运行</b> 
-562 NodeManager
-353 SecondaryNameNode
-109 NameNode
-183 DataNode
-636 Jps
-482 ResourceManager
-</pre>
-
-<h1 id="u8FD0_u884C_spark__u4E2D_u7684_counter__u6D4B_u8BD5_u7A0B_u5E8F"><a href="#u8FD0_u884C_spark__u4E2D_u7684_counter__u6D4B_u8BD5_u7A0B_u5E8F" class="headerlink" title="运行 spark 中的 counter 测试程序"></a>运行 spark 中的 counter 测试程序</h1><pre>
-<b>首先需要运行一下 spark-shell , 直接在当前 bash 命令行中输入如下命令 </b>
-$spark-shell \
- --master yarn-client \
- --driver-memory 1g \
- --executor-memory 1g \
- --executor-cores 1
-
-<b>如果成功，将会显示如下信息:</b>
-
-16/02/14 02:57:02 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-16/02/14 02:57:03 INFO spark.SecurityManager: Changing view acls to: root
-16/02/14 02:57:03 INFO spark.SecurityManager: Changing modify acls to: root
-16/02/14 02:57:03 INFO spark.SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: Set(root); users with modify permissions: Set(root)
-16/02/14 02:57:04 INFO spark.HttpServer: Starting HTTP Server
-16/02/14 02:57:04 INFO server.Server: jetty-8.y.z-SNAPSHOT
-16/02/14 02:57:04 INFO server.AbstractConnector: Started SocketConnector@0.0.0.0:58832
-16/02/14 02:57:04 INFO util.Utils: Successfully started service 'HTTP class server' on port 58832.
-Welcome to
-      ____              __
-     / __/__  ___ _____/ /__
-    _\ \/ _ \/ _ `/ __/  '_/
-   /___/ .__/\_,_/_/ /_/\_\   version 1.6.0
-      /_/
-
-Using Scala version 2.10.5 (Java HotSpot(TM) 64-Bit Server VM, Java 1.7.0_51)
-Type in expressions to have them evaluated.
-... 后面反正还有挺多，最后会看到 scala> 命令行提示输入符
-
-<b>我们来测试一个最简单的计数程序调用好了</b>
-
-scala> sc.parallelize( 1 to 1000).count()
-16/02/14 03:01:56 INFO spark.SparkContext: Starting job: count at <console>:28
-16/02/14 03:01:56 INFO scheduler.DAGScheduler: Got job 0 (count at <console>:28) with 2 output partitions
-16/02/14 03:01:56 INFO scheduler.DAGScheduler: Final stage: ResultStage 0 (count at <console>:28)
-16/02/14 03:01:56 INFO scheduler.DAGScheduler: Parents of final stage: List()
-16/02/14 03:01:56 INFO scheduler.DAGScheduler: Missing parents: List()
-16/02/14 03:01:56 INFO scheduler.DAGScheduler: Submitting ResultStage 0 (ParallelCollectionRDD[0] at parallelize at <console>:28), which has no missing parents
-16/02/14 03:01:57 INFO storage.MemoryStore: Block broadcast_0 stored as values in memory (estimated size 1096.0 B, free 1096.0 B)
-16/02/14 03:01:57 INFO storage.MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 804.0 B, free 1900.0 B)
-16/02/14 03:01:57 INFO storage.BlockManagerInfo: Added broadcast_0_piece0 in memory on 172.17.0.10:48410 (size: 804.0 B, free: 517.4 MB)
-16/02/14 03:01:57 INFO spark.SparkContext: Created broadcast 0 from broadcast at DAGScheduler.scala:1006
-16/02/14 03:01:57 INFO scheduler.DAGScheduler: Submitting 2 missing tasks from ResultStage 0 (ParallelCollectionRDD[0] at parallelize at <console>:28)
-16/02/14 03:01:57 INFO cluster.YarnScheduler: Adding task set 0.0 with 2 tasks
-16/02/14 03:01:58 INFO scheduler.TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, 42ba3f37ce84, partition 0,PROCESS_LOCAL, 2078 bytes)
-16/02/14 03:01:58 INFO scheduler.TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1, 42ba3f37ce84, partition 1,PROCESS_LOCAL, 2135 bytes)
-16/02/14 03:02:04 INFO storage.BlockManagerInfo: Added broadcast_0_piece0 in memory on 42ba3f37ce84:58577 (size: 804.0 B, free: 517.4 MB)
-16/02/14 03:02:04 INFO storage.BlockManagerInfo: Added broadcast_0_piece0 in memory on 42ba3f37ce84:36276 (size: 804.0 B, free: 517.4 MB)
-16/02/14 03:02:09 INFO scheduler.TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 11580 ms on 42ba3f37ce84 (1/2)
-16/02/14 03:02:09 INFO scheduler.TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 11454 ms on 42ba3f37ce84 (2/2)
-16/02/14 03:02:09 INFO cluster.YarnScheduler: Removed TaskSet 0.0, whose tasks have all completed, from pool 
-16/02/14 03:02:09 INFO scheduler.DAGScheduler: ResultStage 0 (count at <console>:28) finished in 11.657 s
-16/02/14 03:02:09 INFO scheduler.DAGScheduler: Job 0 finished: count at <console>:28, took 13.058068 s
-res0: Long = 1000
-</console></console></console></console></console></console></console></pre>
-
-<p> 这样一个 spark 集群就搭建好了，如果需要把当前对容器做出的修改同步到原有的镜像文件(推荐重新另存一个新的镜像文件)，可以使用<a href="https://kylin27.github.io/2016/02/13/2016.2.13.docker_install/">上一篇博客中</a>介绍的 docker commit 这个命令</p>
-<h1 id="u5173_u4E8E_u6536_u5C3E_u5DE5_u4F5C"><a href="#u5173_u4E8E_u6536_u5C3E_u5DE5_u4F5C" class="headerlink" title="关于收尾工作"></a>关于收尾工作</h1><p>当前所处的状态是 scala&gt; 的命令行，输入 exit 便可以退出当前 scala 命令行交互的状态；<br>再次输入 exit (一次或是多次) 便可以退出当前登录的 spark-hadoop 集群容器，当然容器在你退出之后便会’消亡’,也就是不运行了系统回收它的资源咯，输入 docker ps 便查看不到容器信息；<br>如果在实际工作中推荐的做法是，在退出容器之前，在另一个远程访问终端内，将该容器的状态信息进行保存(归档或是生成镜像文件，如果乐意也可以将生成的镜像文件提交到 docker-hub 的上面)</p>
-<p>总之，博客中很多地方写的很啰嗦啦，因为我喜欢在自己经常犯的错误的地方啰嗦几句，不喜欢的话，来打我啊~<br>end</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/02/14/2016.2.14.docker_spark/" data-id="cill04bc3002zrkimhkc1x3dn" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dockerfile/">dockerfile</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
 
     </footer>
   </div>
@@ -1832,7 +1899,7 @@ res0: Long = 1000
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/">Spark</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official-guides/">official-guides</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translation/">translation</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">2</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Chord/">Chord</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DHT/">DHT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gtest/">Gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IDEA/">IDEA</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Intellij/">Intellij</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/P2P/">P2P</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spark/">Spark</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StackExchangeRecommenderSystem-repo/">StackExchangeRecommenderSystem_repo</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/">Ubuntu</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/blog/">blog</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cluster/">cluster</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrency/">concurrency</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/datastructure/">datastructure</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/debug/">debug</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doc/">doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dockerfile/">dockerfile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gtest/">gtest</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/log4j/">log4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/manual/">manual</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/note/">note</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official/">official</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official-doc/">official-doc</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/official-guides/">official-guides</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/picture/">picture</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/programming-theory/">programming-theory</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scala/">scala</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/search-engine/">search-engine</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/theory/">theory</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translate/">translate</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/translation/">translation</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tutorial/">tutorial</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/windows/">windows</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/七牛/">七牛</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人简历/">个人简历</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试/">测试</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -1841,7 +1908,7 @@ res0: Long = 1000
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/Spark/" style="font-size: 10px;">Spark</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 16.67px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/official-guides/" style="font-size: 10px;">official-guides</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/tags/theory/" style="font-size: 13.33px;">theory</a> <a href="/tags/translate/" style="font-size: 10px;">translate</a> <a href="/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 13.33px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/Chord/" style="font-size: 10px;">Chord</a> <a href="/tags/DHT/" style="font-size: 10px;">DHT</a> <a href="/tags/Gtest/" style="font-size: 10px;">Gtest</a> <a href="/tags/IDEA/" style="font-size: 10px;">IDEA</a> <a href="/tags/Intellij/" style="font-size: 10px;">Intellij</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/P2P/" style="font-size: 10px;">P2P</a> <a href="/tags/Spark/" style="font-size: 13.33px;">Spark</a> <a href="/tags/StackExchangeRecommenderSystem-repo/" style="font-size: 10px;">StackExchangeRecommenderSystem_repo</a> <a href="/tags/Ubuntu/" style="font-size: 10px;">Ubuntu</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/blog/" style="font-size: 13.33px;">blog</a> <a href="/tags/cluster/" style="font-size: 10px;">cluster</a> <a href="/tags/concurrency/" style="font-size: 16.67px;">concurrency</a> <a href="/tags/datastructure/" style="font-size: 10px;">datastructure</a> <a href="/tags/debug/" style="font-size: 10px;">debug</a> <a href="/tags/doc/" style="font-size: 10px;">doc</a> <a href="/tags/docker/" style="font-size: 13.33px;">docker</a> <a href="/tags/dockerfile/" style="font-size: 10px;">dockerfile</a> <a href="/tags/github/" style="font-size: 13.33px;">github</a> <a href="/tags/gtest/" style="font-size: 10px;">gtest</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/log4j/" style="font-size: 10px;">log4j</a> <a href="/tags/manual/" style="font-size: 10px;">manual</a> <a href="/tags/note/" style="font-size: 10px;">note</a> <a href="/tags/official/" style="font-size: 10px;">official</a> <a href="/tags/official-doc/" style="font-size: 10px;">official-doc</a> <a href="/tags/official-guides/" style="font-size: 10px;">official-guides</a> <a href="/tags/picture/" style="font-size: 10px;">picture</a> <a href="/tags/programming-theory/" style="font-size: 10px;">programming-theory</a> <a href="/tags/scala/" style="font-size: 13.33px;">scala</a> <a href="/tags/search-engine/" style="font-size: 10px;">search-engine</a> <a href="/tags/spark/" style="font-size: 16.67px;">spark</a> <a href="/tags/theory/" style="font-size: 13.33px;">theory</a> <a href="/tags/translate/" style="font-size: 10px;">translate</a> <a href="/tags/translation/" style="font-size: 13.33px;">translation</a> <a href="/tags/tutorial/" style="font-size: 10px;">tutorial</a> <a href="/tags/windows/" style="font-size: 10px;">windows</a> <a href="/tags/七牛/" style="font-size: 10px;">七牛</a> <a href="/tags/个人简历/" style="font-size: 10px;">个人简历</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/翻译/" style="font-size: 16.67px;">翻译</a>
     </div>
   </div>
 
@@ -1850,7 +1917,7 @@ res0: Long = 1000
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -1862,11 +1929,11 @@ res0: Long = 1000
       <ul>
         
           <li>
-            <a href="/2016/03/09/2016.3.8.cluster-overview1/">Spark 部署文档-Spark 集群模式概览-1</a>
+            <a href="/2016/03/10/2016.3.10.submitting-applications.spark2/">Spark 部署文档-如何向 Spark 上提交应用程序-2</a>
           </li>
         
           <li>
-            <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/">Multithreading Costs [多线程所花费的代价]</a>
+            <a href="/2016/03/09/2016.3.8.cluster-overview1/">Spark 部署文档-Spark 集群模式概览1</a>
           </li>
         
           <li>
@@ -1874,11 +1941,11 @@ res0: Long = 1000
           </li>
         
           <li>
-            <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial [Java 并发/多线程教程]</a>
+            <a href="/2016/02/27/2016.2.27.java_multithreading_costs3/">Multithreading Costs [多线程所花费的代价]</a>
           </li>
         
           <li>
-            <a href="/2016/02/26/2016.2.26.remote_debug_spark_intellij/">基于单节点的 Spark &amp; IDEA 远程调试</a>
+            <a href="/2016/02/27/2016.2.27.java_concurrency.Multithreading Tutorial_1/">Java Concurrency / Multithreading Tutorial [Java 并发/多线程教程]</a>
           </li>
         
       </ul>
