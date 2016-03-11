@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://kylin27.github.io/2016/03/10/2016.3.10.submitting-applications.spark2/index.html">
 <meta property="og:site_name" content="Kylin's Blog">
 <meta property="og:description" content="Descriptions:最近正在系统阅读 Spark 官方文档，阅读的同时也试着翻译了其中部分的章节，本篇文档原文链接地址:http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management ，个人水平有限,若翻译有不恰当之处欢迎指正，邮箱地址 kylin27@outloo">
-<meta property="og:updated_time" content="2016-03-10T15:41:45.839Z">
+<meta property="og:updated_time" content="2016-03-11T03:43:50.891Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark 部署文档-如何向 Spark 上提交应用程序-2">
 <meta name="twitter:description" content="Descriptions:最近正在系统阅读 Spark 官方文档，阅读的同时也试着翻译了其中部分的章节，本篇文档原文链接地址:http://spark.apache.org/docs/latest/submitting-applications.html#advanced-dependency-management ，个人水平有限,若翻译有不恰当之处欢迎指正，邮箱地址 kylin27@outloo">
@@ -99,7 +99,7 @@
 <p>If you depend on multiple Python files we recommend packaging them into a .zip or .egg.<br>如果你的应用程序依赖于不止一个 Python 文件，建议你将多个 Python 文件打包成 .zip 或是 .egg 类型的文件。</p>
 <h2 id="Launching_Applications_with_spark-submit"><a href="#Launching_Applications_with_spark-submit" class="headerlink" title="Launching Applications with spark-submit"></a>Launching Applications with spark-submit</h2><h2 id="u4F7F_u7528_spark-submit__u811A_u672C_u6765_u53D1_u5E03_u5E94_u7528_u7A0B_u5E8F_u5230_Spark__u96C6_u7FA4"><a href="#u4F7F_u7528_spark-submit__u811A_u672C_u6765_u53D1_u5E03_u5E94_u7528_u7A0B_u5E8F_u5230_Spark__u96C6_u7FA4" class="headerlink" title="使用 spark-submit 脚本来发布应用程序到 Spark 集群"></a>使用 spark-submit 脚本来发布应用程序到 Spark 集群</h2><p>Once a user application is bundled, it can be launched using the bin/spark-submit script.<br>一旦用户自定义应用程序和依赖文件被成功绑定，便可以使用 bin 路径下的 spark-submit 脚本将其发布到 Spark 上。</p>
 <p>This script takes care of setting up the classpath with Spark and its dependencies, and can support different cluster managers and deploy modes that Sparks supports.<br>spark-submit 脚本支持为 Spark 和其所依赖的库来设定 classpath，同时 spark-submit 启动脚本后接的多种参数选项可以很好的配合 Spark 支持的多种集群管理器与启动模式:</p>
-<p><b> ps: 由于博客支持符号优先，将下面的 # 替换成左右尖括号</b></p>
+<p><b> ps: 由于博客支持符号有限，将下面的 # 替换成左右尖括号</b></p>
 <pre>
 ./bin/spark-submit \
   --class  #main-class#     \
@@ -159,7 +159,9 @@
 
 译者注: 上述的 spark-submit 提交命令解释入下
 --class org.apache.spark.examples.SparkPi 
-这条命令所对应的是用于指定提交给 Spark 的 Jar 文件的主入口函数的(也就是包含 main() 入口函数的类，并且在其中成功创建 SparkContext 对象实例的所在类)所在类
+这条命令所对应的是用于指定提交给 Spark 的 Jar 文件的主入口函数的
+(也就是包含 main() 入口函数的类，并且在其中成功创建 SparkContext 对象实例的所在类)所在类
+
 --master 
 这个参数选项，应该指定(暂时还不太清楚这个)
 
@@ -318,25 +320,33 @@ export HADOOP_CONF_DIR=XXX
 <p>If your are ever unclear where configuration options are coming from, you can print out fine-grained debugging information by running spark-submit with the –verose option.<br>如果你对 Spark 中的某些配置选项不是很理解，不知道某些参数是用来做什么的话，建议在运行 spark-submit 脚本的时后接 –verose 参数这个选项，这样就可以将每个后接参数的调试信息详细打印出来了。</p>
 <h2 id="Advanced_Dependency_Management"><a href="#Advanced_Dependency_Management" class="headerlink" title="Advanced Dependency Management"></a>Advanced Dependency Management</h2><p>##<br>When using spark-submit, the application jar along with any jars included with the –jars option will be automatically transferred to the cluster.<br>当运行 spark-submit 脚本时，应用程序连同任何 –jars 参数选项后接的 jar 文件都会被自动的提交给集群。</p>
 <p>Spark uses the following URL scheme to allow different strategies for disseminating jars:<br>Spark 使用如下所示的多种 URL 模式来实现不同策略的 jar 文件的分发:</p>
-<p>（其实上面都是我瞎编的… ，今天太晚了，我编不下去了，明天继续编… =。=） <br></p>
 <ul>
-<li><p>file: - Absolute path and file:/URIs are servered by the driver’s HTTP file server, and every executor pulls the file from the driver HTTP server.</p>
+<li>file: - Absolute path and file:/URIs are servered by the driver’s HTTP file server, and every executor pulls the file from the driver HTTP server.</li>
+<li><p>file: - 此种文件描述方式使用的是本地文件所在的绝对路径地址以及使用 file:/URL 的文件路径描述方式是由文件 HTTP 服务器所提供的文件定位服务。位于每个结点上的执行器也均是从 HTTP 文件服务器上来抽取其所需要的文件。 </p>
 </li>
 <li><p>hdfs:, http:, https:, ftp: - these pull down files and JARs from the URI as expected</p>
 </li>
-<li><p>local: - a URI starting with local:/ is expected to exist as a local file on each worker node. This means that no network IO will be incurred, and works well for large files/JARs that are pushed to each worker, or shared via NFS, ClusterFS, etc. </p>
-</li>
+<li>hdfs： 此种文件路径描述是以 http, https, ftp 文件传输协议根据文件的 URI 描述地址来抓取普通和 JAR 类型的文件的。 </li>
 </ul>
-<p>Note that JARs and files are copied to the working directory for each SparkContext on the executor nodes. This can use up a significant amount of space over time and will need to be cleaned up. With YARN, cleanup is handled automatically, and with Spark standalone, automatic cleanup can be configured with the spark.worker.cleanup.appDataTtl property.</p>
-<p>Users may also included any other dependencies by supplying a comma-delimited list of maven coordinates with –packages. All transitive dependencies will be handled when using this command. Additional repositories( or resolvers in SBT) can be added in a comma-delimited fashion with the flat –repositories. These commands can be used with pyspark, spark-shell, and spark-submit to include Spark Packages.</p>
-<p>For Python, the equivalent –py-files option can be used to distribute .egg, .zip and .py libraries to executors.  </p>
+<ul>
+<li>local: - a URI starting with local:/ is expected to exist as a local file on each worker node. This means that no network IO will be incurred, and works well for large files/JARs that are pushed to each worker, or shared via NFS, ClusterFS, etc. </li>
+<li>使用 local 来作为文件路径描述的话，通常是按照 local:/ + 文件的 URI 地址这种格式，不过若以次种文件描述方式，需要每个工作结点的本地路径上都需要有该文件的备份。 这便意味着在整个过程中不会涉及到文件在网络进行传输，且由于大块的普通 JAR 文件都已经被推送到每个工作结点本地或是以 NFS, ClusterFS 文件系统的方式进行共享，所以在这种情景下其工作效率十分的高效。<br>(译者注: 不过将大文件冗余地存放到如此多的结点上所带来的开销也是很大的，类似于算法中的空间与时间二者之间的权衡)</li>
+</ul>
+<p>Note that JARs and files are copied to the working directory for each SparkContext on the executor nodes.<br>需要知道的是 JAR 和 普通文件会被拷贝到位于每个执行结点上所创建的的 SparkContext 的工作路径下。</p>
+<p>This can use up a significant amount of space over time and will need to be cleaned up.<br>这是一种会随着时间推移十分吃内存的处理方法，所以会涉及到空间的清理与回收操作。</p>
+<p>With YARN, cleanup is handled automatically, and with Spark standalone, automatic cleanup can be configured with the spark.worker.cleanup.appDataTtl property.<br>如果使用 YARN 这种资源管理框架的话，空间资源的清理与回收会被自动的执行；如果使用 Spark 自带的资源管理器的话，可以通过配置 spark.worker.cleanup.appDataTlt 这个选项来决定让 Spark 是否能够自动清理与回收空间。</p>
+<p>Users may also included any other dependencies by supplying a comma-delimited list of maven coordinates with –packages.<br>若是用户希望包含其他 maven 相关的依赖文件，还在命令后配合使用 –packages 这个参数选项；若是不止一个依赖文件可使用逗号作为分隔符。</p>
+<p>All transitive dependencies will be handled when using this command.<br>使用上述的这个参数选项的话，依赖文件的所有隐式依赖文件也一并会被处理。</p>
+<p>Additional repositories( or resolvers in SBT) can be added in a comma-delimited fashion with the flag –repositories.<br>另外，项目代码资源库(或是使用 SBT 作为版本控制项目)也可以以逗号分隔符的方式配合 –repositories 这个参数选项来使用。</p>
+<p>These commands can be used with pyspark, spark-shell, and spark-submit to include Spark packages.<br>上述的这些命令可以配合 Spark 安装包中的 pyspark,spark-shell 和 spark-submit 这些脚本中的任意一个脚本使用。</p>
+<p>For Python, the equivalent –py-files option can be used to distribute .egg, .zip and .py libraries to executors.<br>如果是上传以 Python 编写的项目代码的话，可以相应地使用 –py-files 这个参数选项来将打包成 .egg,.zip 的 python 文件，或是 python 库文件本身分发到位于每个结点的执行器上。</p>
 <h2 id="More_Information"><a href="#More_Information" class="headerlink" title="More Information"></a>More Information</h2><h2 id="u5173_u4E8E_u8FDB_u4E00_u6B65_u5B66_u4E60"><a href="#u5173_u4E8E_u8FDB_u4E00_u6B65_u5B66_u4E60" class="headerlink" title="关于进一步学习"></a>关于进一步学习</h2><p>Once you have deployed your application, the <a href="http://spark.apache.org/docs/latest/cluster-overview.html" target="_blank" rel="external">cluster mode overview</a> describes the components involved in distributed execution, and how to monitor and debug applications.<br>一旦你将你的应用部署到集群之上，在<a href="http://spark.apache.org/docs/latest/cluster-overview.html" target="_blank" rel="external">关于集群模式概览</a>一文中介绍了 Spark 在分布式环境下运行时所需要的组件，以及如何监控与调试你所部署的应用程序。</p>
 <p>end  </p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://kylin27.github.io/2016/03/10/2016.3.10.submitting-applications.spark2/" data-id="cilmg0or4000tagimohzq9xnd" class="article-share-link">Share</a>
+      <a data-url="http://kylin27.github.io/2016/03/10/2016.3.10.submitting-applications.spark2/" data-id="ciln5qws2000txkimhniq4kt1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/official-doc/">official-doc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
@@ -350,7 +360,7 @@ export HADOOP_CONF_DIR=XXX
   
     <a href="/2016/03/09/2016.3.8.cluster-overview1/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Spark 部署文档-Spark 集群模式概览1</div>
+      <div class="article-nav-title">Spark 部署文档-Spark 集群模式概览-1</div>
     </a>
   
 </nav>
@@ -402,7 +412,7 @@ export HADOOP_CONF_DIR=XXX
           </li>
         
           <li>
-            <a href="/2016/03/09/2016.3.8.cluster-overview1/">Spark 部署文档-Spark 集群模式概览1</a>
+            <a href="/2016/03/09/2016.3.8.cluster-overview1/">Spark 部署文档-Spark 集群模式概览-1</a>
           </li>
         
           <li>
